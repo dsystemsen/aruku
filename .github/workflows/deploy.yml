@@ -1,0 +1,43 @@
+name: Deploy to Xserver
+
+# main への push で本番（aruku.dsystemsen.com）へ自動デプロイ。
+# 手動実行（Actions タブの Run workflow）も可能。
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Upload via SCP (SSH)
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.XSERVER_HOST }}          # 例: xs186588.xsrv.jp
+          username: ${{ secrets.XSERVER_USER }}      # 例: xs186588
+          port: ${{ secrets.XSERVER_PORT }}          # 例: 10022
+          key: ${{ secrets.XSERVER_SSH_KEY }}        # OpenSSH秘密鍵（全文）
+          passphrase: ${{ secrets.XSERVER_SSH_PASSPHRASE }}  # 鍵にパスフレーズが無ければ空でOK
+          target: ${{ secrets.XSERVER_TARGET }}      # 例: /home/xs186588/dsystemsen.com/public_html/aruku.dsystemsen.com
+          overwrite: true
+          # 本番に必要なファイルだけを送る（articles.py / build.py / README / .git は送らない）
+          source: |
+            index.php
+            render.php
+            articles.php
+            sitemap.php
+            robots.txt
+            .htaccess
+            about.html
+            privacy.html
+            404.html
+            column
+            assets
