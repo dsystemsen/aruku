@@ -1,0 +1,66 @@
+# ==========================================================
+# aruku（アルク） .htaccess - aruku.dsystemsen.com 専用
+# 動的サイト（PHP）。Xserver にアップロードして使用。
+# URL構造は従来の静的版（/column/<slug>.html）をそのまま維持します。
+# ==========================================================
+
+# ---- 文字コード ----
+AddDefaultCharset UTF-8
+
+# ---- デフォルトドキュメント（/ と /column/ は index.php を返す）----
+DirectoryIndex index.php index.html
+
+# ---- ルーティング ----
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+
+    # HTTPS へリダイレクト（最優先）
+    RewriteCond %{HTTPS} !=on
+    RewriteCond %{HTTP:X-Forwarded-Proto} !=https
+    RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [R=301,L]
+
+    # トップ /index.html → index.php
+    RewriteRule ^index\.html$ index.php [L]
+
+    # サイトマップ /sitemap.xml → sitemap.php
+    RewriteRule ^sitemap\.xml$ sitemap.php [L]
+
+    # コラム一覧 /column/index.html → column/index.php
+    RewriteRule ^column/index\.html$ column/index.php [L]
+
+    # 個別記事 /column/<slug>.html → column/article.php?slug=<slug>
+    RewriteRule ^column/([a-z0-9-]+)\.html$ column/article.php?slug=$1 [L,QSA]
+</IfModule>
+
+# ---- カスタム404 ----
+ErrorDocument 404 /404.html
+
+# ---- データ／内部ファイルへの直接アクセスを禁止 ----
+<FilesMatch "^(render\.php|articles\.php|articles\.py|build\.py|_.*)$">
+    Require all denied
+</FilesMatch>
+
+# ---- gzip圧縮 ----
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/css text/xml
+    AddOutputFilterByType DEFLATE application/javascript application/json application/xml
+    AddOutputFilterByType DEFLATE image/svg+xml
+</IfModule>
+
+# ---- ブラウザキャッシュ（HTMLは動的なのでキャッシュせず、アセットは長め）----
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType text/css "access plus 7 days"
+    ExpiresByType application/javascript "access plus 7 days"
+    ExpiresByType image/svg+xml "access plus 30 days"
+    ExpiresByType image/png "access plus 30 days"
+    ExpiresByType image/jpeg "access plus 30 days"
+</IfModule>
+
+# ---- セキュリティヘッダ ----
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>

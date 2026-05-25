@@ -1,0 +1,5 @@
+# aruku（アルク） robots.txt
+User-agent: *
+Allow: /
+
+Sitemap: https://aruku.dsystemsen.com/sitemap.xml

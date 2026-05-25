@@ -1,0 +1,11 @@
+# Python（旧ジェネレータの実行時生成物）
+__pycache__/
+*.pyc
+
+# OS / OneDrive
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Claude Code のローカル個人設定（共有しない）
+.claude/settings.local.json
