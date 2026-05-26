@@ -1,4 +1,4 @@
-/* aruku - 軽量UXスクリプト */
+/* aruku — 軽量UXスクリプト（編集誌テーマ） */
 (function () {
   "use strict";
 
@@ -22,5 +22,35 @@
         history.replaceState(null, "", a.getAttribute("href"));
       }
     });
+  });
+
+  // スクロールで要素を順に現す（.reveal / .reveal-stagger → .is-in）
+  var targets = document.querySelectorAll(".reveal, .reveal-stagger");
+  var reduce =
+    window.matchMedia &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  if (!targets.length) return;
+
+  if (reduce || !("IntersectionObserver" in window)) {
+    targets.forEach(function (el) {
+      el.classList.add("is-in");
+    });
+    return;
+  }
+
+  var io = new IntersectionObserver(
+    function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("is-in");
+          io.unobserve(entry.target);
+        }
+      });
+    },
+    { rootMargin: "0px 0px -10% 0px", threshold: 0.12 }
+  );
+  targets.forEach(function (el) {
+    io.observe(el);
   });
 })();

@@ -152,8 +152,13 @@ HTML;
 function head_html(string $prefix, string $title, string $desc, string $canonical, string $keywords = '', ?array $jsonld = null, string $og_type = 'article'): string
 {
     $s = site();
-    $css = '<link rel="stylesheet" href="' . $prefix . 'assets/style.css">' . "\n"
-        . '<link rel="stylesheet" href="' . $prefix . 'assets/column.css">';
+    $fonts = '<link rel="preconnect" href="https://fonts.googleapis.com">' . "\n"
+        . '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' . "\n"
+        . '<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,500&family=Shippori+Mincho:wght@600;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">';
+    $css = $fonts . "\n"
+        . '<link rel="stylesheet" href="' . $prefix . 'assets/style.css">' . "\n"
+        . '<link rel="stylesheet" href="' . $prefix . 'assets/column.css">' . "\n"
+        . '<noscript><style>.reveal,.reveal-stagger>*,.hero-anim,.hero-art-anim{opacity:1!important;transform:none!important;animation:none!important}</style></noscript>';
     $kw = $keywords !== '' ? '<meta name="keywords" content="' . $keywords . '">' . "\n" : '';
     $ld = '';
     if ($jsonld) {
@@ -232,7 +237,7 @@ function render_related(array $article): string
     }
     return '<section class="column-section column-related-block">'
         . '<h2>関連記事</h2>'
-        . '<div class="column-cards-grid">' . implode('', $cards) . '</div>'
+        . '<div class="column-cards-grid reveal-stagger">' . implode('', $cards) . '</div>'
         . '</section>';
 }
 
@@ -481,10 +486,10 @@ function render_column_index(): string
                 . '<p>' . $sub . '</p>'
                 . '</div></a>';
         }
-        $sections .= '<section class="column-cat-section" id="' . $cat_key . '">'
+        $sections .= '<section class="column-cat-section reveal" id="' . $cat_key . '">'
             . '<h2 class="column-cat-title"><span class="cat-emoji">' . $cat['emoji'] . '</span>' . $cat['name'] . '</h2>'
             . '<p class="column-cat-desc">' . $cat['desc'] . '</p>'
-            . '<div class="column-cards-grid">' . $cards . '</div>'
+            . '<div class="column-cards-grid reveal-stagger">' . $cards . '</div>'
             . '</section>';
     }
 
@@ -583,45 +588,93 @@ function render_top(): string
 <header class="hero">
   <div class="hero-inner">
     <div>
-      <span class="hero-badge">🚶 歩くことの総合メディア</span>
-      <h1>歩くことを、<span class="accent">もっと楽しく</span>健康に。</h1>
-      <p class="hero-lead">ウォーキングの効果から正しい歩き方、歩数別の消費カロリー、歩いてポイ活、ウォーキングマシンまで。「歩く」のすべてを、わかりやすいコラムでお届けします。</p>
-      <div class="hero-actions">
-        <a href="column/index.html" class="lp-btn lp-btn-primary">コラムを読む</a>
-        <a href="column/calorie-table.html" class="lp-btn lp-btn-secondary">🔥 カロリー表を見る</a>
+      <span class="hero-badge hero-anim hero-anim-1">歩くことの総合メディア</span>
+      <h1 class="hero-anim hero-anim-2">歩くことを、<br><span class="accent">もっと楽しく</span>健康に。</h1>
+      <p class="hero-lead hero-anim hero-anim-3">ウォーキングの効果から正しい歩き方、歩数別の消費カロリー、歩いてポイ活、ウォーキングマシンまで。「歩く」のすべてを、わかりやすいコラムでお届けします。</p>
+      <div class="hero-actions hero-anim hero-anim-4">
+        <a href="column/index.html" class="lp-btn lp-btn-primary">コラムを読む →</a>
+        <a href="column/calorie-table.html" class="lp-btn lp-btn-secondary">歩数別カロリー表</a>
       </div>
     </div>
-    <div class="hero-art"><img src="assets/ogp.svg" alt="aruku イメージ" width="600" height="315" loading="eager"></div>
+    <div class="hero-art hero-art-anim">
+      <svg viewBox="0 0 520 460" role="img" aria-label="点線の小道を歩く人のイラスト" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <clipPath id="panel"><rect x="10" y="10" width="500" height="440" rx="30"/></clipPath>
+        </defs>
+        <rect x="10" y="10" width="500" height="440" rx="30" fill="#fbf9f1" stroke="#ddd4ba"/>
+        <g clip-path="url(#panel)">
+          <!-- 遠景の丘 -->
+          <path d="M10 360 Q150 290 270 340 T510 320 V450 H10 Z" fill="#d8e8dc"/>
+          <path d="M10 400 Q170 330 300 380 T510 370 V450 H10 Z" fill="#8fc4a4" opacity=".55"/>
+          <!-- 等高線 -->
+          <g stroke="#34915f" stroke-width="1.6" fill="none" opacity=".4">
+            <path d="M30 300 Q160 235 290 285 T520 265"/>
+            <path d="M30 268 Q170 200 300 250 T520 230"/>
+            <path d="M40 238 Q180 175 300 218 T520 200"/>
+          </g>
+          <!-- 太陽 -->
+          <circle cx="408" cy="118" r="42" fill="#f1ddcb"/>
+          <g stroke="#d2612e" stroke-width="2" stroke-linecap="round" opacity=".6">
+            <line x1="408" y1="50" x2="408" y2="64"/>
+            <line x1="466" y1="76" x2="456" y2="86"/>
+            <line x1="350" y1="76" x2="360" y2="86"/>
+            <line x1="478" y1="118" x2="492" y2="118"/>
+            <line x1="324" y1="118" x2="338" y2="118"/>
+          </g>
+          <!-- 木 -->
+          <g>
+            <rect x="116" y="250" width="6" height="40" rx="2" fill="#a8431b" opacity=".7"/>
+            <circle cx="119" cy="240" r="30" fill="#25744d"/>
+            <circle cx="138" cy="252" r="20" fill="#34915f"/>
+          </g>
+          <!-- 点線の小道 -->
+          <path d="M60 432 C 150 400, 150 320, 240 300 S 380 270, 410 190"
+                fill="none" stroke="#c2541f" stroke-width="4" stroke-linecap="round"
+                stroke-dasharray="0.5 16" opacity=".85"/>
+          <!-- 歩く人 -->
+          <g transform="translate(196,236) scale(1.5)" stroke="#1b5e3f" stroke-width="6"
+             stroke-linecap="round" stroke-linejoin="round" fill="none">
+            <circle cx="14" cy="0" r="7" fill="#1b5e3f" stroke="none"/>
+            <path d="M12 9 L4 31 L-9 39"/>
+            <path d="M4 31 L13 44 L10 60"/>
+            <path d="M4 31 L-7 24 L-18 28"/>
+            <path d="M12 13 L24 19"/>
+          </g>
+        </g>
+      </svg>
+    </div>
   </div>
 </header>
 
 <section class="section">
   <div class="section-inner">
-    <div class="section-head">
-      <span class="section-eyebrow">5つのテーマ</span>
+    <div class="section-head reveal">
+      <span class="section-eyebrow">Five Themes</span>
       <h2>歩くことを、5つの視点で深掘り</h2>
       <p>知りたいテーマから、専門コラムへ。</p>
     </div>
-    <div class="pillar-grid">{$pillars}</div>
+    <div class="pillar-grid reveal-stagger">{$pillars}</div>
   </div>
 </section>
 
 <section class="section section-soft">
   <div class="section-inner">
-    <div class="section-head">
-      <span class="section-eyebrow">PICK UP</span>
+    <div class="section-head reveal">
+      <span class="section-eyebrow">Pick Up</span>
       <h2>注目のコラム</h2>
       <p>まず読んでほしい、各テーマの基本ガイド。</p>
     </div>
-    <div class="post-grid">{$fcards}</div>
-    <div class="text-center mt-32"><a href="column/index.html" class="lp-btn lp-btn-secondary">すべての記事を見る →</a></div>
+    <div class="post-grid reveal-stagger">{$fcards}</div>
+    <div class="text-center mt-32 reveal"><a href="column/index.html" class="lp-btn lp-btn-secondary">すべての記事を見る →</a></div>
   </div>
 </section>
 
 <section class="cta-band">
-  <h2>今日から、1日あと2,000歩。</h2>
-  <p>小さな一歩の積み重ねが、心と体を変えていきます。まずは歩数とカロリーの関係から。</p>
-  <a href="column/calorie-table.html" class="lp-btn lp-btn-primary">歩数別カロリー表を見る</a>
+  <div class="reveal">
+    <h2>今日から、1日あと2,000歩。</h2>
+    <p>小さな一歩の積み重ねが、心と体を変えていきます。まずは歩数とカロリーの関係から。</p>
+    <a href="column/calorie-table.html" class="lp-btn lp-btn-primary">歩数別カロリー表を見る →</a>
+  </div>
 </section>
 
 {$footer}
