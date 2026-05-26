@@ -156,8 +156,8 @@ function head_html(string $prefix, string $title, string $desc, string $canonica
         . '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' . "\n"
         . '<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,500&family=Shippori+Mincho:wght@600;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">';
     $css = $fonts . "\n"
-        . '<link rel="stylesheet" href="' . $prefix . 'assets/style.css">' . "\n"
-        . '<link rel="stylesheet" href="' . $prefix . 'assets/column.css">' . "\n"
+        . '<link rel="stylesheet" href="' . $prefix . 'assets/style.css?v=20260527">' . "\n"
+        . '<link rel="stylesheet" href="' . $prefix . 'assets/column.css?v=20260527">' . "\n"
         . '<noscript><style>.reveal,.reveal-stagger>*,.hero-anim,.hero-art-anim{opacity:1!important;transform:none!important;animation:none!important}</style></noscript>';
     $kw = $keywords !== '' ? '<meta name="keywords" content="' . $keywords . '">' . "\n" : '';
     $ld = '';
@@ -187,7 +187,7 @@ function head_html(string $prefix, string $title, string $desc, string $canonica
 <meta property="og:image" content="{$ogp}">
 <meta property="og:locale" content="ja_JP">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="icon" type="image/svg+xml" href="{$prefix}assets/logo.svg">
+<link rel="icon" type="image/svg+xml" href="{$prefix}assets/logo.svg?v=20260527">
 {$css}
 {$ld}</head>
 <body>
@@ -437,7 +437,7 @@ function render_article(string $slug): ?string
 </article>
 
 {$footer}
-<script src="../assets/app.js" defer></script>
+<script src="../assets/app.js?v=20260527" defer></script>
 </body>
 </html>
 HTML;
@@ -522,7 +522,7 @@ function render_column_index(): string
 </div>
 
 {$footer}
-<script src="../assets/app.js" defer></script>
+<script src="../assets/app.js?v=20260527" defer></script>
 </body>
 </html>
 HTML;
@@ -678,7 +678,7 @@ function render_top(): string
 </section>
 
 {$footer}
-<script src="assets/app.js" defer></script>
+<script src="assets/app.js?v=20260527" defer></script>
 </body>
 </html>
 HTML;
