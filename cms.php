@@ -33,7 +33,7 @@ function cms_defaults(): array
             'x_url'       => 'https://x.com/DsystemsEn',
         ],
         'top' => [
-            'hero_badge'      => '歩くことの総合メディア',
+            'hero_badge'      => 'ー歩くことの総合メディアー',
             'hero_title_1'    => '歩くことを、',
             'hero_accent'     => 'もっと楽しく',
             'hero_title_2'    => '健康に。',
