@@ -8,26 +8,33 @@
  *   render_article($slug) … 各コラム記事（無ければ null を返す）
  *   render_sitemap()      … sitemap.xml
  *
- * 記事を追加するときは articles.php の $ARTICLES に1件足すだけ。
- * 関連記事・前後ナビ・サイトマップ・一覧は自動で追従します。
+ * 記事の追加・編集は管理画面（/admin/）から行えます（データは data/content.json）。
+ * articles.php は初回シード用の元データです。
  */
 
+require_once __DIR__ . '/cms.php';
+
 // ============================================================
-// サイト設定
+// サイト設定（編集可能な項目は data/content.json 由来）
 // ============================================================
 function site(): array
 {
-    static $s = [
+    static $s = null;
+    if ($s !== null) {
+        return $s;
+    }
+    $c = cms_load()['site'];
+    $s = [
         'url'         => 'https://aruku.dsystemsen.com',
         'brand'       => 'aruku',
         'brand_ja'    => 'アルク',
-        'tagline'     => '歩くことを、もっと楽しく健康に。',
-        'description' => 'ウォーキングの効果・正しい歩き方・歩数別カロリー・歩いてポイ活・ウォーキングマシンまで。歩くことのすべてが分かる健康情報メディア。',
-        'author'      => '斎藤 雄義',
-        'author_role' => '株式会社D-SYSTEMS-EN 代表取締役',
-        'org'         => '株式会社D-SYSTEMS-EN',
-        'org_url'     => 'https://www.dsystemsen.com/',
-        'x_url'       => 'https://x.com/DsystemsEn',
+        'tagline'     => $c['tagline'],
+        'description' => $c['description'],
+        'author'      => $c['author'],
+        'author_role' => $c['author_role'],
+        'org'         => $c['org'],
+        'org_url'     => $c['org_url'],
+        'x_url'       => $c['x_url'],
         'year'        => 2026,
     ];
     return $s;
@@ -43,7 +50,10 @@ function aruku_data(): array
     if ($cache !== null) {
         return $cache;
     }
-    require __DIR__ . '/articles.php'; // $CATEGORIES, $CATEGORY_ORDER, $ARTICLES
+    $content        = cms_load();
+    $CATEGORIES     = $content['categories'];
+    $CATEGORY_ORDER = $content['category_order'];
+    $ARTICLES       = $content['articles'];
 
     $by_slug = [];
     foreach ($ARTICLES as $a) {
@@ -149,9 +159,10 @@ HTML;
 /**
  * @param array|null $jsonld  JSON-LD ブロックの配列（各要素が1つの構造化データ）
  */
-function head_html(string $prefix, string $title, string $desc, string $canonical, string $keywords = '', ?array $jsonld = null, string $og_type = 'article'): string
+function head_html(string $prefix, string $title, string $desc, string $canonical, string $keywords = '', ?array $jsonld = null, string $og_type = 'article', string $robots = ''): string
 {
     $s = site();
+    $rb = $robots !== '' ? '<meta name="robots" content="' . $robots . '">' . "\n" : '';
     $fonts = '<link rel="preconnect" href="https://fonts.googleapis.com">' . "\n"
         . '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' . "\n"
         . '<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,500&family=Shippori+Mincho:wght@600;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">';
@@ -178,7 +189,7 @@ function head_html(string $prefix, string $title, string $desc, string $canonica
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{$title}</title>
 <meta name="description" content="{$desc}">
-{$kw}<link rel="canonical" href="{$canonical}">
+{$rb}{$kw}<link rel="canonical" href="{$canonical}">
 <meta property="og:type" content="{$og_type}">
 <meta property="og:site_name" content="aruku（アルク）">
 <meta property="og:title" content="{$title}">
@@ -583,17 +594,18 @@ function render_top(): string
 
     $head = head_html($prefix, $title, $desc, $url, '歩く,ウォーキング,ポイ活,カロリー,健康', $jsonld, 'website');
     $footer = footer_html($prefix);
+    $top = cms_load()['top'];
 
     $body = <<<HTML
 <header class="hero">
   <div class="hero-inner">
     <div>
-      <span class="hero-badge hero-anim hero-anim-1">歩くことの総合メディア</span>
-      <h1 class="hero-anim hero-anim-2">歩くことを、<br><span class="accent">もっと楽しく</span>健康に。</h1>
-      <p class="hero-lead hero-anim hero-anim-3">ウォーキングの効果から正しい歩き方、歩数別の消費カロリー、歩いてポイ活、ウォーキングマシンまで。「歩く」のすべてを、わかりやすいコラムでお届けします。</p>
+      <span class="hero-badge hero-anim hero-anim-1">{$top['hero_badge']}</span>
+      <h1 class="hero-anim hero-anim-2">{$top['hero_title_1']}<br><span class="accent">{$top['hero_accent']}</span>{$top['hero_title_2']}</h1>
+      <p class="hero-lead hero-anim hero-anim-3">{$top['hero_lead']}</p>
       <div class="hero-actions hero-anim hero-anim-4">
-        <a href="column/index.html" class="lp-btn lp-btn-primary">コラムを読む →</a>
-        <a href="column/calorie-table.html" class="lp-btn lp-btn-secondary">歩数別カロリー表</a>
+        <a href="column/index.html" class="lp-btn lp-btn-primary">{$top['hero_btn1']}</a>
+        <a href="column/calorie-table.html" class="lp-btn lp-btn-secondary">{$top['hero_btn2']}</a>
       </div>
     </div>
     <div class="hero-art hero-art-anim">
@@ -649,9 +661,9 @@ function render_top(): string
 <section class="section">
   <div class="section-inner">
     <div class="section-head reveal">
-      <span class="section-eyebrow">Five Themes</span>
-      <h2>歩くことを、5つの視点で深掘り</h2>
-      <p>知りたいテーマから、専門コラムへ。</p>
+      <span class="section-eyebrow">{$top['pillars_eyebrow']}</span>
+      <h2>{$top['pillars_title']}</h2>
+      <p>{$top['pillars_sub']}</p>
     </div>
     <div class="pillar-grid reveal-stagger">{$pillars}</div>
   </div>
@@ -660,9 +672,9 @@ function render_top(): string
 <section class="section section-soft">
   <div class="section-inner">
     <div class="section-head reveal">
-      <span class="section-eyebrow">Pick Up</span>
-      <h2>注目のコラム</h2>
-      <p>まず読んでほしい、各テーマの基本ガイド。</p>
+      <span class="section-eyebrow">{$top['pickup_eyebrow']}</span>
+      <h2>{$top['pickup_title']}</h2>
+      <p>{$top['pickup_sub']}</p>
     </div>
     <div class="post-grid reveal-stagger">{$fcards}</div>
     <div class="text-center mt-32 reveal"><a href="column/index.html" class="lp-btn lp-btn-secondary">すべての記事を見る →</a></div>
@@ -671,11 +683,67 @@ function render_top(): string
 
 <section class="cta-band">
   <div class="reveal">
-    <h2>今日から、1日あと2,000歩。</h2>
-    <p>小さな一歩の積み重ねが、心と体を変えていきます。まずは歩数とカロリーの関係から。</p>
-    <a href="column/calorie-table.html" class="lp-btn lp-btn-primary">歩数別カロリー表を見る →</a>
+    <h2>{$top['cta_title']}</h2>
+    <p>{$top['cta_sub']}</p>
+    <a href="column/calorie-table.html" class="lp-btn lp-btn-primary">{$top['cta_btn']}</a>
   </div>
 </section>
+
+{$footer}
+<script src="assets/app.js?v=20260527" defer></script>
+</body>
+</html>
+HTML;
+    return $head . $body;
+}
+
+// ============================================================
+// 固定ページ（運営者情報 / プライバシーポリシー）
+//   data/content.json の pages.<key> から描画。about には管理者ログイン導線。
+// ============================================================
+function render_page(string $key): ?string
+{
+    $content = cms_load();
+    $page = $content['pages'][$key] ?? null;
+    if (!$page) {
+        return null;
+    }
+    $s = site();
+    $prefix  = '';
+    $url     = $s['url'] . '/' . $key . '.html';
+    $title_pg = $page['title'] ?? '';
+    $title   = $title_pg . '｜aruku（アルク）';
+    $desc    = $page['desc'] ?? $s['description'];
+    $robots  = !empty($page['noindex']) ? 'noindex, follow' : '';
+
+    $sections = '';
+    foreach (($page['sections'] ?? []) as $sec) {
+        $sections .= '<section class="column-section"><h2>' . ($sec['h2'] ?? '') . '</h2>'
+            . ($sec['body'] ?? '') . '</section>';
+    }
+
+    // 運営者ページには管理者ログイン導線を常設
+    $admin_cta = '';
+    if ($key === 'about') {
+        $admin_cta = '<section class="column-section column-conclusion">'
+            . '<h2>サイト管理</h2>'
+            . '<p>運営者向けの入口です。記事・カテゴリ・各ページ・トップの文言は管理画面から編集できます。</p>'
+            . '<div class="column-cta"><a href="admin/" class="lp-btn lp-btn-primary">🔒 管理者ログイン</a></div>'
+            . '</section>';
+    }
+
+    $head = head_html($prefix, $title, $desc, $url, '', null, 'website', $robots);
+    $footer = footer_html($prefix);
+
+    $body = <<<HTML
+<article class="column-article">
+  <nav class="column-breadcrumb" aria-label="パンくず">
+    <a href="index.html">トップ</a> ／ <span>{$title_pg}</span>
+  </nav>
+  <h1>{$title_pg}</h1>
+  {$sections}
+  {$admin_cta}
+</article>
 
 {$footer}
 <script src="assets/app.js?v=20260527" defer></script>

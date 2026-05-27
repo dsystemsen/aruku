@@ -29,15 +29,18 @@ jobs:
           target: ${{ secrets.XSERVER_TARGET }}      # 例: /home/xs186588/dsystemsen.com/public_html/aruku.dsystemsen.com
           overwrite: true
           # 本番に必要なファイルだけを送る（articles.py / build.py / README / .git は送らない）
+          # ※ data/ は本番がデータ所有者のため絶対に送らない（CMS編集が消える）。
           source: |
             index.php
             render.php
+            cms.php
             articles.php
             sitemap.php
             robots.txt
             .htaccess
-            about.html
-            privacy.html
+            about.php
+            privacy.php
             404.html
             column
             assets
+            admin

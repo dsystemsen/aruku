@@ -20,8 +20,18 @@ DirectoryIndex index.php index.html
     RewriteCond %{HTTP:X-Forwarded-Proto} !=https
     RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [R=301,L]
 
+    # データ／管理内部ファイルへの直接アクセスを遮断
+    RewriteRule ^data/ - [F]
+    RewriteRule ^admin/inc/ - [F]
+
     # トップ /index.html → index.php
     RewriteRule ^index\.html$ index.php [L]
+
+    # 運営者 /about.html → about.php（動的描画）
+    RewriteRule ^about\.html$ about.php [L]
+
+    # プライバシー /privacy.html → privacy.php（動的描画）
+    RewriteRule ^privacy\.html$ privacy.php [L]
 
     # サイトマップ /sitemap.xml → sitemap.php
     RewriteRule ^sitemap\.xml$ sitemap.php [L]
@@ -37,7 +47,7 @@ DirectoryIndex index.php index.html
 ErrorDocument 404 /404.html
 
 # ---- データ／内部ファイルへの直接アクセスを禁止 ----
-<FilesMatch "^(render\.php|articles\.php|articles\.py|build\.py|_.*)$">
+<FilesMatch "^(render\.php|cms\.php|articles\.php|articles\.py|build\.py|_.*)$">
     Require all denied
 </FilesMatch>
 

@@ -9,3 +9,8 @@ desktop.ini
 
 # Claude Code のローカル個人設定（共有しない）
 .claude/settings.local.json
+
+# CMS のコンテンツ実体（サーバ側がデータ所有者。git/デプロイで上書きしない）
+# ※ articles.php が初回シードの元データ。data/content.json は本番で生成・編集される。
+data/
+
