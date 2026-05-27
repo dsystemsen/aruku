@@ -162,6 +162,12 @@ HTML;
 function head_html(string $prefix, string $title, string $desc, string $canonical, string $keywords = '', ?array $jsonld = null, string $og_type = 'article', string $robots = ''): string
 {
     $s = site();
+    // 動的HTMLは常に最新を返す（CMS編集・コンテンツ更新を即時反映）。
+    // サーバ既定の max-age=600 を上書き。アセット(CSS/JS/画像)のキャッシュは別途維持。
+    if (!headers_sent()) {
+        header('Cache-Control: no-cache, must-revalidate, max-age=0');
+        header('Expires: 0');
+    }
     $rb = $robots !== '' ? '<meta name="robots" content="' . $robots . '">' . "\n" : '';
     $fonts = '<link rel="preconnect" href="https://fonts.googleapis.com">' . "\n"
         . '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' . "\n"
