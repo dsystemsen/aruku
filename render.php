@@ -167,8 +167,8 @@ function head_html(string $prefix, string $title, string $desc, string $canonica
         . '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' . "\n"
         . '<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,500&family=Shippori+Mincho:wght@600;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">';
     $css = $fonts . "\n"
-        . '<link rel="stylesheet" href="' . $prefix . 'assets/style.css?v=20260527">' . "\n"
-        . '<link rel="stylesheet" href="' . $prefix . 'assets/column.css?v=20260527">' . "\n"
+        . '<link rel="stylesheet" href="' . $prefix . 'assets/style.css?v=20260528">' . "\n"
+        . '<link rel="stylesheet" href="' . $prefix . 'assets/column.css?v=20260528">' . "\n"
         . '<noscript><style>.reveal,.reveal-stagger>*,.hero-anim,.hero-art-anim{opacity:1!important;transform:none!important;animation:none!important}</style></noscript>';
     $kw = $keywords !== '' ? '<meta name="keywords" content="' . $keywords . '">' . "\n" : '';
     $ld = '';
@@ -198,7 +198,7 @@ function head_html(string $prefix, string $title, string $desc, string $canonica
 <meta property="og:image" content="{$ogp}">
 <meta property="og:locale" content="ja_JP">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="icon" type="image/svg+xml" href="{$prefix}assets/logo.svg?v=20260527">
+<link rel="icon" type="image/svg+xml" href="{$prefix}assets/logo.svg?v=20260528">
 {$css}
 {$ld}</head>
 <body>
@@ -448,7 +448,7 @@ function render_article(string $slug): ?string
 </article>
 
 {$footer}
-<script src="../assets/app.js?v=20260527" defer></script>
+<script src="../assets/app.js?v=20260528" defer></script>
 </body>
 </html>
 HTML;
@@ -533,7 +533,7 @@ function render_column_index(): string
 </div>
 
 {$footer}
-<script src="../assets/app.js?v=20260527" defer></script>
+<script src="../assets/app.js?v=20260528" defer></script>
 </body>
 </html>
 HTML;
@@ -595,6 +595,32 @@ function render_top(): string
     $head = head_html($prefix, $title, $desc, $url, '歩く,ウォーキング,ポイ活,カロリー,健康', $jsonld, 'website');
     $footer = footer_html($prefix);
     $top = cms_load()['top'];
+
+    // トップに差し込む「歩数別カロリー早見表」
+    // calorie-table 記事の最初のセクション（表）を流用＝CMS編集に自動追従。
+    $calorie_section = '';
+    $ct = $d['by_slug']['calorie-table'] ?? null;
+    if ($ct && !empty($ct['sections'][0]['body'])) {
+        $ctable = $ct['sections'][0]['body'];
+        $calorie_section = <<<HTML
+<section class="section calorie-feature">
+  <div class="section-inner">
+    <div class="section-head reveal">
+      <span class="section-eyebrow">Calorie Guide</span>
+      <h2>歩数別・消費カロリー早見表</h2>
+      <p>「何歩で何kcal？」がひと目でわかる。自分の体重に近い列をチェック。</p>
+    </div>
+    <div class="calorie-panel reveal">
+      <div class="calorie-panel-top">
+        <p class="calorie-formula">消費kcal <b>≒</b> 歩数 <b>×</b> 体重<small>kg</small> <b>×</b> 0.0005</p>
+        <a href="column/calorie-table.html" class="lp-btn lp-btn-primary">詳しい解説・計算式 →</a>
+      </div>
+      {$ctable}
+    </div>
+  </div>
+</section>
+HTML;
+    }
 
     $body = <<<HTML
 <header class="hero">
@@ -681,6 +707,8 @@ function render_top(): string
   </div>
 </section>
 
+{$calorie_section}
+
 <section class="cta-band">
   <div class="reveal">
     <h2>{$top['cta_title']}</h2>
@@ -690,7 +718,7 @@ function render_top(): string
 </section>
 
 {$footer}
-<script src="assets/app.js?v=20260527" defer></script>
+<script src="assets/app.js?v=20260528" defer></script>
 </body>
 </html>
 HTML;
@@ -746,7 +774,7 @@ function render_page(string $key): ?string
 </article>
 
 {$footer}
-<script src="assets/app.js?v=20260527" defer></script>
+<script src="assets/app.js?v=20260528" defer></script>
 </body>
 </html>
 HTML;

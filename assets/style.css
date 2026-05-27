@@ -416,6 +416,54 @@ img, svg { max-width: 100%; }
   gap: 26px;
 }
 
+/* ===== 歩数別カロリー早見表（トップ差し込み） ===== */
+.calorie-feature {
+  background:
+    radial-gradient(60% 60% at 12% 0%, rgba(210,97,46,.08), transparent 60%),
+    linear-gradient(180deg, #f7ecdd, var(--paper) 70%);
+  border-top: 1px solid var(--line);
+}
+.calorie-panel {
+  position: relative;
+  background: var(--paper-3);
+  border: 1px solid var(--line);
+  border-top: 3px solid var(--clay-500);
+  border-radius: var(--radius-lg);
+  padding: 26px 28px 30px;
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+}
+.calorie-panel-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px 24px;
+  padding-bottom: 20px;
+  margin-bottom: 22px;
+  border-bottom: 1px dashed var(--line-2);
+}
+.calorie-formula {
+  font-family: var(--font-serif);
+  font-weight: 700;
+  font-size: clamp(1.05rem, 2.6vw, 1.45rem);
+  color: var(--ink);
+  margin: 0;
+  letter-spacing: -.01em;
+}
+.calorie-formula b { color: var(--clay-600); margin: 0 .18em; font-weight: 700; }
+.calorie-formula small { font-size: .62em; color: var(--muted); font-family: var(--font-sans); }
+.calorie-panel-top .lp-btn { white-space: nowrap; }
+/* 早見表の見た目をパネルになじませる（共通 .column-table を上書き） */
+.calorie-panel .column-table-wrap { margin: 0; }
+.calorie-panel .column-table { font-size: .9rem; }
+.calorie-panel .column-table caption { color: var(--muted); }
+@media (max-width: 600px) {
+  .calorie-panel { padding: 20px 16px 22px; }
+  .calorie-panel-top { gap: 14px; }
+  .calorie-panel-top .lp-btn { width: 100%; }
+}
+
 /* ===== CTA帯 ===== */
 .cta-band {
   position: relative;
