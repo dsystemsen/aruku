@@ -153,6 +153,7 @@ function footer_html(string $prefix): string
       <a href="{$prefix}index.html">トップ</a>
       <a href="{$prefix}about.html">運営者情報</a>
       <a href="{$prefix}privacy.html">プライバシーポリシー</a>
+      <a href="{$prefix}editorial-policy.html">編集・監修ポリシー</a>
       <a href="{$s['org_url']}" target="_blank" rel="noopener">🏢 運営会社</a>
       <a href="{$s['x_url']}" target="_blank" rel="noopener">公式𝕏</a>
     </nav>
@@ -172,7 +173,7 @@ function breadcrumb_nav(string $prefix, string $label, bool $wrap = false): stri
 /**
  * @param array|null $jsonld  JSON-LD ブロックの配列（各要素が1つの構造化データ）
  */
-function head_html(string $prefix, string $title, string $desc, string $canonical, string $keywords = '', ?array $jsonld = null, string $og_type = 'article', string $robots = '', string $ogImage = ''): string
+function head_html(string $prefix, string $title, string $desc, string $canonical, string $keywords = '', ?array $jsonld = null, string $og_type = 'article', string $robots = '', string $ogImage = '', string $headExtra = ''): string
 {
     $s = site();
     // 動的HTMLは常に最新を返す（CMS編集・コンテンツ更新を即時反映）。
@@ -220,7 +221,7 @@ function head_html(string $prefix, string $title, string $desc, string $canonica
 <meta name="twitter:description" content="{$desc}">
 <meta name="twitter:image" content="{$ogp}">
 <meta name="theme-color" content="#29b183">
-<link rel="icon" type="image/svg+xml" href="{$prefix}assets/logo.svg?v=20260604">
+{$headExtra}<link rel="icon" type="image/svg+xml" href="{$prefix}assets/logo.svg?v=20260604">
 {$css}
 {$ld}</head>
 <body>
@@ -875,6 +876,62 @@ HTML;
 }
 
 // ============================================================
+// 編集・監修ポリシー（YMYL対応）/editorial-policy.html
+// ============================================================
+function render_editorial_policy(): string
+{
+    $s = site();
+    $prefix = '';
+    $url = $s['url'] . '/editorial-policy.html';
+    $title = '編集・監修ポリシー｜あるく';
+    $desc = '歩くことの総合メディア「あるく」の編集方針・情報の根拠・健康情報の取り扱い（免責）・更新方針について。';
+    $jsonld = [[
+        '@context' => 'https://schema.org',
+        '@type'    => 'BreadcrumbList',
+        'itemListElement' => [
+            ['@type' => 'ListItem', 'position' => 1, 'name' => 'トップ', 'item' => $s['url'] . '/'],
+            ['@type' => 'ListItem', 'position' => 2, 'name' => '編集・監修ポリシー', 'item' => $url],
+        ],
+    ]];
+    $head = head_html($prefix, $title, $desc, $url, '', $jsonld, 'website', 'index, follow');
+    $footer = footer_html($prefix);
+    $crumb = breadcrumb_nav($prefix, '編集・監修ポリシー', true);
+    $org = h($s['org']);
+    $orgUrl = h($s['org_url']);
+    $body = <<<HTML
+{$crumb}
+<section class="about-section reveal">
+  <div class="about-inner column-article">
+    <h1 class="about-title">編集・監修ポリシー</h1>
+    <p class="about-lead">「あるく」は、歩くことに関する情報を、できるだけ分かりやすく・誠実にお届けするための編集方針を定めています。</p>
+
+    <h2>運営と編集体制</h2>
+    <p>本メディアは <a href="{$orgUrl}" target="_blank" rel="noopener">{$org}</a> が運営しています。記事は編集部および会員のみなさんが執筆し、公開前に内容を確認しています。表現が不適切な投稿は、キーワード判定および自動モデレーションにより公開前に保留する体制をとっています。</p>
+
+    <h2>情報の根拠について</h2>
+    <p>健康・運動・カロリーに関する記述は、一般に広く知られている知見や、公的機関が公開している情報（例：厚生労働省「e-ヘルスネット」、スポーツ庁の啓発資料など）を参考に、編集部が分かりやすく整理したものです。消費カロリーは「消費kcal ≒ 歩数 × 体重kg × 0.0005」などの簡易式による<strong>目安</strong>であり、体質・歩き方・環境により前後します。</p>
+
+    <h2>健康情報の取り扱い（重要）</h2>
+    <p>本サイトの情報は<strong>一般的な健康情報の提供を目的としたものであり、医療上の診断・治療・助言に代わるものではありません</strong>。持病のある方、体調に不安のある方、妊娠中の方などは、運動の開始・変更にあたって必ず医師等の専門家にご相談ください。本サイトの情報の利用によって生じたいかなる結果についても、運営者は責任を負いかねます。</p>
+
+    <h2>更新と訂正</h2>
+    <p>各コラムには公開日・最終更新日を表示しています。内容に誤りや古くなった情報を見つけた場合は、できる限り速やかに訂正・更新します。ご指摘は運営会社のお問い合わせ窓口までお寄せください。</p>
+
+    <h2>お問い合わせ</h2>
+    <p>ご意見・訂正のご依頼は <a href="{$orgUrl}" target="_blank" rel="noopener">運営会社のお問い合わせ窓口</a> までお願いいたします。退会（解約）はログイン後のマイページ下部の「解約手続き」から行えます。</p>
+
+    <div class="about-actions"><a class="lp-btn lp-btn-secondary" href="faq.html">よくある質問→</a><a class="lp-btn lp-btn-primary" href="index.html">トップへ戻る</a></div>
+  </div>
+</section>
+{$footer}
+<script src="{$prefix}assets/app.js?v=20260604" defer></script>
+</body>
+</html>
+HTML;
+    return $head . $body;
+}
+
+// ============================================================
 // コラム内検索 /search.html?q=...
 // ============================================================
 function render_search_page(string $q): string
@@ -1310,6 +1367,7 @@ function render_sitemap(): string
         [$s['url'] . '/', $today, '1.0'],
         [$s['url'] . '/about-aruku.html', $today, '0.6'],
         [$s['url'] . '/faq.html', $today, '0.5'],
+        [$s['url'] . '/editorial-policy.html', $today, '0.4'],
         [$s['url'] . '/about.html', $today, '0.4'],
         [$s['url'] . '/privacy.html', $today, '0.3'],
     ];

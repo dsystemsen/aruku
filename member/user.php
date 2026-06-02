@@ -12,7 +12,7 @@ $mem = $id > 0 ? member_public($id) : null;
 if (!$mem) {
     http_response_code(404);
     $body = '<div class="post-article"><h1>ユーザーが見つかりません</h1>'
-        . '<p><a href="../column/index.html" class="lp-btn lp-btn-secondary">コラム一覧へ</a></p></div>';
+        . '<p><a href="../" class="lp-btn lp-btn-secondary">トップへ戻る</a></p></div>';
     member_render_page($prefix, 'ユーザーが見つかりません', $body);
     exit;
 }
@@ -52,4 +52,36 @@ $body = <<<HTML
 {$feed}
 HTML;
 
-member_render_page($prefix, $nick . ' さんのプロフィール', $body);
+$pubUrl = site()['url'] . '/u/' . $id;
+$jsonld = [
+    [
+        '@context'   => 'https://schema.org',
+        '@type'      => 'ProfilePage',
+        'name'       => $mem['nickname'] . ' さんのプロフィール',
+        'url'        => $pubUrl,
+        'inLanguage' => 'ja',
+        'isPartOf'   => ['@type' => 'WebSite', 'name' => 'あるく', 'url' => site()['url'] . '/'],
+        'mainEntity' => [
+            '@type'       => 'Person',
+            'name'        => $mem['nickname'],
+            'url'         => $pubUrl,
+            'description' => $mem['nickname'] . 'さんは、歩くことの総合メディア「あるく」のコラム投稿者です。',
+            'memberOf'    => ['@type' => 'Organization', 'name' => 'あるく', 'url' => site()['url'] . '/'],
+        ],
+    ],
+    [
+        '@context' => 'https://schema.org',
+        '@type'    => 'BreadcrumbList',
+        'itemListElement' => [
+            ['@type' => 'ListItem', 'position' => 1, 'name' => 'トップ', 'item' => site()['url'] . '/'],
+            ['@type' => 'ListItem', 'position' => 2, 'name' => $mem['nickname'] . ' さん', 'item' => $pubUrl],
+        ],
+    ],
+];
+member_render_page($prefix, $nick . ' さんのプロフィール', $body, [
+    'desc'      => $nick . ' さんのプロフィールと投稿コラム（' . $count . '本）。歩くことの総合メディア「あるく」。',
+    'robots'    => 'index, follow',
+    'ogType'    => 'profile',
+    'canonical' => $pubUrl,
+    'jsonld'    => $jsonld,
+]);

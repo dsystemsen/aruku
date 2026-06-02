@@ -50,15 +50,22 @@ $nick   = h($post['nickname']);
 $title  = h($post['title']);
 $bodyHtml = post_body_html($post['body'], $prefix);
 $files = post_all_image_files($post);
+// 画像の実寸を width/height に出力（CLS対策）
+$imgDim = static function (string $file): string {
+    $p = dirname(__DIR__) . '/uploads/' . $file;
+    $d = @getimagesize($p);
+    return ($d && (int) $d[0] > 0) ? ' width="' . (int) $d[0] . '" height="' . (int) $d[1] . '"' : '';
+};
 $cover = '';
 $gallery = '';
 if ($files) {
-    $cover = '<div class="post-cover"><img src="' . $prefix . 'uploads/' . h($files[0]) . '" alt="' . $title . '"></div>';
+    // カバーはLCP候補のため lazy にせず fetchpriority=high
+    $cover = '<div class="post-cover"><img src="' . $prefix . 'uploads/' . h($files[0]) . '" alt="' . $title . '"' . $imgDim($files[0]) . ' fetchpriority="high" decoding="async"></div>';
     $rest = array_slice($files, 1);
     if ($rest) {
         $g = '';
         foreach ($rest as $f) {
-            $g .= '<img src="' . $prefix . 'uploads/' . h($f) . '" alt="' . $title . 'の画像" loading="lazy">';
+            $g .= '<img src="' . $prefix . 'uploads/' . h($f) . '" alt="' . $title . 'の画像"' . $imgDim($f) . ' loading="lazy" decoding="async">';
         }
         $gallery = '<div class="post-gallery">' . $g . '</div>';
     }
@@ -166,6 +173,8 @@ $cForm = $me
 $crumb = '<nav class="post-breadcrumb"><a href="' . $prefix . '">トップ</a>'
     . ($catName !== '' ? ' ／ <a href="' . h($catRel) . '">' . h($catName) . '</a>' : '')
     . '</nav>';
+$modDate = substr((string) ($post['updated_at'] ?? ''), 0, 10);
+$reviewed = ($modDate !== '' && $modDate !== $date) ? '<span class="post-updated">最終更新 ' . h(str_replace('-', '/', $modDate)) . '</span>' : '';
 
 $body = <<<HTML
 <article class="post-article">
@@ -175,7 +184,7 @@ $body = <<<HTML
   <h1 class="post-title">{$title}</h1>
   <div class="post-byline">
     <a class="post-avatar" href="{$authorLink}">{$avatar}</a>
-    <span class="post-byline-text"><a class="post-author" href="{$authorLink}">{$nick}</a><span class="post-date">{$date}</span></span>
+    <span class="post-byline-text"><a class="post-author" href="{$authorLink}">{$nick}</a><span class="post-date">{$date}</span>{$reviewed}</span>
     <span class="post-badge">会員投稿</span>
   </div>
   {$cover}
@@ -187,6 +196,7 @@ $body = <<<HTML
   {$shareUi}
   {$reportUi}
   {$relatedHtml}
+  <aside class="post-disclaimer">本記事は一般的な健康情報の提供を目的としたもので、医療上の診断・治療・助言に代わるものではありません。持病や体調に不安のある方は、運動を始める前に医師等の専門家にご相談ください。詳しくは<a href="{$prefix}editorial-policy.html">編集・監修ポリシー</a>をご覧ください。</aside>
   <section class="comments" id="comments">
     <h2 class="comments-title">コメント（{$cCount}）</h2>
     <div class="cmt-list">{$cList}</div>
@@ -197,6 +207,14 @@ HTML;
 
 $pubIso = date('c', strtotime((string) ($post['published_at'] ?: $post['created_at'])) ?: time());
 $modIso = date('c', strtotime((string) ($post['updated_at'] ?: ($post['published_at'] ?: $post['created_at']))) ?: time());
+// article:* OGタグ
+$artMeta = '<meta property="article:published_time" content="' . $pubIso . '">' . "\n"
+    . '<meta property="article:modified_time" content="' . $modIso . '">' . "\n"
+    . '<meta property="article:author" content="' . $siteUrl . '/u/' . (int) $post['member_id'] . '">' . "\n"
+    . ($catName !== '' ? '<meta property="article:section" content="' . h($catName) . '">' . "\n" : '');
+foreach (post_tags($id) as $tg) {
+    $artMeta .= '<meta property="article:tag" content="' . h($tg) . '">' . "\n";
+}
 $metaDesc = trim((string) ($post['seo_desc'] ?? '')) !== '' ? (string) $post['seo_desc'] : post_excerpt($post['body'], 110);
 $crumbLd = [['@type' => 'ListItem', 'position' => 1, 'name' => 'トップ', 'item' => $siteUrl . '/']];
 $pos = 2;
@@ -244,4 +262,5 @@ member_render_page($prefix, $post['title'], $body, [
     'canonical' => $postUrl,
     'ogImage'   => $ogImage,
     'jsonld'    => $jsonld,
+    'headExtra' => $artMeta,
 ]);
