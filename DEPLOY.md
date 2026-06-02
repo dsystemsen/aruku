@@ -109,3 +109,37 @@ git push        # → 自動で本番反映
 | `passphrase` 関連で失敗 | 鍵がパスフレーズ付きなら `XSERVER_SSH_PASSPHRASE` を登録（無し鍵なら空に）|
 | アップロードは成功するがページが404/表示崩れ | `XSERVER_TARGET` のパス違い。手順2で実パスを再確認 |
 | 反映が遅い | ブラウザ/サーバキャッシュ。ハードリフレッシュ（Ctrl+F5）|
+
+---
+
+## 会員機能（マイページ・記録・会員投稿）の本番反映 — MySQL
+
+会員機能は **本番=MySQL / ローカル=SQLite** を自動切替します（`inc/db.php`）。
+`inc/db_config.php` が存在すれば MySQL、無ければ SQLite を使用します。
+
+### 1. XserverでMySQLデータベースを作成
+サーバーパネル →「MySQL設定」で、データベース・ユーザーを作成し、ユーザーをDBに追加。
+- DB名 / ユーザー名 / パスワード / **MySQLホスト名**（例 `mysqlXXXX.xserver.jp`）を控える。
+- 文字コードは utf8mb4 を推奨。
+
+### 2. inc/db_config.php をサーバに設置（秘密情報・gitに入れない）
+`inc/db_config.sample.php` をコピーして `inc/db_config.php` を作り、上記の情報を記入してサーバの `inc/` にアップロード。
+テーブル（members / activity_logs / posts）は**初回アクセス時に自動作成**されます（`aruku_db_init()`）。
+
+### 3. デプロイ対象に新規ファイルを追加
+手動 scp の場合、従来一式に加えて次を**必ず**アップロード：
+- `inc/`（`db.php` / `member.php` / `posts.php`。※`db_config.php`は別途サーバ設置、`db_config.sample.php`は任意）
+- `member/`（`register.php` / `login.php` / `logout.php` / `mypage.php` / `post.php`）
+- `posts/`（`view.php`）
+- `admin/posts.php`（会員投稿の承認画面）
+- `uploads/`（`.htaccess` を含む。**書き込み権限が必要**＝ディレクトリを 755、Webサーバが書ける状態に）
+- 更新済み：`render.php` / `.htaccess`（/posts/123 のリライト追加）/ `assets/style.css` / `assets/column.css`
+
+**送らない**：`data/`（ローカルSQLite `aruku.sqlite` 含む）/ `inc/db_config.php` は手動で安全に設置 / `dev-router.php`（ローカル専用）/ `uploads/` 内のローカル画像（実体はユーザー投稿）。
+
+会員投稿は **きれいなURL `/posts/123`**（`.htaccess` のリライト）。画像は `uploads/` に検証のうえ保存（JPEG/PNG/WebP/GIF・4MBまで・スクリプト実行は `.htaccess` で禁止）。スパム対策：ハニーポット＋レート制限（`data/.ratelimit.json`）＋承認待ち上限。
+
+### 4. 確認
+- `/member/register.php` で会員登録 → `/member/mypage.php` で記録 → 総消費カロリー表示。
+- 会員が `/member/post.php` で投稿 → `/admin/posts.php`（管理ログイン）で承認 → `/column/` の「みんなのコラム」に表示。
+- セッションCookieのため **HTTPS必須**（`.htaccess` でHTTPS強制済み）。

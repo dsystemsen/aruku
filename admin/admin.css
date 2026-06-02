@@ -2,12 +2,12 @@
    aruku CMS — 管理画面スタイル
    ========================================================== */
 :root {
-  --paper: #f6f2e6; --card: #fffdf7; --ink: #16241b; --ink-2: #3a473d;
-  --muted: #6c7368; --line: #ddd4ba; --line-2: #cabf9f;
-  --forest: #1b5e3f; --forest-700: #1b5e3f; --forest-800: #103620; --forest-100: #d8e8dc;
-  --clay: #c2541f; --clay-600: #c2541f; --danger: #b23b3b;
-  --radius: 8px;
-  --font: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN", "Noto Sans JP", Meiryo, sans-serif;
+  --paper: #f5faf8; --card: #ffffff; --ink: #3a3a3c; --ink-2: #5d6362;
+  --muted: #8a9290; --line: #e4ece9; --line-2: #cdd8d4;
+  --forest: #29b183; --forest-700: #29b183; --forest-800: #0f9f73; --forest-100: #e8f6f2;
+  --clay: #ff6333; --clay-600: #f5562c; --danger: #e0483f;
+  --radius: 12px;
+  --font: Meiryo, "メイリオ", "Hiragino Kaku Gothic ProN", "Yu Gothic", "Noto Sans JP", sans-serif;
 }
 * { box-sizing: border-box; }
 body {

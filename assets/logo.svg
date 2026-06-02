@@ -1,18 +1,37 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="aruku ロゴ">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="あるく ロゴ（歩く人）">
   <defs>
-    <linearGradient id="arukuLogo" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#3fa86b"/>
-      <stop offset="1" stop-color="#1b5e3f"/>
+    <linearGradient id="arukuTile" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#34c191"/>
+      <stop offset="1" stop-color="#1f9e74"/>
     </linearGradient>
+    <radialGradient id="arukuGloss" cx="0.3" cy="0.2" r="0.9">
+      <stop offset="0" stop-color="#ffffff" stop-opacity=".28"/>
+      <stop offset="0.55" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
   </defs>
-  <rect x="2" y="2" width="60" height="60" rx="17" fill="url(#arukuLogo)"/>
-  <!-- 点線の小道 -->
-  <path d="M14 52 Q30 48 34 36" fill="none" stroke="#d2612e" stroke-width="3"
-        stroke-linecap="round" stroke-dasharray="0.5 7"/>
-  <!-- 歩く人 -->
-  <circle cx="38" cy="16" r="5" fill="#fff"/>
-  <path d="M36 22 L31 35 L24 40" stroke="#fff" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-  <path d="M31 35 L37 44 L35 54" stroke="#fff" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-  <path d="M31 35 L24 30 L17 33" stroke="#fff" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-  <path d="M36 24 L44 28" stroke="#fff" stroke-width="4.2" stroke-linecap="round" fill="none"/>
+
+  <!-- アプリアイコン風タイル -->
+  <rect x="2" y="2" width="60" height="60" rx="15" fill="url(#arukuTile)"/>
+  <rect x="2" y="2" width="60" height="60" rx="15" fill="url(#arukuGloss)"/>
+
+  <!-- 歩く人（中央・ダイナミックな歩行ポーズ） -->
+  <g transform="translate(4.5 0)" fill="none" stroke="#fff" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round">
+    <!-- 頭 -->
+    <circle cx="32" cy="9.5" r="5" fill="#fff" stroke="none"/>
+    <!-- 胴（前傾） -->
+    <path d="M31 15 L27.5 27"/>
+    <!-- 前の腕（前へ振る） -->
+    <path d="M29.5 18 L36.5 21.5"/>
+    <!-- 後ろの腕（後ろへ振る） -->
+    <path d="M29.5 18 L23 20"/>
+    <!-- 前の脚（踏み出す） -->
+    <path d="M27.5 27 L33.5 31.5 L35.5 38"/>
+    <!-- 後ろの脚（蹴り出す） -->
+    <path d="M27.5 27 L22 34 L18 38"/>
+  </g>
+
+  <!-- ロゴタイプ（中央・大きめ／タイル内に収める） -->
+  <text x="32" y="57" text-anchor="middle" fill="#fff"
+        font-family="Meiryo, 'メイリオ', sans-serif" font-size="13.5" font-weight="bold"
+        letter-spacing="1">あるく</text>
 </svg>

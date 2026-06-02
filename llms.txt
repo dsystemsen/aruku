@@ -1,0 +1,48 @@
+# あるく（aruku）
+
+> 歩くことの総合メディア。ウォーキングの効果・正しい歩き方・歩数別の消費カロリー・歩いてポイ活までを、わかりやすいコラムと無料の計算ツールで届けます。会員はコラム投稿や健康記録（体重・運動・消費カロリー）も無料で利用できます。
+
+あるくは 株式会社D-SYSTEMS-EN が運営する日本語の健康情報メディアです。消費カロリーの目安は「消費kcal ≒ 歩数 × 体重kg × 0.0005」で算出しています（あくまで目安）。
+
+## 主要ページ
+- [トップ](https://aruku.dsystemsen.com/): 歩数別カロリー早見表・消費カロリー計算ツール・新着コラム
+- [あるくとは？](https://aruku.dsystemsen.com/about-aruku.html): メディアの目的と特徴
+- [よくある質問（FAQ）](https://aruku.dsystemsen.com/faq.html)
+- [運営者情報](https://aruku.dsystemsen.com/about.html)
+
+## コラムのカテゴリ
+- [効果・効能](https://aruku.dsystemsen.com/category/koka.html)
+- [歩数・カロリー](https://aruku.dsystemsen.com/category/calorie.html)
+- [正しい歩き方](https://aruku.dsystemsen.com/category/howto.html)
+- [歩いてポイ活](https://aruku.dsystemsen.com/category/poikatsu.html)
+- [ウォーキングマシン](https://aruku.dsystemsen.com/category/machine.html)
+- [ダイエット・減量](https://aruku.dsystemsen.com/category/diet.html)
+- [シューズ・ギア](https://aruku.dsystemsen.com/category/shoes.html)
+- [ウェア・服装](https://aruku.dsystemsen.com/category/wear.html)
+- [朝活・習慣化](https://aruku.dsystemsen.com/category/morning.html)
+- [コース・名所](https://aruku.dsystemsen.com/category/course.html)
+- [室内・雨の日](https://aruku.dsystemsen.com/category/indoor.html)
+- [健康数値の改善](https://aruku.dsystemsen.com/category/health.html)
+- [メンタル・ストレス](https://aruku.dsystemsen.com/category/mental.html)
+- [シニアの歩行](https://aruku.dsystemsen.com/category/senior.html)
+- [親子・子ども](https://aruku.dsystemsen.com/category/family.html)
+- [体験談・継続のコツ](https://aruku.dsystemsen.com/category/story.html)
+- [アプリ・歩数計](https://aruku.dsystemsen.com/category/app.html)
+- [栄養・食事](https://aruku.dsystemsen.com/category/nutrition.html)
+- [ストレッチ・ケガ予防](https://aruku.dsystemsen.com/category/stretch.html)
+- [季節・天気の歩き方](https://aruku.dsystemsen.com/category/season.html)
+- [その他](https://aruku.dsystemsen.com/category/other.html)
+
+## 注目のコラム
+- [早歩きにしたら、消費カロリーはどれだけ変わる？](https://aruku.dsystemsen.com/posts/101)
+- [ウォーキングを1ヶ月続けた記録](https://aruku.dsystemsen.com/posts/2)
+- [早歩きの人は何が違う？心理・性格・寿命まで速い理由を徹底解説](https://aruku.dsystemsen.com/posts/301)
+- [その他のコラム](https://aruku.dsystemsen.com/posts/300)
+- [春のうららかな陽気を満喫 桜の開花に合わせたお花見ウォークの楽しみ方](https://aruku.dsystemsen.com/posts/288)
+- [日照時間が短い冬を乗り切る 朝の光を浴びながら歩く心のメンテナンス](https://aruku.dsystemsen.com/posts/287)
+- [季節の変わり目に体調を崩さない 寒暖差に合わせた歩く時間の調整法](https://aruku.dsystemsen.com/posts/286)
+- [雪の日でも安全に歩く 凍結した道で転ばないための足元の工夫](https://aruku.dsystemsen.com/posts/285)
+
+## その他
+- [プライバシーポリシー](https://aruku.dsystemsen.com/privacy.html)
+- [サイトマップ（XML）](https://aruku.dsystemsen.com/sitemap.xml)

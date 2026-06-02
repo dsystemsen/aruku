@@ -1,6 +1,6 @@
 <?php
 /**
- * aruku（アルク） 動的レンダラ（PHP版・build.py の移植）
+ * あるく 動的レンダラ（PHP版・build.py の移植）
  * ----------------------------------------------------------------
  * 記事データ（articles.php）を読み込み、各ページのHTMLを生成します。
  *   render_top()          … トップページ（LP）
@@ -117,15 +117,22 @@ function thumb_svg(array $article, string $gid): string
 
 function nav_html(string $prefix): string
 {
+    require_once __DIR__ . '/inc/member.php';
+    member_session_start();
+    $me = member_current();
+    $adminLink = member_is_admin($me)
+        ? '<a href="' . $prefix . 'member/users.php" class="lp-nav-cta lp-nav-admin">運営用</a>' . "\n      "
+        : '';
+    $authAttr = $me ? 'in' : 'out';
     return <<<HTML
-<nav class="lp-nav">
+<nav class="lp-nav" data-auth="{$authAttr}">
   <div class="lp-nav-inner">
-    <a href="{$prefix}index.html" class="lp-brand"><img src="{$prefix}assets/logo.svg" alt="aruku（アルク）ロゴ"><span class="lp-brand-name">aruku</span></a>
+    <a href="{$prefix}index.html" class="lp-brand"><img src="{$prefix}assets/logo.svg?v=20260604" alt="あるくロゴ"><span class="lp-brand-text"><span class="lp-brand-tagline">-歩くことで健康に-</span><span class="lp-brand-name">あるく</span></span></a>
     <div class="lp-nav-links">
-      <a href="{$prefix}column/index.html">コラム</a>
-      <a href="{$prefix}column/calorie-table.html" class="lp-nav-hide-sp">カロリー表</a>
-      <a href="{$prefix}about.html" class="lp-nav-hide-sp">運営者</a>
-      <a href="{$prefix}column/index.html" class="lp-nav-cta">記事を読む</a>
+      {$adminLink}<a href="{$prefix}member/mypage.php" class="lp-nav-cta">マイページ</a>
+      <a href="{$prefix}member/register.php" class="lp-nav-cta">会員登録</a>
+      <a href="{$prefix}member/login.php" class="lp-nav-cta">ログイン</a>
+      <a href="{$prefix}member/logout.php" class="lp-nav-logout">ログアウト</a>
     </div>
   </div>
 </nav>
@@ -139,16 +146,15 @@ function footer_html(string $prefix): string
 <footer class="lp-footer">
   <div class="lp-footer-inner">
     <div>
-      <div class="lp-footer-brand"><img src="{$prefix}assets/logo.svg" alt="aruku ロゴ">aruku</div>
+      <div class="lp-footer-brand"><img src="{$prefix}assets/logo.svg?v=20260604" alt="あるく ロゴ">あるく</div>
       <p class="lp-footer-tagline">{$s['tagline']}</p>
     </div>
     <nav class="lp-footer-links">
       <a href="{$prefix}index.html">トップ</a>
-      <a href="{$prefix}column/index.html">コラム一覧</a>
       <a href="{$prefix}about.html">運営者情報</a>
       <a href="{$prefix}privacy.html">プライバシーポリシー</a>
       <a href="{$s['org_url']}" target="_blank" rel="noopener">🏢 運営会社</a>
-      <a href="{$s['x_url']}" target="_blank" rel="noopener">𝕏 公式X</a>
+      <a href="{$s['x_url']}" target="_blank" rel="noopener">公式𝕏</a>
     </nav>
   </div>
   <div class="lp-footer-copy">&copy; {$s['year']} {$s['org']}. All rights reserved.</div>
@@ -156,10 +162,17 @@ function footer_html(string $prefix): string
 HTML;
 }
 
+/** パンくず（トップ → 現在ページ）。$wrap=true で中央寄せのバーで囲む（フルブリードページ用）。 */
+function breadcrumb_nav(string $prefix, string $label, bool $wrap = false): string
+{
+    $nav = '<nav class="column-breadcrumb" aria-label="パンくず"><a href="' . $prefix . 'index.html">トップ</a> ／ <span>' . $label . '</span></nav>';
+    return $wrap ? '<div class="breadcrumb-bar">' . $nav . '</div>' : $nav;
+}
+
 /**
  * @param array|null $jsonld  JSON-LD ブロックの配列（各要素が1つの構造化データ）
  */
-function head_html(string $prefix, string $title, string $desc, string $canonical, string $keywords = '', ?array $jsonld = null, string $og_type = 'article', string $robots = ''): string
+function head_html(string $prefix, string $title, string $desc, string $canonical, string $keywords = '', ?array $jsonld = null, string $og_type = 'article', string $robots = '', string $ogImage = ''): string
 {
     $s = site();
     // 動的HTMLは常に最新を返す（CMS編集・コンテンツ更新を即時反映）。
@@ -169,14 +182,12 @@ function head_html(string $prefix, string $title, string $desc, string $canonica
         header('Expires: 0');
     }
     $rb = $robots !== '' ? '<meta name="robots" content="' . $robots . '">' . "\n" : '';
-    $fonts = '<link rel="preconnect" href="https://fonts.googleapis.com">' . "\n"
-        . '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' . "\n"
-        . '<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,500&family=Shippori+Mincho:wght@600;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">';
-    $css = $fonts . "\n"
-        . '<link rel="stylesheet" href="' . $prefix . 'assets/style.css?v=20260528">' . "\n"
-        . '<link rel="stylesheet" href="' . $prefix . 'assets/column.css?v=20260528">' . "\n"
+    // フォントはメイリオ（端末ローカル）を使用するため Web フォントの読込は不要。
+    $css = '<link rel="stylesheet" href="' . $prefix . 'assets/style.css?v=20260604">' . "\n"
+        . '<link rel="stylesheet" href="' . $prefix . 'assets/column.css?v=20260604">' . "\n"
         . '<noscript><style>.reveal,.reveal-stagger>*,.hero-anim,.hero-art-anim{opacity:1!important;transform:none!important;animation:none!important}</style></noscript>';
-    $kw = $keywords !== '' ? '<meta name="keywords" content="' . $keywords . '">' . "\n" : '';
+    // meta keywords は Google・各AIともに無視するため出力しない（引数は後方互換で受けるだけ）。
+    $kw = '';
     $ld = '';
     if ($jsonld) {
         foreach ($jsonld as $block) {
@@ -186,7 +197,7 @@ function head_html(string $prefix, string $title, string $desc, string $canonica
         }
     }
     $nav = nav_html($prefix);
-    $ogp = $s['url'] . '/assets/ogp.svg';
+    $ogp = $ogImage !== '' ? $ogImage : $s['url'] . '/assets/ogp.png';
     return <<<HTML
 <!doctype html>
 <html lang="ja">
@@ -197,14 +208,19 @@ function head_html(string $prefix, string $title, string $desc, string $canonica
 <meta name="description" content="{$desc}">
 {$rb}{$kw}<link rel="canonical" href="{$canonical}">
 <meta property="og:type" content="{$og_type}">
-<meta property="og:site_name" content="aruku（アルク）">
+<meta property="og:site_name" content="あるく">
 <meta property="og:title" content="{$title}">
 <meta property="og:description" content="{$desc}">
 <meta property="og:url" content="{$canonical}">
 <meta property="og:image" content="{$ogp}">
+<meta property="og:image:alt" content="あるく — 歩くことの総合メディア">
 <meta property="og:locale" content="ja_JP">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="icon" type="image/svg+xml" href="{$prefix}assets/logo.svg?v=20260528">
+<meta name="twitter:title" content="{$title}">
+<meta name="twitter:description" content="{$desc}">
+<meta name="twitter:image" content="{$ogp}">
+<meta name="theme-color" content="#29b183">
+<link rel="icon" type="image/svg+xml" href="{$prefix}assets/logo.svg?v=20260604">
 {$css}
 {$ld}</head>
 <body>
@@ -365,7 +381,7 @@ function render_article(string $slug): ?string
             '@context'        => 'https://schema.org',
             '@type'           => 'BreadcrumbList',
             'itemListElement' => [
-                ['@type' => 'ListItem', 'position' => 1, 'name' => 'aruku', 'item' => $s['url'] . '/'],
+                ['@type' => 'ListItem', 'position' => 1, 'name' => 'あるく', 'item' => $s['url'] . '/'],
                 ['@type' => 'ListItem', 'position' => 2, 'name' => 'コラム', 'item' => $s['url'] . '/column/'],
                 ['@type' => 'ListItem', 'position' => 3, 'name' => $article['title']],
             ],
@@ -454,7 +470,7 @@ function render_article(string $slug): ?string
 </article>
 
 {$footer}
-<script src="../assets/app.js?v=20260528" defer></script>
+<script src="../assets/app.js?v=20260604" defer></script>
 </body>
 </html>
 HTML;
@@ -465,14 +481,86 @@ HTML;
 // ============================================================
 // コラム一覧ページ
 // ============================================================
+/** 公開投稿の配列を note.com 風カード群のHTMLにする（集計・タグはまとめて取得）。 */
+function aruku_post_cards(array $pp, string $prefix): string
+{
+    if (!$pp) {
+        return '';
+    }
+    require_once __DIR__ . '/inc/posts.php';
+    $pcats = aruku_post_categories();
+    $ids = array_map(static fn($x) => (int) $x['id'], $pp);
+    $likeMap = like_counts_map($ids);
+    $cmtMap  = comment_counts_map($ids);
+    $imgMap  = post_first_images_map($ids);
+    $tagMap  = post_tags_map($ids);
+    $cards = '';
+    foreach ($pp as $p) {
+        $pid = (int) $p['id'];
+        $av = h(post_avatar_char($p['nickname']));
+        $dt = h(substr((string) ($p['published_at'] ?: $p['created_at']), 0, 10));
+        // カード用サムネイルは image 列（専用デザイン）を優先、なければ最初の投稿画像
+        $coverFile = ($p['image'] ?? '') !== '' ? $p['image'] : ($imgMap[$pid] ?? '');
+        $cover = $coverFile
+            ? '<div class="note-card-cover"><img src="' . $prefix . 'uploads/' . h($coverFile) . '" alt="' . h($p['title']) . '" loading="lazy"></div>'
+            : '';
+        $catTag = (!empty($p['category']) && isset($pcats[$p['category']]))
+            ? '<span class="note-cat">' . h($pcats[$p['category']]) . '</span>' : '';
+        $tagHtml = '';
+        foreach (($tagMap[$pid] ?? []) as $tg) {
+            $tagHtml .= '<span class="note-tag">#' . h($tg) . '</span>';
+        }
+        $lk = $likeMap[$pid] ?? 0;
+        $cm = $cmtMap[$pid] ?? 0;
+        $cards .= '<a class="note-card' . ($cover ? ' has-cover' : '') . '" href="' . $prefix . 'posts/' . $pid . '">'
+            . $cover
+            . '<div class="note-card-meta">' . $catTag . $tagHtml . '</div>'
+            . '<h3 class="note-card-title">' . h($p['title']) . '</h3>'
+            . '<p class="note-card-excerpt">' . h(post_excerpt($p['body'])) . '</p>'
+            . '<div class="note-card-foot"><span class="note-avatar">' . $av . '</span>'
+            . '<span class="note-author">' . h($p['nickname']) . '</span>'
+            . '<span class="note-dot">·</span><span class="note-date">' . $dt . '</span>'
+            . '<span class="note-stats">♥ ' . $lk . '　💬 ' . $cm . '</span></div>'
+            . '</a>';
+    }
+    return $cards;
+}
+
+/** カテゴリ左ナビ（note.com 風）。$base はコラム一覧へのリンク先（例 'index.html' / 'column/index.html'）、$active は現在のカテゴリキー。 */
+function aruku_category_nav(string $prefix, string $active): string
+{
+    require_once __DIR__ . '/inc/posts.php';
+    $em = aruku_post_category_emoji();
+    // 各カテゴリは専用の一覧ページ /category/<key>.html へ（「すべて」カテゴリは廃止）
+    $items = '';
+    foreach (aruku_post_categories() as $k => $lbl) {
+        $items .= '<a class="cat-nav-item' . ($active === $k ? ' active' : '') . '" href="' . $prefix . 'category/' . h($k) . '.html">'
+            . ($em[$k] ?? '') . ' ' . h($lbl) . '</a>';
+    }
+    return '<nav class="cat-nav"><div class="cat-nav-head">カテゴリ</div>' . $items . '</nav>';
+}
+
 function render_column_index(): string
 {
     $d = aruku_data();
     $s = site();
     $prefix = '../';
     $url = $s['url'] . '/column/';
-    $title = 'コラム一覧｜aruku（アルク）';
+    $title = 'コラム一覧｜あるく';
     $desc = 'ウォーキングの効果・正しい歩き方・歩数別カロリー・歩いてポイ活・ウォーキングマシン。歩くことに関するすべてのコラムをカテゴリ別にまとめました。';
+
+    // カテゴリ絞り込み（?cat=koka など）。指定時はそのカテゴリのコラムのみ表示。
+    require_once __DIR__ . '/inc/posts.php';
+    $pcatsAll = aruku_post_categories();
+    $filterCat = isset($_GET['cat']) ? preg_replace('/[^a-z0-9_-]/', '', (string) $_GET['cat']) : '';
+    if ($filterCat !== '' && !isset($d['cats'][$filterCat]) && !isset($pcatsAll[$filterCat])) {
+        $filterCat = '';
+    }
+    if ($filterCat !== '') {
+        $catName = $d['cats'][$filterCat]['name'] ?? ($pcatsAll[$filterCat] ?? '');
+        $title = $catName . '｜あるく コラム';
+        $desc  = $d['cats'][$filterCat]['desc'] ?? ('会員が投稿した「' . $catName . '」のコラム。');
+    }
 
     // 全記事インデックス（開閉式）
     $all_links = '';
@@ -482,9 +570,15 @@ function render_column_index(): string
     $toc_index = '<details class="column-toc-index"><summary>全記事インデックス（'
         . count($d['articles']) . '記事）</summary>'
         . '<div class="column-toc-index-list">' . $all_links . '</div></details>';
+    if ($filterCat !== '') {
+        $toc_index = '';
+    }
 
     $sections = '';
     foreach ($d['order'] as $cat_key) {
+        if ($filterCat !== '' && $cat_key !== $filterCat) {
+            continue;
+        }
         $cat = $d['cats'][$cat_key];
         $arts = $d['cat_lists'][$cat_key] ?? [];
         if (!$arts) {
@@ -513,33 +607,399 @@ function render_column_index(): string
     $jsonld = [[
         '@context'    => 'https://schema.org',
         '@type'       => 'CollectionPage',
-        'name'        => 'aruku コラム一覧',
+        'name'        => 'あるく コラム一覧',
         'description' => $desc,
         'url'         => $url,
     ]];
     $head = head_html($prefix, $title, $desc, $url, 'ウォーキング コラム,歩く 健康 記事', $jsonld);
     $footer = footer_html($prefix);
 
+    if ($filterCat !== '') {
+        $cName = $d['cats'][$filterCat]['name'] ?? ($pcatsAll[$filterCat] ?? '');
+        $heroH1 = $cName;
+        $heroP  = ($d['cats'][$filterCat]['desc'] ?? ('「' . $cName . '」のコラム。'))
+            . '<br><a class="column-back-link" href="./index.html">← コラム一覧へ戻る</a>';
+    } else {
+        $heroH1 = 'あるく コラム';
+        $heroP  = '歩くことの効果から、正しい歩き方・カロリー・ポイ活・マシンまで。<br>気になるカテゴリから読み進めてください。';
+    }
+
+    // 会員投稿（公開済み）を note.com 風フィードで先頭に表示（カテゴリ絞り込みにも連動）
+    require_once __DIR__ . '/inc/posts.php';
+    $userFeed = '';
+    $pcats = aruku_post_categories();
+    $sort = (($_GET['sort'] ?? 'new') === 'popular') ? 'popular' : 'new';
+    $perPage = 12;
+    $page = max(1, (int) ($_GET['page'] ?? 1));
+    $catParam = $filterCat !== '' ? $filterCat : null;
+    $pp = posts_published($perPage, $catParam, $sort, ($page - 1) * $perPage);
+    $total = posts_published_count($catParam);
+    $totalPages = max(1, (int) ceil($total / $perPage));
+    $qs = function (array $over) use ($filterCat, $sort, $page) {
+        $p = [];
+        if ($filterCat !== '') {
+            $p['cat'] = $filterCat;
+        }
+        if ($sort !== 'new') {
+            $p['sort'] = $sort;
+        }
+        if ($page > 1) {
+            $p['page'] = $page;
+        }
+        $p = array_merge($p, $over);
+        if (($p['sort'] ?? 'new') === 'new') {
+            unset($p['sort']);
+        }
+        if ((int) ($p['page'] ?? 1) === 1) {
+            unset($p['page']);
+        }
+        return 'index.html' . ($p ? '?' . http_build_query($p) : '');
+    };
+    $userFeed = '';
+    if ($total > 0) {
+        $sortTabs = '<div class="sort-tabs">'
+            . '<a class="sort-tab' . ($sort === 'new' ? ' active' : '') . '" href="' . $qs(['sort' => 'new', 'page' => 1]) . '">新着</a>'
+            . '<a class="sort-tab' . ($sort === 'popular' ? ' active' : '') . '" href="' . $qs(['sort' => 'popular', 'page' => 1]) . '">人気</a></div>';
+        $pager = '';
+        if ($totalPages > 1) {
+            $prev = $page > 1 ? '<a class="pager-link" href="' . $qs(['page' => $page - 1]) . '">← 前</a>' : '<span class="pager-link disabled">← 前</span>';
+            $next = $page < $totalPages ? '<a class="pager-link" href="' . $qs(['page' => $page + 1]) . '">次 →</a>' : '<span class="pager-link disabled">次 →</span>';
+            $pager = '<div class="pager">' . $prev . '<span class="pager-info">' . $page . ' / ' . $totalPages . '</span>' . $next . '</div>';
+        }
+        // カテゴリ絞り込み時はカテゴリ名を見出しに表示
+        $catEmojiMap = aruku_post_category_emoji();
+        if ($filterCat !== '') {
+            $feedEmoji = $catEmojiMap[$filterCat] ?? '📝';
+            $feedName  = $d['cats'][$filterCat]['name'] ?? ($pcatsAll[$filterCat] ?? 'コラム');
+            $feedDesc  = '「' . h($feedName) . '」に関する会員のコラムです。';
+        } else {
+            $feedEmoji = '📝';
+            $feedName  = 'みんなのコラム';
+            $feedDesc  = '会員のみなさんが投稿したコラムです。';
+        }
+        $userFeed = '<section class="column-cat-section reveal" id="minna">'
+            . '<h2 class="column-cat-title"><span class="cat-emoji">' . $feedEmoji . '</span>' . h($feedName) . '</h2>'
+            . '<p class="column-cat-desc">' . $feedDesc
+            . '<a href="' . $prefix . 'member/post.php">あなたも書いてみる →</a></p>'
+            . $sortTabs
+            . '<div class="note-feed">' . aruku_post_cards($pp, $prefix) . '</div>'
+            . $pager . '</section>';
+    }
+
+    // 検索ボックス＋人気タグ
+    $q   = isset($_GET['q']) ? trim((string) $_GET['q']) : '';
+    $tag = isset($_GET['tag']) ? mb_strtolower(trim((string) $_GET['tag'])) : '';
+    $searchBox = '<form class="column-search" method="get" action="index.html" role="search">'
+        . '<input type="search" name="q" value="' . h($q) . '" placeholder="コラムを検索…">'
+        . '<button type="submit">検索</button></form>';
+    $tagCloud = '';
+    $pop = tags_popular(20);
+    if ($pop) {
+        $tc = '';
+        foreach ($pop as $t) {
+            $tc .= '<a href="index.html?tag=' . rawurlencode($t['tag']) . '">#' . h($t['tag']) . '<small>' . (int) $t['c'] . '</small></a>';
+        }
+        $tagCloud = '<div class="tag-cloud"><span class="tag-cloud-label">人気タグ</span>' . $tc . '</div>';
+    }
+
+    // 検索・タグ表示モードでは一覧をその結果に差し替え
+    if ($q !== '') {
+        $res = posts_search($q, 50);
+        $cards = aruku_post_cards($res, $prefix);
+        $userFeed = '<section class="column-cat-section reveal"><h2 class="column-cat-title">「' . h($q) . '」の検索結果（' . count($res) . '）</h2>'
+            . ($cards ? '<div class="note-feed">' . $cards . '</div>' : '<p class="column-cat-desc">該当する投稿が見つかりませんでした。</p>') . '</section>';
+        $toc_index = '';
+        $ranking = '';
+        $sections = '';
+        $heroH1 = 'コラムを検索';
+        $heroP = 'キーワードで会員コラムを探せます。';
+    } elseif ($tag !== '') {
+        $res = posts_by_tag($tag, 50);
+        $cards = aruku_post_cards($res, $prefix);
+        $userFeed = '<section class="column-cat-section reveal"><h2 class="column-cat-title">#' . h($tag) . '（' . count($res) . '）</h2>'
+            . ($cards ? '<div class="note-feed">' . $cards . '</div>' : '<p class="column-cat-desc">このタグの投稿はまだありません。</p>') . '</section>';
+        $toc_index = '';
+        $ranking = '';
+        $sections = '';
+        $heroH1 = '#' . $tag;
+        $heroP = 'タグ「' . $tag . '」のコラム。';
+    }
+
+    // いいね数ランキング（期間別タブ。絞り込み・検索なしのとき）
+    $ranking = '';
+    if ($filterCat === '' && $q === '' && $tag === '') {
+        $rank = (string) ($_GET['rank'] ?? 'all');
+        $daysMap = ['week' => 7, 'month' => 30, 'all' => null];
+        $days = array_key_exists($rank, $daysMap) ? $daysMap[$rank] : null;
+        if (!array_key_exists($rank, $daysMap)) {
+            $rank = 'all';
+        }
+        $top = posts_top_liked(5, $days);
+        $tabs = '';
+        foreach (['all' => '全期間', 'month' => '今月', 'week' => '今週'] as $k => $lbl) {
+            $tabs .= '<a class="rank-tab' . ($rank === $k ? ' active' : '') . '" href="index.html?rank=' . $k . '#ranking">' . $lbl . '</a>';
+        }
+        $items = '';
+        $rk = 0;
+        foreach ($top as $tp) {
+            $rk++;
+            $items .= '<a class="rank-item" href="' . $prefix . 'posts/' . (int) $tp['id'] . '">'
+                . '<span class="rank-num">' . $rk . '</span>'
+                . '<span class="rank-title">' . h($tp['title']) . '</span>'
+                . '<span class="rank-likes">♥ ' . (int) $tp['likes'] . '</span></a>';
+        }
+        $listHtml = $items !== '' ? '<div class="rank-list">' . $items . '</div>' : '<p class="column-cat-desc">この期間でいいねされたコラムはまだありません。</p>';
+        $ranking = '<section class="column-cat-section reveal" id="ranking">'
+            . '<h2 class="column-cat-title"><span class="cat-emoji">🏆</span>人気のコラム</h2>'
+            . '<div class="rank-tabs">' . $tabs . '</div>'
+            . $listHtml . '</section>';
+    }
+
+    $catNav = aruku_category_nav('../', $filterCat);
+    // デフォルトの一覧ページでは冒頭の見出し枠を出さない（絞り込み・検索・タグ時のみ表示）
+    $isDefaultList = ($filterCat === '' && $q === '' && $tag === '');
+    $heroBlock = $isDefaultList ? '' : '<div class="column-list-hero"><h1>' . $heroH1 . '</h1><p>' . $heroP . '</p></div>';
     $body = <<<HTML
-<div class="column-list-hero">
-  <h1>aruku コラム</h1>
-  <p>歩くことの効果から、正しい歩き方・カロリー・ポイ活・マシンまで。<br>気になるカテゴリから読み進めてください。</p>
-</div>
-<div class="column-article">
-  {$toc_index}
-  {$sections}
-  <section class="column-section column-conclusion">
-    <h2>まずはここから</h2>
-    <p>「何歩でどれくらい消費するの？」が気になる方は、まず歩数別カロリー表をチェック。歩くことの全体像は効果・効能ガイドからどうぞ。</p>
-    <div class="column-cta">
-      <a href="./calorie-table.html" class="lp-btn lp-btn-primary">歩数別カロリー表</a>
-      <a href="./walking-effects.html" class="lp-btn lp-btn-secondary">ウォーキングの効果・効能</a>
-    </div>
-  </section>
+{$heroBlock}
+<div class="column-layout">
+  <aside class="column-side">{$catNav}</aside>
+  <div class="column-main column-article">
+    {$searchBox}
+    {$tagCloud}
+    {$toc_index}
+    {$ranking}
+    {$userFeed}
+    {$sections}
+    <section class="column-section column-conclusion">
+      <h2>まずはここから</h2>
+      <p>「何歩でどれくらい消費するの？」が気になる方は、まず歩数別カロリー表をチェック。歩くことの全体像は効果・効能ガイドからどうぞ。</p>
+      <div class="column-cta">
+        <a href="./calorie-table.html" class="lp-btn lp-btn-primary">歩数別カロリー表</a>
+        <a href="./walking-effects.html" class="lp-btn lp-btn-secondary">ウォーキングの効果・効能</a>
+      </div>
+    </section>
+  </div>
 </div>
 
 {$footer}
-<script src="../assets/app.js?v=20260528" defer></script>
+<script src="../assets/app.js?v=20260604" defer></script>
+</body>
+</html>
+HTML;
+    return $head . $body;
+}
+
+// ============================================================
+// カテゴリ別コラム一覧（note風）： /category/<cat>.html
+// 「すべて(index)」ページは廃止＝無効/index/未知カテゴリは404。
+// ============================================================
+function render_category_columns(string $cat): string
+{
+    $s = site();
+    $prefix = '../';
+    require_once __DIR__ . '/inc/posts.php';
+    $pcats = aruku_post_categories();
+    $em = aruku_post_category_emoji();
+    $cat = preg_replace('/[^a-z0-9_-]/', '', (string) $cat);
+    // 「すべて」ページは削除済み。特定カテゴリ以外は404。
+    if ($cat === '' || $cat === 'index' || !isset($pcats[$cat])) {
+        http_response_code(404);
+        return '<!doctype html><html lang="ja"><head><meta charset="utf-8">'
+            . '<meta name="viewport" content="width=device-width, initial-scale=1">'
+            . '<meta name="robots" content="noindex, nofollow">'
+            . '<title>ページが見つかりません｜あるく</title>'
+            . '<link rel="stylesheet" href="' . $prefix . 'assets/style.css?v=20260604"></head><body>'
+            . '<main style="max-width:640px;margin:14vh auto;padding:0 24px;text-align:center;">'
+            . '<h1 style="font-size:1.6rem;margin-bottom:12px;">ページが見つかりません</h1>'
+            . '<p style="color:#5d6362;margin-bottom:28px;">お探しのページは削除されました。</p>'
+            . '<p><a class="lp-btn lp-btn-primary" href="' . $prefix . 'index.html">トップへ戻る</a></p>'
+            . '</main></body></html>';
+    }
+    $name = $pcats[$cat];
+    $emoji = $em[$cat] ?? '📝';
+    $pp = posts_published(300, $cat, 'new', 0);
+    $url = $s['url'] . '/category/' . $cat . '.html';
+    $count = count($pp);
+    $cards = aruku_post_cards($pp, $prefix);
+    $feed = $cards
+        ? '<div class="note-feed">' . $cards . '</div>'
+        : '<p class="rail-empty">このカテゴリのコラムはまだありません。<a href="' . $prefix . 'member/post.php">最初のコラムを書いてみませんか？ →</a></p>';
+    $catNav = aruku_category_nav($prefix, $cat);
+    $title = $name . '｜あるく コラム';
+    $desc = '「' . $name . '」に関するコラム一覧（' . $count . '本）。';
+    $listItems = [];
+    $i = 1;
+    foreach ($pp as $p) {
+        $listItems[] = ['@type' => 'ListItem', 'position' => $i++, 'url' => $s['url'] . '/posts/' . (int) $p['id'], 'name' => $p['title']];
+    }
+    $jsonld = [
+        [
+            '@context' => 'https://schema.org',
+            '@type'    => 'CollectionPage',
+            'name'     => $title,
+            'description' => $desc,
+            'url'      => $url,
+            'inLanguage' => 'ja',
+            'isPartOf' => ['@type' => 'WebSite', 'name' => 'あるく', 'url' => $s['url'] . '/'],
+            'mainEntity' => ['@type' => 'ItemList', 'numberOfItems' => $count, 'itemListElement' => $listItems],
+        ],
+        [
+            '@context' => 'https://schema.org',
+            '@type'    => 'BreadcrumbList',
+            'itemListElement' => [
+                ['@type' => 'ListItem', 'position' => 1, 'name' => 'トップ', 'item' => $s['url'] . '/'],
+                ['@type' => 'ListItem', 'position' => 2, 'name' => $name, 'item' => $url],
+            ],
+        ],
+    ];
+    $head = head_html($prefix, $title, $desc, $url, '', $jsonld, 'website', 'index, follow', '');
+    $footer = footer_html($prefix);
+    $heroDesc = h($desc);
+    $heroName = h($name);
+    $crumb = breadcrumb_nav($prefix, h($name), true);
+    $body = <<<HTML
+{$crumb}
+<div class="column-list-hero"><h1>{$emoji} {$heroName}</h1><p>{$heroDesc}</p></div>
+<div class="column-layout">
+  <aside class="column-side">{$catNav}</aside>
+  <div class="column-main column-article">
+    {$feed}
+  </div>
+</div>
+{$footer}
+<script src="{$prefix}assets/app.js?v=20260604" defer></script>
+</body>
+</html>
+HTML;
+    return $head . $body;
+}
+
+// ============================================================
+// コラム内検索 /search.html?q=...
+// ============================================================
+function render_search_page(string $q): string
+{
+    $s = site();
+    $prefix = '';
+    require_once __DIR__ . '/inc/posts.php';
+    $q = trim($q);
+    $qh = h($q);
+    $results = $q !== '' ? posts_search($q, 60) : [];
+    $count = count($results);
+    $url = $s['url'] . '/search.html' . ($q !== '' ? '?q=' . rawurlencode($q) : '');
+    $title = ($q !== '' ? '「' . $q . '」の検索結果' : 'コラムを検索') . '｜あるく';
+    $desc = $q !== '' ? '「' . $q . '」に関するコラムの検索結果（' . $count . '本）。' : 'あるくのコラムをキーワードで検索できます。';
+    // 検索結果ページはインデックスさせない（薄い・重複回避）。リンクは追う。
+    $head = head_html($prefix, $title, $desc, $url, '', null, 'website', 'noindex, follow', '');
+    $footer = footer_html($prefix);
+    $crumb = breadcrumb_nav($prefix, 'コラムを検索', true);
+    $catNav = aruku_category_nav($prefix, '');
+    if ($q === '') {
+        $feed = '<p class="rail-empty">キーワードを入力してコラムを検索してください。</p>';
+    } elseif ($results) {
+        $feed = '<p class="search-count">「<b>' . $qh . '</b>」の検索結果：' . $count . '本</p>'
+            . '<div class="note-feed">' . aruku_post_cards($results, $prefix) . '</div>';
+    } else {
+        $feed = '<p class="rail-empty">「' . $qh . '」に一致するコラムは見つかりませんでした。別のキーワードでお試しください。</p>';
+    }
+    $body = <<<HTML
+{$crumb}
+<div class="column-list-hero"><h1>🔍 コラムを検索</h1>
+  <form class="site-search" method="get" action="search.html" role="search">
+    <input type="search" name="q" value="{$qh}" placeholder="例：早歩き、膝、消費カロリー、ダイエット" aria-label="サイト内検索">
+    <button type="submit" class="lp-btn lp-btn-primary">検索</button>
+  </form>
+</div>
+<div class="column-layout">
+  <aside class="column-side">{$catNav}</aside>
+  <div class="column-main column-article">
+    {$feed}
+  </div>
+</div>
+{$footer}
+<script src="{$prefix}assets/app.js?v=20260604" defer></script>
+</body>
+</html>
+HTML;
+    return $head . $body;
+}
+
+// ============================================================
+// 「あるくとは？」ページ /about-aruku.html
+// ============================================================
+function render_aboutaruku(): string
+{
+    $s = site();
+    $prefix = '';
+    $title = 'あるくとは？｜あるく';
+    $desc = '「あるく」は歩くことの総合メディア。歩数別カロリー・コラム・記録機能など、サービスの特長をご紹介します。';
+    $head = head_html($prefix, $title, $desc, $s['url'] . '/about-aruku.html', '', null, 'website', 'index, follow');
+    $footer = footer_html($prefix);
+    $crumb = breadcrumb_nav($prefix, 'あるくとは？', true);
+    $body = <<<HTML
+{$crumb}
+<section class="aboutpage-il">
+  <div class="aboutpage-il-inner">
+    <div class="aboutpage-il-img"><img src="uploads/aruku_runner.png" alt="ランニングする女性のイラスト" loading="lazy"></div>
+    <div class="aboutpage-il-text">
+      <h1 class="aboutpage-title aboutpage-title--left">あるくとは？</h1>
+      <p class="aboutpage-sub">歩くことの総合メディア「あるく」の、3つのいいところ。</p>
+      <div class="aboutpage-point"><span class="pt-no">1</span><div class="pt-tx"><b>今日から無料で始められる</b><span>コラムも歩数別カロリーツールも会員登録も、すべて無料。</span></div></div>
+      <div class="aboutpage-point"><span class="pt-no">2</span><div class="pt-tx"><b>歩数別カロリーがひと目で分かる</b><span>早見表＆計算ツールで「どれくらい歩けばいいか」がすぐ分かります。</span></div></div>
+      <div class="aboutpage-point"><span class="pt-no">3</span><div class="pt-tx"><b>記録の見える化で続けられる</b><span>体重・運動を記録して消費カロリーを累計。投稿にも参加できます。</span></div></div>
+      <div class="about-actions"><a class="lp-btn lp-btn-secondary" href="faq.html">よくある質問（FAQ）→</a><a class="lp-btn lp-btn-primary" href="index.html">トップへ戻る</a></div>
+    </div>
+  </div>
+</section>
+{$footer}
+<script src="assets/app.js?v=20260604" defer></script>
+</body>
+</html>
+HTML;
+    return $head . $body;
+}
+
+// ============================================================
+// 「よくある質問（FAQ）」ページ /faq.html
+// ============================================================
+function render_faq_page(): string
+{
+    $s = site();
+    $prefix = '';
+    $title = 'よくある質問（FAQ）｜あるく';
+    $desc = '「あるく」のよくある質問。料金・会員機能・コラム・消費カロリーの目安などにお答えします。';
+    $faqLd = [[
+        '@context' => 'https://schema.org',
+        '@type' => 'FAQPage',
+        'mainEntity' => [
+            ['@type' => 'Question', 'name' => 'あるくは無料で使えますか？', 'acceptedAnswer' => ['@type' => 'Answer', 'text' => 'はい。コラムの閲覧も、歩数別カロリー早見表・計算ツールも無料でご利用いただけます。会員登録も無料です。']],
+            ['@type' => 'Question', 'name' => '会員登録すると何ができますか？', 'acceptedAnswer' => ['@type' => 'Answer', 'text' => '体重・運動の記録から消費カロリーを自動で計算・累計できます。コラムの投稿、いいね、コメント、保存などのコミュニティ機能もご利用いただけます。']],
+            ['@type' => 'Question', 'name' => 'コラムは誰が書いていますか？', 'acceptedAnswer' => ['@type' => 'Answer', 'text' => '編集部のほか、会員のみなさんも投稿しています。投稿されたコラムは、公開前に内容を確認しています。']],
+            ['@type' => 'Question', 'name' => 'スマートフォンでも使えますか？', 'acceptedAnswer' => ['@type' => 'Answer', 'text' => 'はい。スマホ・タブレット・PCのどの画面にも対応しています。']],
+            ['@type' => 'Question', 'name' => '表示される消費カロリーは正確ですか？', 'acceptedAnswer' => ['@type' => 'Answer', 'text' => '体重や歩数から算出した目安です（消費kcal ≒ 歩数 × 体重 × 0.0005）。体質や歩き方で前後します。']],
+            ['@type' => 'Question', 'name' => '退会したいときはどうすればいいですか？', 'acceptedAnswer' => ['@type' => 'Answer', 'text' => 'ログイン後のマイページ下部にある「解約手続き」ボタンからお手続きいただけます。解約すると登録情報・記録はすべて削除され、元に戻せませんのでご注意ください。']],
+        ],
+    ]];
+    $head = head_html($prefix, $title, $desc, $s['url'] . '/faq.html', '', $faqLd, 'website', 'index, follow');
+    $footer = footer_html($prefix);
+    $crumb = breadcrumb_nav($prefix, 'よくある質問（FAQ）', true);
+    $body = <<<HTML
+{$crumb}
+<section class="about-section about-faq reveal" id="faq">
+  <div class="about-inner">
+    <h1 class="about-title">よくある質問（FAQ）</h1>
+    <p class="about-lead">「あるく」についてよくいただくご質問をまとめました。</p>
+    <details class="column-faq-item"><summary>あるくは無料で使えますか？</summary><div class="column-faq-a">はい。コラムの閲覧も、歩数別カロリー早見表・計算ツールも無料でご利用いただけます。会員登録も無料です。</div></details>
+    <details class="column-faq-item"><summary>会員登録すると何ができますか？</summary><div class="column-faq-a">体重・運動の記録から消費カロリーを自動で計算・累計できます。さらにコラムの投稿、いいね、コメント、保存（ブックマーク）などのコミュニティ機能もご利用いただけます。</div></details>
+    <details class="column-faq-item"><summary>コラムは誰が書いていますか？</summary><div class="column-faq-a">編集部のほか、会員のみなさんも投稿しています。投稿されたコラムは、公開前に内容を確認しています。</div></details>
+    <details class="column-faq-item"><summary>スマートフォンでも使えますか？</summary><div class="column-faq-a">はい。スマホ・タブレット・PCのどの画面にも対応しています。通勤や外出先でも気軽にご覧いただけます。</div></details>
+    <details class="column-faq-item"><summary>表示される消費カロリーは正確ですか？</summary><div class="column-faq-a">表示される数値は、歩数や体重などから算出した目安です（消費kcal ≒ 歩数 × 体重 × 0.0005）。体質や歩き方で前後するため、参考値としてご活用ください。</div></details>
+    <details class="column-faq-item"><summary>退会したいときはどうすればいいですか？</summary><div class="column-faq-a">ログイン後の<a href="member/mypage.php">マイページ</a>下部にある「解約手続き」ボタンからお手続きいただけます。解約すると登録情報・記録はすべて削除され、元に戻せませんのでご注意ください。</div></details>
+    <div class="about-actions"><a class="lp-btn lp-btn-secondary" href="about-aruku.html">あるくとは？→</a><a class="lp-btn lp-btn-primary" href="index.html">トップへ戻る</a></div>
+  </div>
+</section>
+{$footer}
+<script src="assets/app.js?v=20260604" defer></script>
 </body>
 </html>
 HTML;
@@ -555,7 +1015,7 @@ function render_top(): string
     $s = site();
     $prefix = '';
     $url = $s['url'] . '/';
-    $title = 'aruku（アルク）｜歩くことを、もっと楽しく健康に';
+    $title = 'あるく｜歩くことを、もっと楽しく健康に';
     $desc = $s['description'];
 
     // 5本柱カード
@@ -589,14 +1049,32 @@ function render_top(): string
         $i++;
     }
 
-    $jsonld = [[
-        '@context'    => 'https://schema.org',
-        '@type'       => 'WebSite',
-        'name'        => 'aruku（アルク）',
-        'url'         => $url,
-        'description' => $desc,
-        'publisher'   => ['@type' => 'Organization', 'name' => $s['org'], 'url' => $s['org_url']],
-    ]];
+    $jsonld = [
+        [
+            '@context'    => 'https://schema.org',
+            '@type'       => 'WebSite',
+            'name'        => 'あるく',
+            'url'         => $url,
+            'description' => $desc,
+            'inLanguage'  => 'ja',
+            'publisher'   => ['@type' => 'Organization', 'name' => 'あるく', 'url' => $url . '/'],
+            'potentialAction' => [
+                '@type'       => 'SearchAction',
+                'target'      => ['@type' => 'EntryPoint', 'urlTemplate' => $url . '/search.html?q={search_term_string}'],
+                'query-input' => 'required name=search_term_string',
+            ],
+        ],
+        [
+            '@context' => 'https://schema.org',
+            '@type'    => 'Organization',
+            'name'     => 'あるく',
+            'alternateName' => '歩くことの総合メディア あるく',
+            'url'      => $url . '/',
+            'logo'     => ['@type' => 'ImageObject', 'url' => $url . '/assets/ogp.png', 'width' => 1200, 'height' => 630],
+            'sameAs'   => [$s['x_url']],
+            'publisher'=> ['@type' => 'Organization', 'name' => $s['org'], 'url' => $s['org_url']],
+        ],
+    ];
 
     $head = head_html($prefix, $title, $desc, $url, '歩く,ウォーキング,ポイ活,カロリー,健康', $jsonld, 'website');
     $footer = footer_html($prefix);
@@ -609,122 +1087,155 @@ function render_top(): string
     if ($ct && !empty($ct['sections'][0]['body'])) {
         $ctable = $ct['sections'][0]['body'];
         $calorie_section = <<<HTML
-<section class="section calorie-feature">
-  <div class="section-inner">
-    <div class="section-head reveal">
-      <span class="section-eyebrow">Calorie Guide</span>
-      <h2>歩数別・消費カロリー早見表</h2>
-      <p>「何歩で何kcal？」がひと目でわかる。自分の体重に近い列をチェック。</p>
-    </div>
     <div class="calorie-panel reveal">
       <div class="calorie-panel-top">
         <p class="calorie-formula">消費kcal <b>≒</b> 歩数 <b>×</b> 体重<small>kg</small> <b>×</b> 0.0005</p>
-        <a href="column/calorie-table.html" class="lp-btn lp-btn-primary">詳しい解説・計算式 →</a>
       </div>
       {$ctable}
     </div>
-  </div>
-</section>
 HTML;
     }
+
+    $badge = $top['hero_badge'] !== '' ? '<span class="hero-badge hero-anim hero-anim-1">' . $top['hero_badge'] . '</span>' : '';
+    $pillarsEyebrow = $top['pillars_eyebrow'] !== '' ? '<span class="section-eyebrow">' . $top['pillars_eyebrow'] . '</span>' : '';
+    // 消費カロリー計算ツール（ジョギング等）の体重・時間プルダウン
+    $wOpts = '';
+    for ($kg = 40; $kg <= 150; $kg += 5) {
+        $sel = $kg === 60 ? ' selected' : '';
+        $wOpts .= '<option value="' . $kg . '"' . $sel . '>' . $kg . 'kg</option>';
+    }
+    $tOpts = '';
+    foreach ([10, 20, 30, 40, 50, 60, 90, 120] as $m) {
+        $sel = $m === 30 ? ' selected' : '';
+        $tOpts .= '<option value="' . $m . '"' . $sel . '>' . $m . '分</option>';
+    }
+    // ３．コラム：note.com 風にカテゴリ別の横スクロール（レール）で表示
+    require_once __DIR__ . '/inc/posts.php';
+    $catEmoji = aruku_post_category_emoji();
+    $catNavTop = aruku_category_nav('', '');
+    // タイトル＋（moreHref があれば）「すべて見る」＋左右矢印付きの横スクロールレール
+    $railOf = static function (string $titleHtml, string $moreHref, string $cardsHtml): string {
+        $more = $moreHref !== '' ? '<a class="cat-rail-more" href="' . $moreHref . '">すべて見る</a>' : '';
+        return '<div class="cat-rail-block"><div class="cat-rail-head"><h3 class="cat-rail-title">' . $titleHtml . '</h3>'
+            . $more . '</div>'
+            . '<div class="cat-rail-scroller">'
+            . '<button class="rail-arrow prev is-hidden" type="button" aria-label="前へ">‹</button>'
+            . '<div class="note-rail">' . $cardsHtml . '</div>'
+            . '<button class="rail-arrow next" type="button" aria-label="次へ">›</button>'
+            . '</div></div>';
+    };
+    $rails = '';
+    $latest = posts_published(12, null, 'new', 0);
+    if ($latest) {
+        // 「新着」は全カテゴリ横断のため、廃止した「すべて」ページへはリンクしない
+        $rails .= $railOf('🆕 新着のコラム', '', aruku_post_cards($latest, ''));
+    }
+    // 全カテゴリをレール表示。該当コラムが無いカテゴリは枠だけ出す
+    foreach (aruku_post_categories() as $ckey => $clabel) {
+        $cp = posts_published(12, $ckey);
+        $titleHtml = '<a href="category/' . h($ckey) . '.html">' . ($catEmoji[$ckey] ?? '') . ' ' . h($clabel) . '</a>';
+        $moreHref = 'category/' . h($ckey) . '.html';
+        if ($cp) {
+            $rails .= $railOf($titleHtml, $moreHref, aruku_post_cards($cp, ''));
+        } else {
+            $rails .= '<div class="cat-rail-block is-empty"><div class="cat-rail-head"><h3 class="cat-rail-title">' . $titleHtml
+                . '</h3><a class="cat-rail-more" href="' . $moreHref . '">すべて見る</a></div>'
+                . '<div class="cat-rail-empty">このカテゴリのコラムはまだありません。<a href="member/post.php">最初のコラムを書いてみませんか？ →</a></div></div>';
+        }
+    }
+    $mainContent = $rails !== '' ? $rails
+        : '<p class="rail-empty">まだコラムがありません。<a href="member/post.php">最初のコラムを書いてみませんか？ →</a></p>';
+    $columnFeed = '<div class="column-layout col-layout--flush"><aside class="column-side">' . $catNavTop . '</aside>'
+        . '<div class="column-main col-box">' . $mainContent . '</div></div>';
 
     $body = <<<HTML
 <header class="hero">
   <div class="hero-inner">
     <div>
-      <span class="hero-badge hero-anim hero-anim-1">{$top['hero_badge']}</span>
-      <h1 class="hero-anim hero-anim-2">{$top['hero_title_1']}<br><span class="accent">{$top['hero_accent']}</span>{$top['hero_title_2']}</h1>
+      {$badge}
+      <h1 class="hero-anim hero-anim-2">{$top['hero_title_1']}<span class="hero-keep"><span class="accent">{$top['hero_accent']}</span>{$top['hero_title_2']}</span></h1>
       <p class="hero-lead hero-anim hero-anim-3">{$top['hero_lead']}</p>
-      <div class="hero-actions hero-anim hero-anim-4">
-        <a href="column/index.html" class="lp-btn lp-btn-primary">{$top['hero_btn1']}</a>
-        <a href="column/calorie-table.html" class="lp-btn lp-btn-secondary">{$top['hero_btn2']}</a>
-      </div>
-    </div>
-    <div class="hero-art hero-art-anim">
-      <svg viewBox="0 0 520 460" role="img" aria-label="点線の小道を歩く人のイラスト" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <clipPath id="panel"><rect x="10" y="10" width="500" height="440" rx="30"/></clipPath>
-        </defs>
-        <rect x="10" y="10" width="500" height="440" rx="30" fill="#fbf9f1" stroke="#ddd4ba"/>
-        <g clip-path="url(#panel)">
-          <!-- 遠景の丘 -->
-          <path d="M10 360 Q150 290 270 340 T510 320 V450 H10 Z" fill="#d8e8dc"/>
-          <path d="M10 400 Q170 330 300 380 T510 370 V450 H10 Z" fill="#8fc4a4" opacity=".55"/>
-          <!-- 等高線 -->
-          <g stroke="#34915f" stroke-width="1.6" fill="none" opacity=".4">
-            <path d="M30 300 Q160 235 290 285 T520 265"/>
-            <path d="M30 268 Q170 200 300 250 T520 230"/>
-            <path d="M40 238 Q180 175 300 218 T520 200"/>
-          </g>
-          <!-- 太陽 -->
-          <circle cx="408" cy="118" r="42" fill="#f1ddcb"/>
-          <g stroke="#d2612e" stroke-width="2" stroke-linecap="round" opacity=".6">
-            <line x1="408" y1="50" x2="408" y2="64"/>
-            <line x1="466" y1="76" x2="456" y2="86"/>
-            <line x1="350" y1="76" x2="360" y2="86"/>
-            <line x1="478" y1="118" x2="492" y2="118"/>
-            <line x1="324" y1="118" x2="338" y2="118"/>
-          </g>
-          <!-- 木 -->
-          <g>
-            <rect x="116" y="250" width="6" height="40" rx="2" fill="#a8431b" opacity=".7"/>
-            <circle cx="119" cy="240" r="30" fill="#25744d"/>
-            <circle cx="138" cy="252" r="20" fill="#34915f"/>
-          </g>
-          <!-- 点線の小道 -->
-          <path d="M60 432 C 150 400, 150 320, 240 300 S 380 270, 410 190"
-                fill="none" stroke="#c2541f" stroke-width="4" stroke-linecap="round"
-                stroke-dasharray="0.5 16" opacity=".85"/>
-          <!-- 歩く人 -->
-          <g transform="translate(196,236) scale(1.5)" stroke="#1b5e3f" stroke-width="6"
-             stroke-linecap="round" stroke-linejoin="round" fill="none">
-            <circle cx="14" cy="0" r="7" fill="#1b5e3f" stroke="none"/>
-            <path d="M12 9 L4 31 L-9 39"/>
-            <path d="M4 31 L13 44 L10 60"/>
-            <path d="M4 31 L-7 24 L-18 28"/>
-            <path d="M12 13 L24 19"/>
-          </g>
-        </g>
-      </svg>
+      <p class="hero-free hero-anim hero-anim-4"><span>全機能無料で利用できます。</span></p>
     </div>
   </div>
 </header>
 
-<section class="section">
+<section class="info-nav-section">
+  <div class="info-nav">
+    <a class="info-nav-card" href="about-aruku.html"><b>あるくとは？</b></a>
+    <a class="info-nav-card" href="faq.html"><b>よくある質問（FAQ）</b></a>
+  </div>
+</section>
+
+<section class="section calorie-feature">
   <div class="section-inner">
-    <div class="section-head reveal">
-      <span class="section-eyebrow">{$top['pillars_eyebrow']}</span>
+    <div class="section-head section-head--left reveal">
+      {$pillarsEyebrow}
       <h2>{$top['pillars_title']}</h2>
-      <p>{$top['pillars_sub']}</p>
     </div>
-    <div class="pillar-grid reveal-stagger">{$pillars}</div>
-  </div>
-</section>
-
-<section class="section section-soft">
-  <div class="section-inner">
-    <div class="section-head reveal">
-      <span class="section-eyebrow">{$top['pickup_eyebrow']}</span>
-      <h2>{$top['pickup_title']}</h2>
-      <p>{$top['pickup_sub']}</p>
+    {$calorie_section}
+    <div class="section-head section-head--left reveal" style="margin-top:56px;">
+      <h2>２．歩数別・消費カロリー測定<br>（早歩き・ジョギング・ランニング）</h2>
     </div>
-    <div class="post-grid reveal-stagger">{$fcards}</div>
-    <div class="text-center mt-32 reveal"><a href="column/index.html" class="lp-btn lp-btn-secondary">すべての記事を見る →</a></div>
-  </div>
-</section>
-
-{$calorie_section}
-
-<section class="cta-band">
-  <div class="reveal">
-    <h2>{$top['cta_title']}</h2>
-    <p>{$top['cta_sub']}</p>
-    <a href="column/calorie-table.html" class="lp-btn lp-btn-primary">{$top['cta_btn']}</a>
+    <div class="calc-tool reveal">
+      <div class="calc-grid">
+        <label class="calc-field">
+          <span>運動の種類</span>
+          <select id="calc-activity">
+            <option value="5.0|6.5">早歩き（時速約6.5km）</option>
+            <option value="8.3|8" selected>ジョギング（時速約8km）</option>
+            <option value="10.0|10">ランニング（時速約10km）</option>
+          </select>
+        </label>
+        <label class="calc-field">
+          <span>性別</span>
+          <select id="calc-sex">
+            <option value="1.0">男性</option>
+            <option value="0.95">女性</option>
+          </select>
+        </label>
+        <label class="calc-field">
+          <span>体重</span>
+          <select id="calc-weight">{$wOpts}</select>
+        </label>
+        <label class="calc-field">
+          <span>運動時間</span>
+          <select id="calc-time">{$tOpts}</select>
+        </label>
+      </div>
+      <div class="calc-result">
+        <span class="calc-result-label">推定消費カロリー</span>
+        <span class="calc-result-value"><b id="calc-kcal">—</b> kcal</span>
+        <span class="calc-result-sub" id="calc-distance"></span>
+      </div>
+      <p class="calc-note">※ 計算式：METs × 体重(kg) × 時間(h) × 1.05 ×（性別係数）。<br>※一般的な時速・METs（早歩き5.0／ジョギング8.3／ランニング10.0）を用いた目安です。<br>性別係数：男性1.00／女性0.95。</p>
+    </div>
+    <script>
+    (function(){
+      var a=document.getElementById('calc-activity'),s=document.getElementById('calc-sex'),
+          w=document.getElementById('calc-weight'),t=document.getElementById('calc-time'),
+          out=document.getElementById('calc-kcal'),dist=document.getElementById('calc-distance');
+      if(!a){return;}
+      function calc(){
+        var p=a.value.split('|'),met=parseFloat(p[0]),speed=parseFloat(p[1]);
+        var sex=parseFloat(s.value),wt=parseFloat(w.value),min=parseFloat(t.value),h=min/60;
+        var kcal=met*wt*h*1.05*sex;
+        out.textContent=Math.round(kcal);
+        dist.textContent='（走る距離の目安：約'+(speed*h).toFixed(1)+'km）';
+      }
+      [a,s,w,t].forEach(function(el){el.addEventListener('change',calc);});
+      calc();
+    })();
+    </script>
+    <div class="section-head section-head--left reveal" style="margin-top:56px;">
+      <h2>３．コラム</h2>
+    </div>
+    {$columnFeed}
   </div>
 </section>
 
 {$footer}
-<script src="assets/app.js?v=20260528" defer></script>
+<script src="assets/app.js?v=20260604" defer></script>
 </body>
 </html>
 HTML;
@@ -746,7 +1257,7 @@ function render_page(string $key): ?string
     $prefix  = '';
     $url     = $s['url'] . '/' . $key . '.html';
     $title_pg = $page['title'] ?? '';
-    $title   = $title_pg . '｜aruku（アルク）';
+    $title   = $title_pg . '｜あるく';
     $desc    = $page['desc'] ?? $s['description'];
     $robots  = !empty($page['noindex']) ? 'noindex, follow' : '';
 
@@ -780,7 +1291,7 @@ function render_page(string $key): ?string
 </article>
 
 {$footer}
-<script src="assets/app.js?v=20260528" defer></script>
+<script src="assets/app.js?v=20260604" defer></script>
 </body>
 </html>
 HTML;
@@ -797,13 +1308,20 @@ function render_sitemap(): string
     $today = date('Y-m-d');
     $urls = [
         [$s['url'] . '/', $today, '1.0'],
-        [$s['url'] . '/column/', $today, '0.9'],
+        [$s['url'] . '/about-aruku.html', $today, '0.6'],
+        [$s['url'] . '/faq.html', $today, '0.5'],
         [$s['url'] . '/about.html', $today, '0.4'],
         [$s['url'] . '/privacy.html', $today, '0.3'],
     ];
-    foreach ($d['articles'] as $a) {
-        $prio = $d['meta'][$a['slug']]['num'] == 1 ? '0.8' : '0.7';
-        $urls[] = [$s['url'] . '/column/' . $a['slug'] . '.html', $a['date'], $prio];
+    require_once __DIR__ . '/inc/posts.php';
+    // カテゴリ一覧ページ
+    foreach (array_keys(aruku_post_categories()) as $ck) {
+        $urls[] = [$s['url'] . '/category/' . $ck . '.html', $today, '0.7'];
+    }
+    // 公開済みの会員投稿
+    foreach (posts_published(1000) as $pp) {
+        $lm = substr((string) (($pp['updated_at'] ?? '') ?: ($pp['published_at'] ?: $pp['created_at'])), 0, 10);
+        $urls[] = [$s['url'] . '/posts/' . (int) $pp['id'], ($lm !== '' ? $lm : $today), '0.6'];
     }
     $items = [];
     foreach ($urls as [$loc, $lm, $p]) {

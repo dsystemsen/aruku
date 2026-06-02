@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-label="aruku OGP">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-label="あるく OGP">
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="0.6" y2="1">
       <stop offset="0" stop-color="#f6f2e6"/>
@@ -31,7 +31,7 @@
   <path d="M145 198 L130 188 L115 194" stroke="#fff" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
   <path d="M157 174 L168 180" stroke="#fff" stroke-width="9" stroke-linecap="round" fill="none"/>
   <!-- ワードマーク -->
-  <text x="232" y="212" class="serif" font-size="104" font-weight="700" fill="#103620">aruku</text>
+  <text x="232" y="212" class="serif" font-size="104" font-weight="700" fill="#103620">あるく</text>
   <!-- 見出し -->
   <text x="94" y="372" class="serif" font-size="72" font-weight="700" fill="#16241b">歩くことを、もっと楽しく健康に。</text>
   <!-- サブ -->

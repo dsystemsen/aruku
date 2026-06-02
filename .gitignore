@@ -14,3 +14,16 @@ desktop.ini
 # ※ articles.php が初回シードの元データ。data/content.json は本番で生成・編集される。
 data/
 
+# 本番DB(MySQL)接続情報（秘密情報。git管理せず、サーバ上に直接設置）
+inc/db_config.php
+
+# 開発用ルータ・SQLite（ローカル専用。本番へは送らない）
+dev-router.php
+
+# 会員投稿のアップロード画像（ユーザーコンテンツ。dir と .htaccess だけ追跡）
+uploads/*
+!uploads/.htaccess
+
+# コンテンツ移行SQL（会員パスワードハッシュ＋全コラム本文を含む＝git管理しない。手動で本番投入）
+migrations/*.sql
+

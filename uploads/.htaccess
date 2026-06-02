@@ -1,0 +1,5 @@
+# 会員投稿のアップロード画像置き場
+# スクリプトの実行を禁止（画像のなりすまし実行を防止）
+<FilesMatch "\.(?i:php|phtml|phar|phps|php[0-9]|cgi|pl|py|asp|aspx|sh|htaccess)$">
+  Require all denied
+</FilesMatch>

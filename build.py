@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-aruku（アルク） 静的サイトジェネレータ
+あるく 静的サイトジェネレータ
 ========================================
 articles.py の ARTICLES / CATEGORIES を読み込み、以下を生成します。
 
@@ -32,7 +32,7 @@ SITE = {
     "brand_ja": "アルク",
     "tagline": "歩くことを、もっと楽しく健康に。",
     "description": "ウォーキングの効果・正しい歩き方・歩数別カロリー・歩いてポイ活・ウォーキングマシンまで。歩くことのすべてが分かる健康情報メディア。",
-    "author": "斎藤 雄義",
+    "author": "齋藤 雄吾",
     "author_role": "株式会社D-SYSTEMS-EN 代表取締役",
     "org": "株式会社D-SYSTEMS-EN",
     "org_url": "https://www.dsystemsen.com/",
@@ -92,7 +92,7 @@ def thumb_svg(article, gid):
 def nav_html(prefix):
     return f"""<nav class="lp-nav">
   <div class="lp-nav-inner">
-    <a href="{prefix}index.html" class="lp-brand"><img src="{prefix}assets/logo.svg" alt="aruku（アルク）ロゴ"><span class="lp-brand-name">aruku</span></a>
+    <a href="{prefix}index.html" class="lp-brand"><img src="{prefix}assets/logo.svg" alt="あるくロゴ"><span class="lp-brand-name">あるく</span></a>
     <div class="lp-nav-links">
       <a href="{prefix}column/index.html">コラム</a>
       <a href="{prefix}column/calorie-table.html" class="lp-nav-hide-sp">カロリー表</a>
@@ -107,7 +107,7 @@ def footer_html(prefix):
     return f"""<footer class="lp-footer">
   <div class="lp-footer-inner">
     <div>
-      <div class="lp-footer-brand"><img src="{prefix}assets/logo.svg" alt="aruku ロゴ">aruku</div>
+      <div class="lp-footer-brand"><img src="{prefix}assets/logo.svg" alt="あるく ロゴ">あるく</div>
       <p class="lp-footer-tagline">{SITE['tagline']}</p>
     </div>
     <nav class="lp-footer-links">
@@ -116,7 +116,7 @@ def footer_html(prefix):
       <a href="{prefix}about.html">運営者情報</a>
       <a href="{prefix}privacy.html">プライバシーポリシー</a>
       <a href="{SITE['org_url']}" target="_blank" rel="noopener">🏢 運営会社</a>
-      <a href="{SITE['x_url']}" target="_blank" rel="noopener">𝕏 公式X</a>
+      <a href="{SITE['x_url']}" target="_blank" rel="noopener">公式𝕏</a>
     </nav>
   </div>
   <div class="lp-footer-copy">&copy; {SITE['year']} {SITE['org']}. All rights reserved.</div>
@@ -146,7 +146,7 @@ def head_html(prefix, title, desc, canonical, keywords="", jsonld=None, body_css
 <meta name="description" content="{desc}">
 {kw}<link rel="canonical" href="{canonical}">
 <meta property="og:type" content="article">
-<meta property="og:site_name" content="aruku（アルク）">
+<meta property="og:site_name" content="あるく">
 <meta property="og:title" content="{title}">
 <meta property="og:description" content="{desc}">
 <meta property="og:url" content="{canonical}">
@@ -372,7 +372,7 @@ def build_article(article):
 def build_column_index():
     prefix = "../"
     url = f"{SITE['url']}/column/"
-    title = "コラム一覧｜aruku（アルク）"
+    title = "コラム一覧｜あるく"
     desc = "ウォーキングの効果・正しい歩き方・歩数別カロリー・歩いてポイ活・ウォーキングマシン。歩くことに関するすべてのコラムをカテゴリ別にまとめました。"
 
     # 全記事インデックス（開閉式）
@@ -414,14 +414,14 @@ def build_column_index():
     jsonld = [{
         "@context": "https://schema.org",
         "@type": "CollectionPage",
-        "name": "aruku コラム一覧",
+        "name": "あるく コラム一覧",
         "description": desc,
         "url": url,
     }]
     head = head_html(prefix, title, desc, url, "ウォーキング コラム,歩く 健康 記事", jsonld)
 
     body = f"""<div class="column-list-hero">
-  <h1>aruku コラム</h1>
+  <h1>あるく コラム</h1>
   <p>歩くことの効果から、正しい歩き方・カロリー・ポイ活・マシンまで。<br>気になるカテゴリから読み進めてください。</p>
 </div>
 <div class="column-article">
@@ -450,7 +450,7 @@ def build_column_index():
 def build_top():
     prefix = ""
     url = f"{SITE['url']}/"
-    title = "aruku（アルク）｜歩くことを、もっと楽しく健康に"
+    title = "あるく｜歩くことを、もっと楽しく健康に"
     desc = SITE["description"]
 
     # 5本柱カード
@@ -481,7 +481,7 @@ def build_top():
     jsonld = [{
         "@context": "https://schema.org",
         "@type": "WebSite",
-        "name": "aruku（アルク）",
+        "name": "あるく",
         "url": url,
         "description": desc,
         "publisher": {"@type": "Organization", "name": SITE["org"], "url": SITE["org_url"]},
@@ -497,13 +497,13 @@ def build_top():
     <div>
       <span class="hero-badge">🚶 歩くことの総合メディア</span>
       <h1>歩くことを、<span class="accent">もっと楽しく</span>健康に。</h1>
-      <p class="hero-lead">ウォーキングの効果から正しい歩き方、歩数別の消費カロリー、歩いてポイ活、ウォーキングマシンまで。「歩く」のすべてを、わかりやすいコラムでお届けします。</p>
+      <p class="hero-lead">ウォーキングの効果から正しい歩き方、歩数別の消費カロリー、歩いてポイ活まで。「歩く」のすべてを、みんなでコラムをつくって、役立つ情報を共有。</p>
       <div class="hero-actions">
         <a href="column/index.html" class="lp-btn lp-btn-primary">コラムを読む</a>
         <a href="column/calorie-table.html" class="lp-btn lp-btn-secondary">🔥 カロリー表を見る</a>
       </div>
     </div>
-    <div class="hero-art"><img src="assets/ogp.svg" alt="aruku イメージ" width="600" height="315" loading="eager"></div>
+    <div class="hero-art"><img src="assets/ogp.svg" alt="あるく イメージ" width="600" height="315" loading="eager"></div>
   </div>
 </header>
 
@@ -571,7 +571,7 @@ def build_sitemap():
 
 def build_robots():
     return (
-        "# aruku（アルク） robots.txt\n"
+        "# あるく robots.txt\n"
         "User-agent: *\n"
         "Allow: /\n\n"
         f"Sitemap: {SITE['url']}/sitemap.xml\n"
