@@ -37,6 +37,30 @@ function aruku_db(): PDO
     return $pdo;
 }
 
+/**
+ * インデックスを存在しなければ作成（SQLite / MySQL 両対応）。
+ * MySQL は `CREATE INDEX IF NOT EXISTS` を解釈できないため、
+ * information_schema で存在を確認してから作成する。
+ */
+function aruku_ensure_index(PDO $pdo, string $driver, bool $unique, string $name, string $table, string $cols): void
+{
+    $u = $unique ? 'UNIQUE ' : '';
+    if ($driver === 'sqlite') {
+        $pdo->exec("CREATE {$u}INDEX IF NOT EXISTS $name ON $table ($cols)");
+        return;
+    }
+    // MySQL: CREATE INDEX に IF NOT EXISTS が無いので存在チェックしてから作成
+    $st = $pdo->prepare(
+        'SELECT COUNT(*) FROM information_schema.statistics
+         WHERE table_schema = DATABASE() AND table_name = ? AND index_name = ?'
+    );
+    $st->execute([$table, $name]);
+    if ((int) $st->fetchColumn() > 0) {
+        return;
+    }
+    $pdo->exec("CREATE {$u}INDEX $name ON $table ($cols)");
+}
+
 /** テーブルを存在しなければ作成（SQLite / MySQL 両対応）。 */
 function aruku_db_init(PDO $pdo): void
 {
@@ -99,7 +123,7 @@ function aruku_db_init(PDO $pdo): void
         member_id INT NOT NULL,
         created_at $ts
     )");
-    $pdo->exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_like_unique ON post_likes (post_id, member_id)');
+    aruku_ensure_index($pdo, $driver, true, 'idx_like_unique', 'post_likes', 'post_id, member_id');
 
     // コメント（会員限定・即時表示）
     $pdo->exec("CREATE TABLE IF NOT EXISTS comments (
@@ -109,7 +133,7 @@ function aruku_db_init(PDO $pdo): void
         body TEXT NOT NULL,
         created_at $ts
     )");
-    $pdo->exec('CREATE INDEX IF NOT EXISTS idx_comments_post ON comments (post_id, id)');
+    aruku_ensure_index($pdo, $driver, false, 'idx_comments_post', 'comments', 'post_id, id');
 
     // 投稿の複数画像
     $pdo->exec("CREATE TABLE IF NOT EXISTS post_images (
@@ -119,7 +143,7 @@ function aruku_db_init(PDO $pdo): void
         sort INT NOT NULL DEFAULT 0,
         created_at $ts
     )");
-    $pdo->exec('CREATE INDEX IF NOT EXISTS idx_post_images ON post_images (post_id, sort, id)');
+    aruku_ensure_index($pdo, $driver, false, 'idx_post_images', 'post_images', 'post_id, sort, id');
 
     // フォロー（follower が followee をフォロー）
     $pdo->exec("CREATE TABLE IF NOT EXISTS member_follows (
@@ -128,7 +152,7 @@ function aruku_db_init(PDO $pdo): void
         followee_id INT NOT NULL,
         created_at $ts
     )");
-    $pdo->exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_follow_unique ON member_follows (follower_id, followee_id)');
+    aruku_ensure_index($pdo, $driver, true, 'idx_follow_unique', 'member_follows', 'follower_id, followee_id');
 
     // 投稿タグ
     $pdo->exec("CREATE TABLE IF NOT EXISTS post_tags (
@@ -137,8 +161,8 @@ function aruku_db_init(PDO $pdo): void
         tag VARCHAR(40) NOT NULL,
         created_at $ts
     )");
-    $pdo->exec('CREATE INDEX IF NOT EXISTS idx_post_tags_tag ON post_tags (tag)');
-    $pdo->exec('CREATE INDEX IF NOT EXISTS idx_post_tags_post ON post_tags (post_id)');
+    aruku_ensure_index($pdo, $driver, false, 'idx_post_tags_tag', 'post_tags', 'tag');
+    aruku_ensure_index($pdo, $driver, false, 'idx_post_tags_post', 'post_tags', 'post_id');
 
     // 通知（user_id 宛て。type: comment/like/follow）
     $pdo->exec("CREATE TABLE IF NOT EXISTS notifications (
@@ -150,7 +174,7 @@ function aruku_db_init(PDO $pdo): void
         is_read INT NOT NULL DEFAULT 0,
         created_at $ts
     )");
-    $pdo->exec('CREATE INDEX IF NOT EXISTS idx_notif_user ON notifications (user_id, is_read, id)');
+    aruku_ensure_index($pdo, $driver, false, 'idx_notif_user', 'notifications', 'user_id, is_read, id');
     try { $pdo->exec('ALTER TABLE notifications ADD COLUMN meta VARCHAR(100)'); } catch (\Throwable $e) {}
 
     // 獲得バッジ（1会員1バッジ1回）
@@ -160,7 +184,7 @@ function aruku_db_init(PDO $pdo): void
         badge_key VARCHAR(30) NOT NULL,
         created_at $ts
     )");
-    $pdo->exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_badge_unique ON member_badges (member_id, badge_key)');
+    aruku_ensure_index($pdo, $driver, true, 'idx_badge_unique', 'member_badges', 'member_id, badge_key');
 
     // ブックマーク
     $pdo->exec("CREATE TABLE IF NOT EXISTS bookmarks (
@@ -169,7 +193,7 @@ function aruku_db_init(PDO $pdo): void
         post_id INT NOT NULL,
         created_at $ts
     )");
-    $pdo->exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_bookmark_unique ON bookmarks (member_id, post_id)');
+    aruku_ensure_index($pdo, $driver, true, 'idx_bookmark_unique', 'bookmarks', 'member_id, post_id');
 
     // 通報（target_type: post / comment）
     $pdo->exec("CREATE TABLE IF NOT EXISTS reports (
@@ -181,10 +205,10 @@ function aruku_db_init(PDO $pdo): void
         handled INT NOT NULL DEFAULT 0,
         created_at $ts
     )");
-    $pdo->exec('CREATE INDEX IF NOT EXISTS idx_reports ON reports (handled, id)');
+    aruku_ensure_index($pdo, $driver, false, 'idx_reports', 'reports', 'handled, id');
 
     // 集計・取得を速く（存在しなければ作成）
-    $pdo->exec('CREATE INDEX IF NOT EXISTS idx_logs_member_date ON activity_logs (member_id, log_date)');
-    $pdo->exec('CREATE INDEX IF NOT EXISTS idx_posts_status ON posts (status, id)');
-    $pdo->exec('CREATE INDEX IF NOT EXISTS idx_posts_member ON posts (member_id, id)');
+    aruku_ensure_index($pdo, $driver, false, 'idx_logs_member_date', 'activity_logs', 'member_id, log_date');
+    aruku_ensure_index($pdo, $driver, false, 'idx_posts_status', 'posts', 'status, id');
+    aruku_ensure_index($pdo, $driver, false, 'idx_posts_member', 'posts', 'member_id, id');
 }

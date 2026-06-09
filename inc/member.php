@@ -320,10 +320,13 @@ function member_render_page(string $prefix, string $title, string $bodyHtml, arr
     $jsonld    = $opts['jsonld'] ?? null;
     $headExtra = $opts['headExtra'] ?? '';
     echo head_html($prefix, $title . '｜あるく', $desc, $canonical, '', $jsonld, $ogType, $robots, $ogImage, $headExtra);
-    $crumb = '<nav class="column-breadcrumb" aria-label="パンくず"><a href="' . $prefix . 'index.html">トップ</a> ／ <span>' . h($title) . '</span></nav>';
+    // 独自パンくずを持つページ（記事ページ等）は noCrumb で自動パンくずを抑止
+    $crumb = ($opts['noCrumb'] ?? false)
+        ? ''
+        : '<nav class="column-breadcrumb" aria-label="パンくず"><a href="' . $prefix . 'index.html">トップ</a> ／ <span>' . h($title) . '</span></nav>';
     echo '<main class="member-wrap">' . $crumb . $bodyHtml . '</main>';
     echo footer_html($prefix);
-    echo '<script src="' . $prefix . 'assets/app.js?v=20260604" defer></script></body></html>';
+    echo '<script src="' . $prefix . 'assets/app.js?v=20260605" defer></script></body></html>';
 }
 
 if (!function_exists('h')) {

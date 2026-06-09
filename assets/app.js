@@ -2,6 +2,27 @@
 (function () {
   "use strict";
 
+  // いいね／保存：ページ遷移せずその場でトグル（最上部スクロール防止）。
+  // 後続コードで万一エラーが出ても確実に登録されるよう最初に設置。
+  document.addEventListener("submit", function (e) {
+    var form = e.target;
+    if (!form || !form.classList || !form.classList.contains("like-form")) return;
+    e.preventDefault();
+    try {
+      fetch(form.getAttribute("action"), { method: "POST", body: new FormData(form), credentials: "same-origin" }).catch(function () {});
+    } catch (err) {}
+    var btn = form.querySelector("button");
+    if (!btn) return;
+    if (btn.classList.contains("like-btn")) {
+      var span = btn.querySelector("span");
+      var n = span ? parseInt(span.textContent, 10) || 0 : 0;
+      if (btn.classList.toggle("liked")) { if (span) span.textContent = n + 1; }
+      else if (span) span.textContent = Math.max(0, n - 1);
+    } else if (btn.classList.contains("bm-btn")) {
+      btn.innerHTML = btn.classList.toggle("marked") ? "🔖 保存済み" : "🔖 保存";
+    }
+  });
+
   // スクロールでナビに影を付ける
   var nav = document.querySelector(".lp-nav");
   if (nav) {

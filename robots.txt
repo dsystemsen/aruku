@@ -2,4 +2,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://aruku.dsystemsen.com/sitemap.xml
+Sitemap: https://aruku.ne.jp/sitemap.xml

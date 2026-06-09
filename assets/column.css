@@ -26,6 +26,15 @@
 .column-breadcrumb a:hover { color: var(--clay-600); }
 .column-breadcrumb span { color: var(--ink-2); }
 
+/* 会員ページ（マイページ等）のパンくずは目立たせる（枠なし・文字で強調） */
+.member-wrap .column-breadcrumb {
+  font-size: .98rem;
+  margin-bottom: 26px;
+}
+.member-wrap .column-breadcrumb a { font-weight: 700; }
+.member-wrap .column-breadcrumb a::before { content: "🏠 "; }
+.member-wrap .column-breadcrumb span { color: var(--forest-800); font-weight: 800; }
+
 /* ===== 記事ヘッダー ===== */
 .column-thumb {
   border-radius: var(--radius-lg);
@@ -784,11 +793,11 @@ body.md-fs-lock { overflow: hidden; }
 .like-btn { display: inline-flex; align-items: center; gap: 8px; background: #fff; border: 1.5px solid var(--line-2); color: var(--ink-2); border-radius: 999px; padding: 9px 22px; font-weight: 700; font-size: 1rem; cursor: pointer; text-decoration: none; transition: all .18s; }
 .like-btn:hover { border-color: var(--clay-500); color: var(--clay-600); }
 .like-btn.liked { background: var(--clay-500); border-color: var(--clay-500); color: #fff; }
-.bm-btn { display: inline-flex; align-items: center; gap: 6px; margin-left: 10px; background: #fff; border: 1.5px solid var(--line-2); color: var(--ink-2); border-radius: 999px; padding: 9px 20px; font-weight: 700; font-size: 1rem; cursor: pointer; }
+.bm-btn { display: inline-flex; align-items: center; gap: 6px; background: #fff; border: 1.5px solid var(--line-2); color: var(--ink-2); border-radius: 999px; padding: 9px 20px; font-weight: 700; font-size: 1rem; cursor: pointer; }
 .bm-btn:hover { border-color: var(--forest-500); color: var(--forest-700); }
 .bm-btn.marked { background: var(--forest-100); border-color: var(--forest-300); color: var(--forest-800); }
 .like-form { display: inline-block; }
-.post-actions { display: flex; gap: 0; align-items: center; flex-wrap: wrap; }
+.post-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
 
 /* ランキングの期間タブ */
 .rank-tabs { display: flex; gap: 8px; margin: 0 0 14px; }
@@ -797,11 +806,17 @@ body.md-fs-lock { overflow: hidden; }
 
 /* SNSシェア */
 .share-row { display: flex; flex-wrap: wrap; gap: 10px; margin: 18px 0 8px; }
-.share-btn { display: inline-flex; align-items: center; border: 1.5px solid var(--line-2); background: #fff; color: var(--ink-2); border-radius: 999px; padding: 8px 18px; font-size: .88rem; font-weight: 700; text-decoration: none; cursor: pointer; }
+.share-btn { display: inline-flex; align-items: center; gap: 7px; border: 1.5px solid var(--line-2); background: #fff; color: var(--ink-2); border-radius: 999px; padding: 9px 18px; font-size: .9rem; font-weight: 700; text-decoration: none; cursor: pointer; transition: all .18s; }
+.sns-ico { width: 16px; height: 16px; flex: none; }
+.share-btn.x .sns-ico { fill: #000; }
+.share-btn.line .sns-ico { fill: #06c755; }
+.share-btn.fb .sns-ico { fill: #1877f2; }
+.share-btn.copy .sns-ico { fill: var(--forest-700); }
 .share-btn.x:hover { background: #000; color: #fff; border-color: #000; }
 .share-btn.line:hover { background: #06c755; color: #fff; border-color: #06c755; }
 .share-btn.fb:hover { background: #1877f2; color: #fff; border-color: #1877f2; }
 .share-btn.copy:hover { background: var(--forest-100); border-color: var(--forest-300); }
+.share-btn.x:hover .sns-ico, .share-btn.line:hover .sns-ico, .share-btn.fb:hover .sns-ico { fill: #fff; }
 
 /* 通報 */
 .report-box { margin: 16px 0; font-size: .85rem; }

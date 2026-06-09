@@ -753,7 +753,7 @@ function notify_comment(int $postId, int $commenterId): void
         return;
     }
     $url = function_exists('site') ? (site()['url'] . '/posts/' . $postId) : ('/posts/' . $postId);
-    $host = function_exists('site') ? parse_url(site()['url'], PHP_URL_HOST) : 'aruku.dsystemsen.com';
+    $host = function_exists('site') ? parse_url(site()['url'], PHP_URL_HOST) : 'aruku.ne.jp';
     $subject = '【aruku】あなたのコラムにコメントがつきました';
     $body = $row['nickname'] . " さん\n\nあなたの投稿「" . $row['title'] . "」に新しいコメントがつきました。\n"
         . $url . "\n\n— あるく";

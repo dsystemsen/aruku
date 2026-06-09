@@ -131,12 +131,14 @@ $postUrl = $siteUrl . '/posts/' . $id;
 $enc = rawurlencode($postUrl);
 $encTitle = rawurlencode($post['title']);
 $ogImage = $files ? $siteUrl . '/uploads/' . $files[0] : $siteUrl . '/assets/ogp.png';
-$shareUi = '<div class="share-row">'
-    . '<a class="share-btn x" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=' . $encTitle . '&url=' . $enc . '">𝕏 シェア</a>'
-    . '<a class="share-btn line" target="_blank" rel="noopener" href="https://social-plugins.line.me/lineit/share?url=' . $enc . '">LINE</a>'
-    . '<a class="share-btn fb" target="_blank" rel="noopener" href="https://www.facebook.com/sharer/sharer.php?u=' . $enc . '">Facebook</a>'
-    . '<button class="share-btn copy" type="button" data-url="' . h($postUrl) . '" onclick="if(navigator.clipboard){navigator.clipboard.writeText(this.dataset.url);this.textContent=\'コピーしました\';}">リンクをコピー</button>'
-    . '</div>';
+$icoX    = '<svg class="sns-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>';
+$icoLine = '<svg class="sns-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3C6.5 3 2 6.62 2 11.08c0 4 3.57 7.35 8.39 7.98.33.07.77.22.88.5.1.26.07.66.03.92l-.14.85c-.04.25-.2.99.87.54s5.77-3.4 7.87-5.82C21.21 14.4 22 12.81 22 11.08 22 6.62 17.5 3 12 3zM8.2 13.36H6.06a.42.42 0 0 1-.42-.42V9.06a.42.42 0 0 1 .85 0v3.45H8.2a.42.42 0 0 1 0 .85zm1.66-.42a.42.42 0 0 1-.85 0V9.06a.42.42 0 0 1 .85 0v3.88zm4.2 0a.42.42 0 0 1-.29.4.43.43 0 0 1-.13.02.42.42 0 0 1-.34-.17l-1.99-2.71v2.46a.42.42 0 0 1-.85 0V9.06a.42.42 0 0 1 .76-.25l1.99 2.71V9.06a.42.42 0 0 1 .85 0v3.88zm2.86-2.36a.42.42 0 0 1 0 .85h-1.28v.67h1.28a.42.42 0 0 1 0 .85h-1.71a.42.42 0 0 1-.42-.42V9.06a.42.42 0 0 1 .42-.42h1.71a.42.42 0 0 1 0 .85h-1.28v.67h1.28z"/></svg>';
+$icoFb   = '<svg class="sns-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07C0 18.1 4.39 23.1 10.13 24v-8.44H7.08v-3.49h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.69.24 2.69.24v2.97h-1.52c-1.5 0-1.96.93-1.96 1.89v2.25h3.32l-.53 3.49h-2.79V24C19.61 23.1 24 18.1 24 12.07z"/></svg>';
+$icoLink = '<svg class="sns-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M3.9 12a3.1 3.1 0 0 1 3.1-3.1h4V7H7a5 5 0 0 0 0 10h4v-1.9H7A3.1 3.1 0 0 1 3.9 12zM8 13h8v-2H8v2zm9-6h-4v1.9h4a3.1 3.1 0 0 1 0 6.2h-4V17h4a5 5 0 0 0 0-10z"/></svg>';
+$shareUi = '<a class="share-btn x" target="_blank" rel="noopener" aria-label="Xでシェア" href="https://twitter.com/intent/tweet?text=' . $encTitle . '&url=' . $enc . '">' . $icoX . '<span>X</span></a>'
+    . '<a class="share-btn line" target="_blank" rel="noopener" aria-label="LINEでシェア" href="https://social-plugins.line.me/lineit/share?url=' . $enc . '">' . $icoLine . '<span>LINE</span></a>'
+    . '<a class="share-btn fb" target="_blank" rel="noopener" aria-label="Facebookでシェア" href="https://www.facebook.com/sharer/sharer.php?u=' . $enc . '">' . $icoFb . '<span>Facebook</span></a>'
+    . '<button class="share-btn copy" type="button" aria-label="リンクをコピー" data-url="' . h($postUrl) . '" onclick="if(navigator.clipboard){navigator.clipboard.writeText(this.dataset.url);var s=this.querySelector(\'span\');if(s)s.textContent=\'コピー済み\';}">' . $icoLink . '<span>コピー</span></button>';
 $reportedMsg = isset($_GET['reported']) ? '<p class="auth-ok">通報を受け付けました。ご協力ありがとうございます。</p>' : '';
 $reportUi = $me
     ? '<details class="report-box"><summary>⚠ この投稿を通報</summary>'
@@ -170,7 +172,8 @@ $cForm = $me
     ? '<form method="post" class="cmt-form"><input type="hidden" name="csrf" value="' . $token . '"><input type="hidden" name="do" value="comment">' . $hp . '<textarea name="comment" rows="3" maxlength="2000" placeholder="コメントを書く（会員のみ）" required></textarea><button type="submit" class="lp-btn lp-btn-primary">コメントする</button></form>'
     : '<p class="cmt-login"><a href="' . $prefix . 'member/login.php">ログイン</a>するとコメントできます。</p>';
 
-$crumb = '<nav class="post-breadcrumb"><a href="' . $prefix . '">トップ</a>'
+// 「トップ」はホームのコラム一覧（3.コラム）へ着地させる
+$crumb = '<nav class="post-breadcrumb"><a href="' . $prefix . 'index.html#columns">トップ</a>'
     . ($catName !== '' ? ' ／ <a href="' . h($catRel) . '">' . h($catName) . '</a>' : '')
     . '</nav>';
 $modDate = substr((string) ($post['updated_at'] ?? ''), 0, 10);
@@ -192,8 +195,7 @@ $body = <<<HTML
   {$gallery}
   {$faqHtml}
   {$tagsHtml}
-  <div class="post-actions">{$likeUi}{$bmUi}</div>
-  {$shareUi}
+  <div class="post-actions">{$likeUi}{$bmUi}{$shareUi}</div>
   {$reportUi}
   {$relatedHtml}
   <aside class="post-disclaimer">本記事は一般的な健康情報の提供を目的としたもので、医療上の診断・治療・助言に代わるものではありません。持病や体調に不安のある方は、運動を始める前に医師等の専門家にご相談ください。詳しくは<a href="{$prefix}editorial-policy.html">編集・監修ポリシー</a>をご覧ください。</aside>
@@ -263,4 +265,5 @@ member_render_page($prefix, $post['title'], $body, [
     'ogImage'   => $ogImage,
     'jsonld'    => $jsonld,
     'headExtra' => $artMeta,
+    'noCrumb'   => true,
 ]);

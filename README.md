@@ -4,7 +4,7 @@
 
 ウォーキングの**効果・効能**／**歩数別カロリー**／**正しい歩き方**／**歩いてポイ活**／**ウォーキングマシン**を扱う、コラム形式のSEO健康情報メディア。
 
-- 本番ドメイン: `https://aruku.dsystemsen.com`
+- 本番ドメイン: `https://aruku.ne.jp`
 - 配信: **動的PHP**（Xserver / PHPで稼働）
 - 運営: 株式会社D-SYSTEMS-EN
 
@@ -117,7 +117,7 @@ php -S localhost:8000
 
 ## デプロイ（Xserver）
 
-ローカルでの**ビルドは不要**です。以下を `aruku.dsystemsen.com` の公開ディレクトリへアップロードします。
+ローカルでの**ビルドは不要**です。以下を `aruku.ne.jp` の公開ディレクトリへアップロードします。
 
 - `index.php` / `render.php` / `articles.php` / `sitemap.php`
 - `column/`（`index.php` と `article.php`）
@@ -129,9 +129,9 @@ php -S localhost:8000
 手順:
 
 1. 上記ファイルをFTP等でアップロード。
-2. ブラウザで `https://aruku.dsystemsen.com/` を確認。
-3. `https://aruku.dsystemsen.com/column/` と任意の記事 `…/column/walking-effects.html` を確認。
-4. `https://aruku.dsystemsen.com/sitemap.xml` が表示されることを確認し、Google Search Console に登録。
+2. ブラウザで `https://aruku.ne.jp/` を確認。
+3. `https://aruku.ne.jp/column/` と任意の記事 `…/column/walking-effects.html` を確認。
+4. `https://aruku.ne.jp/sitemap.xml` が表示されることを確認し、Google Search Console に登録。
 
 > PHPバージョンは 7.4 以上（推奨 8.x）。Xserver のサーバーパネルで確認できます。
 > `.htaccess` の `<FilesMatch>` により `render.php` / `articles.php` への直接アクセスは禁止されます。

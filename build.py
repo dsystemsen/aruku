@@ -27,7 +27,7 @@ from articles import ARTICLES, CATEGORIES, CATEGORY_ORDER
 # サイト設定
 # ============================================================
 SITE = {
-    "url": "https://aruku.dsystemsen.com",
+    "url": "https://aruku.ne.jp",
     "brand": "aruku",
     "brand_ja": "アルク",
     "tagline": "歩くことを、もっと楽しく健康に。",

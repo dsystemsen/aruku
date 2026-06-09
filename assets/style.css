@@ -97,14 +97,15 @@ img, svg { max-width: 100%; }
   transition: box-shadow .25s, background .25s;
 }
 .lp-nav-inner {
-  max-width: var(--maxw);
-  margin: 0 auto;
-  padding: 20px 24px;
+  max-width: none;
+  margin: 0;
+  padding: 20px 32px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
 }
+.lp-nav-links { margin-left: auto; }
 .lp-brand {
   display: flex;
   align-items: center;
