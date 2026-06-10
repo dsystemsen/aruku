@@ -205,6 +205,7 @@ function head_html(string $prefix, string $title, string $desc, string $canonica
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7434781072719018" crossorigin="anonymous"></script>
 <title>{$title}</title>
 <meta name="description" content="{$desc}">
 {$rb}{$kw}<link rel="canonical" href="{$canonical}">
