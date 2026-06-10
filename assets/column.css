@@ -576,7 +576,8 @@
 .cat-chip:hover { background: var(--forest-100); border-color: var(--forest-300); transform: translateY(-1px); }
 
 /* note.com 風 カテゴリ別 横スクロールレール */
-.cat-rail-block { margin-bottom: 30px; }
+/* 画面外のレールは描画/レイアウトをスキップ（DOM保持のまま描画コスト削減・CLS無し・SEO影響なし）。 */
+.cat-rail-block { margin-bottom: 30px; content-visibility: auto; contain-intrinsic-size: auto 420px; }
 .cat-rail-block.is-empty { opacity: .96; }
 .cat-rail-empty { border: 1.5px dashed var(--line-2); border-radius: 16px; padding: 26px 22px; background: #fafcfb; color: var(--ink-2); font-size: .92rem; text-align: center; }
 .cat-rail-empty a { color: var(--forest-800); font-weight: 700; text-decoration: none; white-space: nowrap; }
