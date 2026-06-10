@@ -237,6 +237,7 @@ $jsonld = [
         'author' => ['@type' => 'Person', 'name' => $post['nickname'], 'url' => $siteUrl . '/u/' . (int) $post['member_id']],
         'image' => [$ogImage],
         'mainEntityOfPage' => $postUrl,
+        'speakable' => ['@type' => 'SpeakableSpecification', 'cssSelector' => ['.post-title', '.post-body']],
         'publisher' => [
             '@type' => 'Organization',
             'name' => 'あるく',

@@ -182,7 +182,9 @@ function head_html(string $prefix, string $title, string $desc, string $canonica
         header('Cache-Control: no-cache, must-revalidate, max-age=0');
         header('Expires: 0');
     }
-    $rb = $robots !== '' ? '<meta name="robots" content="' . $robots . '">' . "\n" : '';
+    // 既定（index系）は rich-result 拡張を付与。noindex系は渡された値をそのまま使う。
+    $robotsContent = $robots !== '' ? $robots : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1';
+    $rb = '<meta name="robots" content="' . $robotsContent . '">' . "\n";
     // フォントはメイリオ（端末ローカル）を使用するため Web フォントの読込は不要。
     $css = '<link rel="stylesheet" href="' . $prefix . 'assets/style.css?v=20260605">' . "\n"
         . '<link rel="stylesheet" href="' . $prefix . 'assets/column.css?v=20260605">' . "\n"
@@ -199,12 +201,23 @@ function head_html(string $prefix, string $title, string $desc, string $canonica
     }
     $nav = nav_html($prefix);
     $ogp = $ogImage !== '' ? $ogImage : $s['url'] . '/assets/ogp.png';
+    // 既定OG画像(ogp.png=1200×630)のときだけ寸法を明示（記事固有画像は実寸不明のため出さない）
+    $ogpDims = substr($ogp, -15) === '/assets/ogp.png'
+        ? "<meta property=\"og:image:width\" content=\"1200\">\n<meta property=\"og:image:height\" content=\"630\">\n"
+        : '';
+    // 公式Xアカウントから twitter:site を導出
+    $twSite = (!empty($s['x_url']) && preg_match('#(?:x\.com|twitter\.com)/@?([A-Za-z0-9_]+)#', $s['x_url'], $xm))
+        ? '<meta name="twitter:site" content="@' . $xm[1] . '">' . "\n"
+        : '';
     return <<<HTML
 <!doctype html>
 <html lang="ja">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://pagead2.googlesyndication.com" crossorigin>
+<link rel="preconnect" href="https://googleads.g.doubleclick.net" crossorigin>
+<link rel="dns-prefetch" href="https://googlesyndication.com">
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7434781072719018" crossorigin="anonymous"></script>
 <title>{$title}</title>
 <meta name="description" content="{$desc}">
@@ -215,13 +228,13 @@ function head_html(string $prefix, string $title, string $desc, string $canonica
 <meta property="og:description" content="{$desc}">
 <meta property="og:url" content="{$canonical}">
 <meta property="og:image" content="{$ogp}">
-<meta property="og:image:alt" content="あるく — 歩くことの総合メディア">
+{$ogpDims}<meta property="og:image:alt" content="あるく — 歩くことの総合メディア">
 <meta property="og:locale" content="ja_JP">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="{$title}">
 <meta name="twitter:description" content="{$desc}">
 <meta name="twitter:image" content="{$ogp}">
-<meta name="theme-color" content="#29b183">
+{$twSite}<meta name="theme-color" content="#29b183">
 {$headExtra}<link rel="icon" type="image/svg+xml" href="{$prefix}assets/logo.svg?v=20260605">
 {$css}
 {$ld}</head>

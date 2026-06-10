@@ -9,8 +9,11 @@
 - [あるくとは？](https://aruku.ne.jp/about-aruku.html): メディアの目的と特徴
 - [よくある質問（FAQ）](https://aruku.ne.jp/faq.html)
 - [運営者情報](https://aruku.ne.jp/about.html)
+- [編集・監修ポリシー](https://aruku.ne.jp/editorial-policy.html): YMYL免責・編集方針
+- [プライバシーポリシー](https://aruku.ne.jp/privacy.html)
+- [サイト内検索](https://aruku.ne.jp/search.html)
 
-## コラムのカテゴリ
+## カテゴリ
 - [効果・効能](https://aruku.ne.jp/category/koka.html)
 - [歩数・カロリー](https://aruku.ne.jp/category/calorie.html)
 - [正しい歩き方](https://aruku.ne.jp/category/howto.html)
@@ -31,18 +34,30 @@
 - [栄養・食事](https://aruku.ne.jp/category/nutrition.html)
 - [ストレッチ・ケガ予防](https://aruku.ne.jp/category/stretch.html)
 - [季節・天気の歩き方](https://aruku.ne.jp/category/season.html)
-- [その他](https://aruku.ne.jp/category/other.html)
 
-## 注目のコラム
-- [早歩きにしたら、消費カロリーはどれだけ変わる？](https://aruku.ne.jp/posts/101)
-- [ウォーキングを1ヶ月続けた記録](https://aruku.ne.jp/posts/2)
-- [早歩きの人は何が違う？心理・性格・寿命まで速い理由を徹底解説](https://aruku.ne.jp/posts/301)
-- [その他のコラム](https://aruku.ne.jp/posts/300)
-- [春のうららかな陽気を満喫 桜の開花に合わせたお花見ウォークの楽しみ方](https://aruku.ne.jp/posts/288)
-- [日照時間が短い冬を乗り切る 朝の光を浴びながら歩く心のメンテナンス](https://aruku.ne.jp/posts/287)
-- [季節の変わり目に体調を崩さない 寒暖差に合わせた歩く時間の調整法](https://aruku.ne.jp/posts/286)
-- [雪の日でも安全に歩く 凍結した道で転ばないための足元の工夫](https://aruku.ne.jp/posts/285)
+## 各カテゴリの代表コラム
+- [ウォーキングの効果・効能を徹底解説](https://aruku.ne.jp/posts/70) — 効果・効能
+- [1万歩、実際どれくらいカロリーを消費してるの？](https://aruku.ne.jp/posts/99) — 歩数・カロリー
+- [かかとから着地、つま先で蹴る——歩き方の基本を体で覚えるコツ](https://aruku.ne.jp/posts/109) — 正しい歩き方
+- [歩くだけでポイントが貯まる「歩数アプリ」入門ガイド](https://aruku.ne.jp/posts/119) — 歩いてポイ活
+- [雨の日はウォーキングマシンで](https://aruku.ne.jp/posts/3) — ウォーキングマシン
+- [朝の20分ウォーキングで一日の食欲がラクになる理由](https://aruku.ne.jp/posts/139) — ダイエット・減量
+- [失敗しないウォーキングシューズの選び方｜お店で5分チェックする7つのポイント](https://aruku.ne.jp/posts/149) — シューズ・ギア
+- [ウォーキングシューズの選び方｜失敗しないサイズと履き心地の見つけ方](https://aruku.ne.jp/posts/159) — ウェア・服装
+- [朝5分の「カーテン開けウォーク」から始める習慣化のコツ](https://aruku.ne.jp/posts/169) — 朝活・習慣化
+- [近所の川沿いをマイコースに。水辺の道が歩きやすい理由と続け方](https://aruku.ne.jp/posts/179) — コース・名所
+- [雨でも歩数が伸びる！室内ウォーキング「その場足踏み」完全ガイド](https://aruku.ne.jp/posts/189) — 室内・雨の日
+- [歩くだけで血圧がやさしく整う？「食後10分散歩」のはじめ方](https://aruku.ne.jp/posts/199) — 健康数値の改善
+- [モヤモヤした気分の日こそ「とりあえず10分だけ」歩いてみる](https://aruku.ne.jp/posts/209) — メンタル・ストレス
+- [膝が痛くてもあきらめない。シニアがラクに歩き続ける7つの工夫](https://aruku.ne.jp/posts/219) — シニアの歩行
+- [ベビーカー散歩を「親の運動」に変えるコツ。赤ちゃんと一緒に歩いて整える毎日](https://aruku.ne.jp/posts/229) — 親子・子ども
+- [ウォーキングを1ヶ月続けた記録](https://aruku.ne.jp/posts/2) — 体験談・継続のコツ
+- [歩数計アプリ、結局どれを選ぶ？はじめての一台の決め方](https://aruku.ne.jp/posts/249) — アプリ・歩数計
+- [歩く人のための「たんぱく質」入門ー一日にどれくらい必要？](https://aruku.ne.jp/posts/259) — 栄養・食事
+- [歩く前の3分でOK！「足首まわし」から始める準備運動のすすめ](https://aruku.ne.jp/posts/269) — ストレッチ・ケガ予防
+- [梅雨どきでも気持ちよく歩ける「雨の合間ウォーク」のすすめ](https://aruku.ne.jp/posts/279) — 季節・天気の歩き方
+- [その他のコラム](https://aruku.ne.jp/posts/300) — その他
 
-## その他
-- [プライバシーポリシー](https://aruku.ne.jp/privacy.html)
-- [サイトマップ（XML）](https://aruku.ne.jp/sitemap.xml)
+## 詳細
+- 全コラムの要約付き索引: [llms-full.txt](https://aruku.ne.jp/llms-full.txt)
+- サイトマップ: [sitemap.xml](https://aruku.ne.jp/sitemap.xml)
