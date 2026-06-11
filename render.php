@@ -1497,7 +1497,8 @@ HTML;
         $jsonld[] = ['@context' => 'https://schema.org', '@type' => 'FAQPage', 'mainEntity' => $faqLd];
     }
 
-    $head = head_html($prefix, $title, $desc, $url, '歩く カロリー,ウォーキング 消費カロリー,1万歩 カロリー,歩数 カロリー,消費カロリー 計算', $jsonld, 'website', 'index, follow');
+    $ogImg = $s['url'] . '/assets/walking-calorie.jpg';
+    $head = head_html($prefix, $title, $desc, $url, '歩く カロリー,ウォーキング 消費カロリー,1万歩 カロリー,歩数 カロリー,消費カロリー 計算', $jsonld, 'website', 'index, follow', $ogImg);
     $footer = footer_html($prefix);
     $crumb = breadcrumb_nav($prefix, '消費カロリー', true);
 
@@ -1513,6 +1514,10 @@ HTML;
     <h1>歩く・ウォーキングの消費カロリー<br><small>歩数別カロリー早見表＆無料計算ツール</small></h1>
     <p class="column-lead">「結局、何歩あるけば何kcal消費できるの？」——体重別の<strong>歩数別カロリー早見表</strong>と、早歩き・ジョギング・ランニングにも対応した<strong>消費カロリー計算ツール</strong>で、ウォーキングの消費カロリーがひと目で分かります。すべて無料・登録不要です。</p>
   </header>
+
+  <figure class="post-cover calorie-cover">
+    <img src="assets/walking-calorie.jpg" width="1600" height="840" alt="新緑の遊歩道をウォーキングする人。歩くことで消費カロリーを増やせる" fetchpriority="high" decoding="async">
+  </figure>
 
   <section class="section calorie-feature calorie-feature--page">
     <div class="section-inner">
