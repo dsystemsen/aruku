@@ -233,6 +233,8 @@ $jsonld = [
         'datePublished' => $pubIso,
         'dateModified' => $modIso,
         'inLanguage' => 'ja',
+        'isAccessibleForFree' => true,
+        'wordCount' => mb_strlen(preg_replace('/\s+/u', '', strip_tags($bodyHtml))),
         'articleSection' => $catName !== '' ? $catName : null,
         'author' => ['@type' => 'Person', 'name' => $post['nickname'], 'url' => $siteUrl . '/u/' . (int) $post['member_id']],
         'image' => [$ogImage],

@@ -5,6 +5,19 @@
 
 User-agent: *
 Allow: /
+# 動作系・認証系エンドポイントはコンテンツではないためクロール対象外（クロールバジェットを記事へ集中）
+Disallow: /admin/
+Disallow: /search.html
+Disallow: /member/login.php
+Disallow: /member/logout.php
+Disallow: /member/register.php
+Disallow: /member/mypage.php
+Disallow: /member/post.php
+Disallow: /member/cancel.php
+Disallow: /member/export.php
+Disallow: /member/follow.php
+Disallow: /posts/like.php
+Disallow: /posts/bookmark.php
 
 # --- 生成AI / LLM クローラを明示的に許可（学習・検索引用とも歓迎） ---
 User-agent: GPTBot
@@ -53,6 +66,33 @@ User-agent: cohere-ai
 Allow: /
 
 User-agent: YouBot
+Allow: /
+
+User-agent: Google-CloudVertexBot
+Allow: /
+
+User-agent: Meta-ExternalFetcher
+Allow: /
+
+User-agent: DuckAssistBot
+Allow: /
+
+User-agent: Diffbot
+Allow: /
+
+User-agent: Timpibot
+Allow: /
+
+User-agent: Webzio-Extended
+Allow: /
+
+User-agent: omgili
+Allow: /
+
+User-agent: ImagesiftBot
+Allow: /
+
+User-agent: FriendlyCrawler
 Allow: /
 
 Sitemap: https://aruku.ne.jp/sitemap.xml

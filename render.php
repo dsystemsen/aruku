@@ -222,6 +222,8 @@ function head_html(string $prefix, string $title, string $desc, string $canonica
 <title>{$title}</title>
 <meta name="description" content="{$desc}">
 {$rb}{$kw}<link rel="canonical" href="{$canonical}">
+<link rel="alternate" hreflang="ja" href="{$canonical}">
+<link rel="alternate" hreflang="x-default" href="{$canonical}">
 <meta property="og:type" content="{$og_type}">
 <meta property="og:site_name" content="あるく">
 <meta property="og:title" content="{$title}">
@@ -368,6 +370,13 @@ function render_article(string $slug): ?string
         ? '<a href="./' . $next_a['slug'] . '.html" class="column-nav-next">' . $next_a['title'] . ' →</a>'
         : '<span class="disabled">最新の記事です →</span>';
 
+    // 本文の文字数（日本語は文字数で近似）— wordCount 用
+    $plain = '';
+    foreach ($article['sections'] as $sec) {
+        $plain .= strip_tags($sec['body']);
+    }
+    $wordCount = mb_strlen(preg_replace('/\s+/u', '', $plain));
+
     // JSON-LD
     $jsonld = [
         [
@@ -375,7 +384,12 @@ function render_article(string $slug): ?string
             '@type'       => 'Article',
             'headline'    => $article['title'],
             'description' => $article['desc'],
-            'image'       => $s['url'] . '/assets/ogp.svg',
+            // ※ Article の image はラスター画像（PNG/JPG）が必須。SVG はリッチリザルト非対応。
+            'image'       => [$s['url'] . '/assets/ogp.png'],
+            'inLanguage'  => 'ja',
+            'articleSection' => $cat['name'],
+            'isAccessibleForFree' => true,
+            'wordCount'   => $wordCount,
             'author'      => [
                 '@type'    => 'Person',
                 'name'     => $s['author'],
@@ -385,12 +399,14 @@ function render_article(string $slug): ?string
             ],
             'publisher' => [
                 '@type' => 'Organization',
-                'name'  => $s['org'],
-                'logo'  => ['@type' => 'ImageObject', 'url' => $s['url'] . '/assets/logo.svg'],
+                'name'  => 'あるく',
+                'url'   => $s['url'] . '/',
+                'logo'  => ['@type' => 'ImageObject', 'url' => $s['url'] . '/assets/ogp.png', 'width' => 1200, 'height' => 630],
             ],
             'datePublished'    => $article['date'],
             'dateModified'     => $article['date'],
             'mainEntityOfPage' => ['@type' => 'WebPage', '@id' => $url],
+            'speakable'        => ['@type' => 'SpeakableSpecification', 'cssSelector' => ['.column-header h1', '.column-lead']],
         ],
         [
             '@context'        => 'https://schema.org',
@@ -1120,30 +1136,63 @@ function render_top(): string
         $i++;
     }
 
+    // エンティティグラフ（@id で WebSite ⇄ Organization ⇄ Person を相互参照）。
+    // 検索エンジン・生成AIにサイト主体と専門領域（knowsAbout）を明確に伝える＝AIO/LLMO 強化。
+    $orgId    = $url . '#organization';
+    $siteId   = $url . '#website';
+    $authorId = $url . 'about.html#author';
     $jsonld = [
         [
             '@context'    => 'https://schema.org',
             '@type'       => 'WebSite',
+            '@id'         => $siteId,
             'name'        => 'あるく',
+            'alternateName' => 'aruku',
             'url'         => $url,
             'description' => $desc,
             'inLanguage'  => 'ja',
-            'publisher'   => ['@type' => 'Organization', 'name' => 'あるく', 'url' => $url . '/'],
+            'publisher'   => ['@id' => $orgId],
             'potentialAction' => [
                 '@type'       => 'SearchAction',
-                'target'      => ['@type' => 'EntryPoint', 'urlTemplate' => $url . '/search.html?q={search_term_string}'],
+                'target'      => ['@type' => 'EntryPoint', 'urlTemplate' => $url . 'search.html?q={search_term_string}'],
                 'query-input' => 'required name=search_term_string',
             ],
         ],
         [
             '@context' => 'https://schema.org',
             '@type'    => 'Organization',
+            '@id'      => $orgId,
             'name'     => 'あるく',
             'alternateName' => '歩くことの総合メディア あるく',
-            'url'      => $url . '/',
-            'logo'     => ['@type' => 'ImageObject', 'url' => $url . '/assets/ogp.png', 'width' => 1200, 'height' => 630],
-            'sameAs'   => [$s['x_url']],
-            'publisher'=> ['@type' => 'Organization', 'name' => $s['org'], 'url' => $s['org_url']],
+            'url'      => $url,
+            'logo'     => ['@type' => 'ImageObject', 'url' => $url . 'assets/ogp.png', 'width' => 1200, 'height' => 630],
+            'image'    => $url . 'assets/ogp.png',
+            'description' => $s['description'],
+            'slogan'   => $s['tagline'],
+            'foundingDate' => '2026',
+            'areaServed'   => 'JP',
+            // 専門領域（トピック権威性）— 生成AIが「歩く・健康」分野の情報源として参照しやすくする
+            'knowsAbout' => [
+                'ウォーキング', '歩数', '消費カロリー', '正しい歩き方', 'ウォーキングダイエット',
+                '歩いてポイ活', 'ウォーキングマシン', '有酸素運動', '歩数計', '健康習慣',
+            ],
+            'sameAs'   => array_values(array_filter([$s['x_url'], $s['org_url']])),
+            'contactPoint' => [
+                '@type' => 'ContactPoint',
+                'contactType' => 'customer support',
+                'url' => $url . 'about.html',
+                'availableLanguage' => ['Japanese'],
+            ],
+            'parentOrganization' => ['@type' => 'Organization', 'name' => $s['org'], 'url' => $s['org_url']],
+        ],
+        [
+            '@context' => 'https://schema.org',
+            '@type'    => 'Person',
+            '@id'      => $authorId,
+            'name'     => $s['author'],
+            'jobTitle' => '代表取締役',
+            'worksFor' => ['@id' => $orgId],
+            'url'      => $url . 'about.html',
         ],
     ];
 
