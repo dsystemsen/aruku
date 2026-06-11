@@ -42,6 +42,9 @@ DirectoryIndex index.php index.html
     # コラム一覧 /column/index.html → column/index.php
     RewriteRule ^column/index\.html$ column/index.php [L]
 
+    # 個別コラム記事 /column/<slug>.html → column/article.php?slug=<slug>（無効slugはrenderer側で404）
+    RewriteRule ^column/([a-z0-9-]+)\.html$ column/article.php?slug=$1 [L,QSA]
+
     # 情報ページ
     RewriteRule ^about-aruku\.html$ aboutaruku.php [L]
     RewriteRule ^faq\.html$ faq.php [L]

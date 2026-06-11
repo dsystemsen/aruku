@@ -447,6 +447,7 @@ function render_article(string $slug): ?string
     $footer    = footer_html($prefix);
     $author      = $s['author'];
     $author_role = $s['author_role'];
+    $cat_back    = $article['cat']; // 「コラム一覧」戻り先＝同カテゴリのページ
 
     $body = <<<HTML
 <article class="column-article">
@@ -475,7 +476,7 @@ function render_article(string $slug): ?string
 
   <nav class="column-nav-prevnext">
     {$prev_html}
-    <a href="./" class="column-nav-back">コラム一覧</a>
+    <a href="../category/{$cat_back}.html" class="column-nav-back">コラム一覧</a>
     {$next_html}
   </nav>
 
@@ -856,11 +857,41 @@ function render_category_columns(string $cat): string
     $feed = $cards
         ? '<div class="note-feed">' . $cards . '</div>'
         : '<p class="rail-empty">このカテゴリのコラムはまだありません。<a href="' . $prefix . 'member/post.php">最初のコラムを書いてみませんか？ →</a></p>';
+
+    // 編集部の特集記事（CMS記事＝5本柱）。会員投稿の上に表示し、記事ページへ内部リンク。
+    $d = aruku_data();
+    $editArts = $d['cat_lists'][$cat] ?? [];
+    $editSection = '';
+    $editItems = [];
+    if ($editArts) {
+        $ecards = '';
+        foreach ($editArts as $i => $a) {
+            $sub = $a['subtitle'] ?? '';
+            $ecards .= '<a href="' . $prefix . 'column/' . $a['slug'] . '.html" class="column-card">'
+                . '<div class="column-thumb">' . thumb_svg($a, 'edit' . $cat . $i) . '</div>'
+                . '<div class="column-card-body">'
+                . '<span class="column-card-num">' . $emoji . ' 編集部</span>'
+                . '<h3>' . h($a['title']) . '</h3>'
+                . '<p>' . h($sub) . '</p>'
+                . '</div></a>';
+            $editItems[] = $s['url'] . '/column/' . $a['slug'] . '.html';
+        }
+        $editSection = '<section class="column-cat-section reveal"><h2 class="column-cat-title"><span class="cat-emoji">📚</span>編集部の特集記事</h2>'
+            . '<p class="column-cat-desc">「' . h($name) . '」をくわしく掘り下げた、編集部のコラムです。</p>'
+            . '<div class="column-cards-grid">' . $ecards . '</div></section>';
+    }
+    $feedHeader = $cards
+        ? '<h2 class="column-cat-title"><span class="cat-emoji">📝</span>みんなのコラム</h2>'
+        : '';
+
     $catNav = aruku_category_nav($prefix, $cat);
     $title = $name . '｜あるく コラム';
     $desc = '「' . $name . '」に関するコラム一覧（' . $count . '本）。';
     $listItems = [];
     $i = 1;
+    foreach ($editArts as $a) {
+        $listItems[] = ['@type' => 'ListItem', 'position' => $i++, 'url' => $s['url'] . '/column/' . $a['slug'] . '.html', 'name' => $a['title']];
+    }
     foreach ($pp as $p) {
         $listItems[] = ['@type' => 'ListItem', 'position' => $i++, 'url' => $s['url'] . '/posts/' . (int) $p['id'], 'name' => $p['title']];
     }
@@ -895,6 +926,8 @@ function render_category_columns(string $cat): string
 <div class="column-layout">
   <aside class="column-side">{$catNav}</aside>
   <div class="column-main column-article">
+    {$editSection}
+    {$feedHeader}
     {$feed}
   </div>
 </div>
@@ -1122,7 +1155,7 @@ function render_top(): string
     $pillars = '';
     foreach ($d['order'] as $c) {
         $cat = $d['cats'][$c];
-        $pillars .= '<a href="column/index.html#' . $c . '" class="pillar-card">'
+        $pillars .= '<a href="category/' . $c . '.html" class="pillar-card">'
             . '<div class="pillar-icon">' . $cat['emoji'] . '</div>'
             . '<h3>' . $cat['name'] . '</h3>'
             . '<p>' . $cat['desc'] . '</p>'
@@ -1649,6 +1682,11 @@ function render_sitemap(): string
     // カテゴリ一覧ページ
     foreach (array_keys(aruku_post_categories()) as $ck) {
         $urls[] = [$s['url'] . '/category/' . $ck . '.html', $today, '0.7'];
+    }
+    // 編集部コラム（CMS記事＝5本柱の評価記事）
+    foreach ($d['articles'] as $a) {
+        $lm = substr((string) ($a['date'] ?? ''), 0, 10);
+        $urls[] = [$s['url'] . '/column/' . $a['slug'] . '.html', ($lm !== '' ? $lm : $today), '0.7'];
     }
     // 公開済みの会員投稿
     foreach (posts_published(1000) as $pp) {
