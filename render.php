@@ -151,6 +151,7 @@ function footer_html(string $prefix): string
     </div>
     <nav class="lp-footer-links">
       <a href="{$prefix}index.html">トップ</a>
+      <a href="{$prefix}calorie-table.html">消費カロリー</a>
       <a href="{$prefix}about.html">運営者情報</a>
       <a href="{$prefix}privacy.html">プライバシーポリシー</a>
       <a href="{$prefix}editorial-policy.html">編集・監修ポリシー</a>
@@ -805,8 +806,8 @@ function render_column_index(): string
       <h2>まずはここから</h2>
       <p>「何歩でどれくらい消費するの？」が気になる方は、まず歩数別カロリー表をチェック。歩くことの全体像は効果・効能ガイドからどうぞ。</p>
       <div class="column-cta">
-        <a href="./calorie-table.html" class="lp-btn lp-btn-primary">歩数別カロリー表</a>
-        <a href="./walking-effects.html" class="lp-btn lp-btn-secondary">ウォーキングの効果・効能</a>
+        <a href="../calorie-table.html" class="lp-btn lp-btn-primary">歩数別カロリー表</a>
+        <a href="../category/koka.html" class="lp-btn lp-btn-secondary">ウォーキングの効果・効能</a>
       </div>
     </section>
   </div>
@@ -1330,6 +1331,7 @@ HTML;
       </div>
       <p class="calc-note">※ 計算式：METs × 体重(kg) × 時間(h) × 1.05 ×（性別係数）。<br>※一般的な時速・METs（早歩き5.0／ジョギング8.3／ランニング10.0）を用いた目安です。<br>性別係数：男性1.00／女性0.95。</p>
     </div>
+    <p class="calc-more"><a href="calorie-table.html" class="lp-btn lp-btn-secondary">歩数別カロリー早見表＆計算ツールの詳細を見る →</a></p>
     <script>
     (function(){
       var a=document.getElementById('calc-activity'),s=document.getElementById('calc-sex'),
@@ -1353,6 +1355,202 @@ HTML;
     {$columnFeed}
   </div>
 </section>
+
+{$footer}
+<script src="assets/app.js?v=20260610" defer></script>
+</body>
+</html>
+HTML;
+    return $head . $body;
+}
+
+// ============================================================
+// 消費カロリー専用ハブページ — /calorie-table.html
+//   「歩く カロリー / ウォーキング 消費カロリー / 1万歩 カロリー」の着地ページ。
+//   早見表（CMS calorie-table を流用）＋計算ツール＋計算式＋FAQ＋構造化データ。
+// ============================================================
+function render_calorie(): string
+{
+    require_once __DIR__ . '/inc/member.php'; // h()
+    $s = site();
+    $prefix = '';
+    $url = $s['url'] . '/calorie-table.html';
+    $title = '歩く・ウォーキングの消費カロリー｜歩数別カロリー早見表＆計算ツール｜あるく';
+    $desc = '歩く・ウォーキングの消費カロリーを歩数別・体重別の早見表と無料の計算ツールで確認。1,000歩〜2万歩、体重40〜90kgの目安、「1万歩＝約300kcal」の計算式、早歩き・ジョギング・ランニング別の消費kcalまで分かりやすく解説します。';
+
+    $d = aruku_data();
+    $ct = $d['by_slug']['calorie-table'] ?? null;
+
+    // 早見表（CMS calorie-table の各セクションを流用＝管理画面の編集に自動追従）
+    $tableBody = $ct['sections'][0]['body'] ?? '';
+    $formulaBody = $ct['sections'][1]['body'] ?? '';
+    $tipsBody = $ct['sections'][2]['body'] ?? '';
+
+    $calorie_panel = '';
+    if ($tableBody !== '') {
+        $calorie_panel = <<<HTML
+    <div class="calorie-panel reveal">
+      <div class="calorie-panel-top">
+        <p class="calorie-formula">消費kcal <b>≒</b> 歩数 <b>×</b> 体重<small>kg</small> <b>×</b> 0.0005</p>
+      </div>
+      {$tableBody}
+    </div>
+HTML;
+    }
+
+    // 消費カロリー計算ツール（体重・時間プルダウン）
+    $wOpts = '';
+    for ($kg = 40; $kg <= 150; $kg += 5) {
+        $sel = $kg === 60 ? ' selected' : '';
+        $wOpts .= '<option value="' . $kg . '"' . $sel . '>' . $kg . 'kg</option>';
+    }
+    $tOpts = '';
+    foreach ([10, 20, 30, 40, 50, 60, 90, 120] as $m) {
+        $sel = $m === 30 ? ' selected' : '';
+        $tOpts .= '<option value="' . $m . '"' . $sel . '>' . $m . '分</option>';
+    }
+
+    // FAQ（CMS calorie-table の Q&A を流用）
+    $faqHtml = '';
+    $faqLd = [];
+    if (!empty($ct['faq'])) {
+        $items = '';
+        foreach ($ct['faq'] as $qa) {
+            [$q, $a] = $qa;
+            $items .= '<details class="column-faq-item"><summary>' . h($q) . '</summary><div class="column-faq-a">' . h($a) . '</div></details>';
+            $faqLd[] = ['@type' => 'Question', 'name' => $q, 'acceptedAnswer' => ['@type' => 'Answer', 'text' => $a]];
+        }
+        $faqHtml = '<section class="column-section" id="faq"><h2>よくある質問</h2><div class="column-faq">' . $items . '</div></section>';
+    }
+
+    // 構造化データ：計算ツール(WebApplication)＋FAQ＋パンくず
+    $jsonld = [
+        [
+            '@context'             => 'https://schema.org',
+            '@type'                => 'WebApplication',
+            'name'                 => '消費カロリー計算ツール（ウォーキング）',
+            'description'          => '歩く速度・性別・体重・運動時間から、ウォーキング／早歩き／ジョギング／ランニングの推定消費カロリーを計算する無料ツールです。',
+            'url'                  => $url . '#calc',
+            'applicationCategory'  => 'HealthApplication',
+            'operatingSystem'      => 'All',
+            'browserRequirements'  => 'Requires JavaScript',
+            'inLanguage'           => 'ja',
+            'isAccessibleForFree'  => true,
+            'offers'               => ['@type' => 'Offer', 'price' => '0', 'priceCurrency' => 'JPY'],
+            'publisher'            => ['@type' => 'Organization', 'name' => 'あるく', 'url' => $s['url'] . '/'],
+        ],
+        [
+            '@context'        => 'https://schema.org',
+            '@type'           => 'BreadcrumbList',
+            'itemListElement' => [
+                ['@type' => 'ListItem', 'position' => 1, 'name' => 'あるく', 'item' => $s['url'] . '/'],
+                ['@type' => 'ListItem', 'position' => 2, 'name' => '歩く・ウォーキングの消費カロリー'],
+            ],
+        ],
+    ];
+    if ($faqLd) {
+        $jsonld[] = ['@context' => 'https://schema.org', '@type' => 'FAQPage', 'mainEntity' => $faqLd];
+    }
+
+    $head = head_html($prefix, $title, $desc, $url, '歩く カロリー,ウォーキング 消費カロリー,1万歩 カロリー,歩数 カロリー,消費カロリー 計算', $jsonld, 'website', 'index, follow');
+    $footer = footer_html($prefix);
+    $crumb = breadcrumb_nav($prefix, '消費カロリー', true);
+
+    // 計算式・コツのセクション（CMS本文があれば差し込む）
+    $formulaSection = $formulaBody !== '' ? '<section class="column-section" id="formula"><h2>消費カロリーの計算式</h2>' . $formulaBody . '</section>' : '';
+    $tipsSection = $tipsBody !== '' ? '<section class="column-section" id="tips"><h2>消費カロリーを効率よく増やすコツ</h2>' . $tipsBody . '</section>' : '';
+
+    $body = <<<HTML
+{$crumb}
+<article class="column-article calorie-page">
+  <header class="column-header">
+    <span class="column-cat-badge">🔥 消費カロリー</span>
+    <h1>歩く・ウォーキングの消費カロリー<br><small>歩数別カロリー早見表＆無料計算ツール</small></h1>
+    <p class="column-lead">「結局、何歩あるけば何kcal消費できるの？」——体重別の<strong>歩数別カロリー早見表</strong>と、早歩き・ジョギング・ランニングにも対応した<strong>消費カロリー計算ツール</strong>で、ウォーキングの消費カロリーがひと目で分かります。すべて無料・登録不要です。</p>
+  </header>
+
+  <section class="section calorie-feature calorie-feature--page">
+    <div class="section-inner">
+      <div class="section-head section-head--left reveal">
+        <span class="section-eyebrow">STEP 1</span>
+        <h2>歩数別・消費カロリー早見表（ウォーキング）</h2>
+      </div>
+      {$calorie_panel}
+
+      <div class="section-head section-head--left reveal" id="calc" style="margin-top:56px; scroll-margin-top:90px;">
+        <span class="section-eyebrow">STEP 2</span>
+        <h2>消費カロリー計算ツール<br>（早歩き・ジョギング・ランニング）</h2>
+      </div>
+      <div class="calc-tool reveal">
+        <div class="calc-grid">
+          <label class="calc-field">
+            <span>運動の種類</span>
+            <select id="calc-activity">
+              <option value="3.5|4.0">ふつうの歩行（時速約4km）</option>
+              <option value="5.0|6.5" selected>早歩き（時速約6.5km）</option>
+              <option value="8.3|8">ジョギング（時速約8km）</option>
+              <option value="10.0|10">ランニング（時速約10km）</option>
+            </select>
+          </label>
+          <label class="calc-field">
+            <span>性別</span>
+            <select id="calc-sex">
+              <option value="1.0">男性</option>
+              <option value="0.95">女性</option>
+            </select>
+          </label>
+          <label class="calc-field">
+            <span>体重</span>
+            <select id="calc-weight">{$wOpts}</select>
+          </label>
+          <label class="calc-field">
+            <span>運動時間</span>
+            <select id="calc-time">{$tOpts}</select>
+          </label>
+        </div>
+        <div class="calc-result">
+          <span class="calc-result-label">推定消費カロリー</span>
+          <span class="calc-result-value"><b id="calc-kcal">—</b> kcal</span>
+          <span class="calc-result-sub" id="calc-distance"></span>
+        </div>
+        <p class="calc-note">※ 計算式：METs × 体重(kg) × 時間(h) × 1.05 ×（性別係数）。<br>※一般的な時速・METs（歩行3.5／早歩き5.0／ジョギング8.3／ランニング10.0）を用いた目安です。<br>性別係数：男性1.00／女性0.95。</p>
+      </div>
+      <script>
+      (function(){
+        var a=document.getElementById('calc-activity'),s=document.getElementById('calc-sex'),
+            w=document.getElementById('calc-weight'),t=document.getElementById('calc-time'),
+            out=document.getElementById('calc-kcal'),dist=document.getElementById('calc-distance');
+        if(!a){return;}
+        function calc(){
+          var p=a.value.split('|'),met=parseFloat(p[0]),speed=parseFloat(p[1]);
+          var sex=parseFloat(s.value),wt=parseFloat(w.value),min=parseFloat(t.value),h=min/60;
+          var kcal=met*wt*h*1.05*sex;
+          out.textContent=Math.round(kcal);
+          dist.textContent='（歩く・走る距離の目安：約'+(speed*h).toFixed(1)+'km）';
+        }
+        [a,s,w,t].forEach(function(el){el.addEventListener('change',calc);});
+        calc();
+      })();
+      </script>
+    </div>
+  </section>
+
+  {$formulaSection}
+
+  {$tipsSection}
+
+  {$faqHtml}
+
+  <section class="column-section column-conclusion">
+    <h2>記録すれば、消費カロリーは自動で積み上がる</h2>
+    <p>会員登録（無料）すると、体重・運動の種類・時間を入力するだけで<strong>消費カロリーを自動計算・累計</strong>できます。毎日の小さな一歩が、数字になって見えてきます。</p>
+    <div class="column-cta">
+      <a href="member/register.php" class="lp-btn lp-btn-primary">無料で記録を始める →</a>
+      <a href="category/calorie.html" class="lp-btn lp-btn-secondary">カロリー関連コラムを読む</a>
+    </div>
+    <p class="column-cta-note">※ 本ページの数値は一般的な簡易式・METsに基づく<strong>目安</strong>であり、医療行為・診断ではありません。体質・歩き方・環境により前後します。</p>
+  </section>
+</article>
 
 {$footer}
 <script src="assets/app.js?v=20260610" defer></script>
@@ -1428,6 +1626,7 @@ function render_sitemap(): string
     $today = date('Y-m-d');
     $urls = [
         [$s['url'] . '/', $today, '1.0'],
+        [$s['url'] . '/calorie-table.html', $today, '0.9'],
         [$s['url'] . '/about-aruku.html', $today, '0.6'],
         [$s['url'] . '/faq.html', $today, '0.5'],
         [$s['url'] . '/editorial-policy.html', $today, '0.4'],

@@ -36,6 +36,9 @@ DirectoryIndex index.php index.html
     # サイトマップ /sitemap.xml → sitemap.php
     RewriteRule ^sitemap\.xml$ sitemap.php [L]
 
+    # 消費カロリー専用ハブ /calorie-table.html → calorie.php（動的描画）
+    RewriteRule ^calorie-table\.html$ calorie.php [L]
+
     # コラム一覧 /column/index.html → column/index.php
     RewriteRule ^column/index\.html$ column/index.php [L]
 
