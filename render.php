@@ -1054,12 +1054,18 @@ function render_faq_page(): string
 {
     $s = site();
     $prefix = '';
-    $title = 'よくある質問（FAQ）｜あるく';
-    $desc = '「あるく」のよくある質問。料金・会員機能・コラム・消費カロリーの目安などにお答えします。';
+    $title = '歩く・健康のよくある質問（FAQ）｜あるく';
+    $desc = '歩くことと健康についてのよくある質問。ウォーキングの健康効果、1日の目標歩数、続け方、朝と夜の違い、料金・会員機能・消費カロリーの目安まで、「あるく」と歩く健康習慣のギモンにお答えします。';
     $faqLd = [[
         '@context' => 'https://schema.org',
         '@type' => 'FAQPage',
         'mainEntity' => [
+            ['@type' => 'Question', 'name' => '歩くと健康にどんな効果がありますか？', 'acceptedAnswer' => ['@type' => 'Answer', 'text' => 'ウォーキングには、脂肪燃焼によるダイエット効果、血圧・血糖値の改善、心肺機能の向上、骨や筋力の維持、ストレス軽減や睡眠の質アップなど、心と体の幅広い健康効果が期待できます。特別な道具がいらず、誰でも今日から始められるのが最大の魅力です。']],
+            ['@type' => 'Question', 'name' => '1日何歩あるけば健康にいいですか？', 'acceptedAnswer' => ['@type' => 'Answer', 'text' => '一般的な目安は1日8,000歩・週合計150分の活動です。1万歩を目標にする方も多いですが、もともと歩数が少ない人ほど、少し増やすだけで健康効果が大きいとされています。まずは今より1,000歩多く歩くことから始めてみましょう。']],
+            ['@type' => 'Question', 'name' => '毎日歩かないと健康効果はありませんか？', 'acceptedAnswer' => ['@type' => 'Answer', 'text' => '毎日でなくても、週の合計時間が確保できれば効果は期待できます。10分×3回のこま切れウォーキングでも、まとめて30分歩くのとほぼ同じ効果があるとされています。続けやすい形で習慣にすることが一番大切です。']],
+            ['@type' => 'Question', 'name' => '運動が苦手でも、歩くだけで健康になれますか？', 'acceptedAnswer' => ['@type' => 'Answer', 'text' => 'はい。ウォーキングは強度を自分で調整できる有酸素運動で、運動が苦手な方にもおすすめです。「少し息が弾む」程度の早歩きを取り入れると、無理なく健康効果を高められます。'] ],
+            ['@type' => 'Question', 'name' => '朝と夜、健康のために歩くならどちらがいいですか？', 'acceptedAnswer' => ['@type' => 'Answer', 'text' => 'どちらにも利点があります。朝の歩行は生活リズムが整い目覚めが良くなり、夜（食後30〜60分）の歩行は血糖値対策に向いています。大切なのは時間帯よりも継続です。自分の生活に合うタイミングを選びましょう。']],
+            ['@type' => 'Question', 'name' => '高齢者や運動不足の人が歩いても大丈夫ですか？', 'acceptedAnswer' => ['@type' => 'Answer', 'text' => 'ウォーキングは年齢を問わず取り組みやすい運動ですが、持病のある方・治療中の方・長く運動していなかった方は、始める前に医師にご相談ください。本サイトの情報は一般的な健康情報であり、医療行為・診断ではありません。']],
             ['@type' => 'Question', 'name' => 'あるくは無料で使えますか？', 'acceptedAnswer' => ['@type' => 'Answer', 'text' => 'はい。コラムの閲覧も、歩数別カロリー早見表・計算ツールも無料でご利用いただけます。会員登録も無料です。']],
             ['@type' => 'Question', 'name' => '会員登録すると何ができますか？', 'acceptedAnswer' => ['@type' => 'Answer', 'text' => '体重・運動の記録から消費カロリーを自動で計算・累計できます。コラムの投稿、いいね、コメント、保存などのコミュニティ機能もご利用いただけます。']],
             ['@type' => 'Question', 'name' => 'コラムは誰が書いていますか？', 'acceptedAnswer' => ['@type' => 'Answer', 'text' => '編集部のほか、会員のみなさんも投稿しています。投稿されたコラムは、公開前に内容を確認しています。']],
@@ -1075,8 +1081,14 @@ function render_faq_page(): string
 {$crumb}
 <section class="about-section about-faq reveal" id="faq">
   <div class="about-inner">
-    <h1 class="about-title">よくある質問（FAQ）</h1>
-    <p class="about-lead">「あるく」についてよくいただくご質問をまとめました。</p>
+    <h1 class="about-title">歩く・健康のよくある質問（FAQ）</h1>
+    <p class="about-lead">歩くことと健康、そして「あるく」の使い方について、よくいただくご質問をまとめました。ウォーキングの健康効果や1日の目標歩数など、歩く健康習慣のギモン解消にお役立てください。</p>
+    <details class="column-faq-item"><summary>歩くと健康にどんな効果がありますか？</summary><div class="column-faq-a">ウォーキングには、脂肪燃焼によるダイエット効果、血圧・血糖値の改善、心肺機能の向上、骨や筋力の維持、ストレス軽減や睡眠の質アップなど、心と体の幅広い健康効果が期待できます。特別な道具がいらず、誰でも今日から始められるのが最大の魅力です。</div></details>
+    <details class="column-faq-item"><summary>1日何歩あるけば健康にいいですか？</summary><div class="column-faq-a">一般的な目安は1日8,000歩・週合計150分の活動です。1万歩を目標にする方も多いですが、もともと歩数が少ない人ほど、少し増やすだけで健康効果が大きいとされています。まずは今より1,000歩多く歩くことから始めてみましょう。歩数ごとの目安は<a href="calorie-table.html">歩数別カロリー早見表</a>で確認できます。</div></details>
+    <details class="column-faq-item"><summary>毎日歩かないと健康効果はありませんか？</summary><div class="column-faq-a">毎日でなくても、週の合計時間が確保できれば効果は期待できます。10分×3回のこま切れウォーキングでも、まとめて30分歩くのとほぼ同じ効果があるとされています。続けやすい形で習慣にすることが一番大切です。</div></details>
+    <details class="column-faq-item"><summary>運動が苦手でも、歩くだけで健康になれますか？</summary><div class="column-faq-a">はい。ウォーキングは強度を自分で調整できる有酸素運動で、運動が苦手な方にもおすすめです。「少し息が弾む」程度の早歩きを取り入れると、無理なく健康効果を高められます。</div></details>
+    <details class="column-faq-item"><summary>朝と夜、健康のために歩くならどちらがいいですか？</summary><div class="column-faq-a">どちらにも利点があります。朝の歩行は生活リズムが整い目覚めが良くなり、夜（食後30〜60分）の歩行は血糖値対策に向いています。大切なのは時間帯よりも継続です。自分の生活に合うタイミングを選びましょう。</div></details>
+    <details class="column-faq-item"><summary>高齢者や運動不足の人が歩いても大丈夫ですか？</summary><div class="column-faq-a">ウォーキングは年齢を問わず取り組みやすい運動ですが、持病のある方・治療中の方・長く運動していなかった方は、始める前に医師にご相談ください。本サイトの情報は一般的な健康情報であり、医療行為・診断ではありません。詳しくは<a href="editorial-policy.html">編集・監修ポリシー</a>をご覧ください。</div></details>
     <details class="column-faq-item"><summary>あるくは無料で使えますか？</summary><div class="column-faq-a">はい。コラムの閲覧も、歩数別カロリー早見表・計算ツールも無料でご利用いただけます。会員登録も無料です。</div></details>
     <details class="column-faq-item"><summary>会員登録すると何ができますか？</summary><div class="column-faq-a">体重・運動の記録から消費カロリーを自動で計算・累計できます。さらにコラムの投稿、いいね、コメント、保存（ブックマーク）などのコミュニティ機能もご利用いただけます。</div></details>
     <details class="column-faq-item"><summary>コラムは誰が書いていますか？</summary><div class="column-faq-a">編集部のほか、会員のみなさんも投稿しています。投稿されたコラムは、公開前に内容を確認しています。</div></details>
