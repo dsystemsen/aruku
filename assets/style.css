@@ -984,6 +984,16 @@ img, svg { max-width: 100%; }
   color: #bdf3d8;
   letter-spacing: .03em;
 }
+/* モバイル：ブランドを上、リンクは左寄せの折り返し横並びにして右端の見切れを防ぐ */
+@media (max-width: 720px) {
+  .lp-footer-inner { flex-direction: column; gap: 20px; }
+  .lp-footer-links {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 12px 20px;
+  }
+}
 
 /* ===== ユーティリティ ===== */
 .text-center { text-align: center; }
