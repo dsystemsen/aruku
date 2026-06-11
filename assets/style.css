@@ -995,6 +995,19 @@ img, svg { max-width: 100%; }
   }
 }
 
+/* ===== カロリーページ：オレンジ系アクセントをすべて緑に統一 ===== */
+.calorie-page .section-eyebrow { color: var(--forest-700); }
+.calorie-page .calorie-formula b { color: var(--forest-700); }
+.calorie-page .column-callout { border-left-color: var(--forest-600); }
+.calorie-page .column-section ul li::marker,
+.calorie-page .column-section ol li::marker { color: var(--forest-600); }
+.calorie-page .column-note { background: var(--forest-100); border-left-color: var(--forest-600); }
+.calorie-page .column-faq-item summary::before { color: var(--forest-700); }
+.calorie-page .column-section a { color: var(--forest-700); }
+.calorie-page .column-section a:hover { color: var(--forest-800); }
+/* 1万歩行のハイライト（インラインの薄オレンジ #fff7ed）を薄緑へ上書き */
+.calorie-page .calorie-panel .column-table tbody tr[style] { background: var(--forest-100) !important; }
+
 /* ===== ユーティリティ ===== */
 .text-center { text-align: center; }
 .mt-32 { margin-top: 36px; }
