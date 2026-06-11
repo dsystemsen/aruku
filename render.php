@@ -1586,15 +1586,7 @@ HTML;
 
   {$faqHtml}
 
-  <section class="column-section column-conclusion">
-    <h2>記録すれば、消費カロリーは自動で積み上がる</h2>
-    <p>会員登録（無料）すると、体重・運動の種類・時間を入力するだけで<strong>消費カロリーを自動計算・累計</strong>できます。毎日の小さな一歩が、数字になって見えてきます。</p>
-    <div class="column-cta">
-      <a href="member/register.php" class="lp-btn lp-btn-primary">無料で記録を始める →</a>
-      <a href="category/calorie.html" class="lp-btn lp-btn-secondary">カロリー関連コラムを読む</a>
-    </div>
-    <p class="column-cta-note">※ 本ページの数値は一般的な簡易式・METsに基づく<strong>目安</strong>であり、医療行為・診断ではありません。体質・歩き方・環境により前後します。</p>
-  </section>
+  <p class="column-cta-note">※ 本ページの数値は一般的な簡易式・METsに基づく<strong>目安</strong>であり、医療行為・診断ではありません。体質・歩き方・環境により前後します。</p>
 </article>
 
 {$footer}
