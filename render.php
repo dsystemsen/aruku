@@ -183,8 +183,12 @@ function head_html(string $prefix, string $title, string $desc, string $canonica
         header('Cache-Control: no-cache, must-revalidate, max-age=0');
         header('Expires: 0');
     }
-    // 既定（index系）は rich-result 拡張を付与。noindex系は渡された値をそのまま使う。
+    // 既定（index系）は rich-result 拡張を付与。
     $robotsContent = $robots !== '' ? $robots : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1';
+    // index系で拡張ディレクティブ未指定なら自動付与（全ページで統一）。noindex系はそのまま。
+    if (stripos($robotsContent, 'noindex') === false && stripos($robotsContent, 'max-image-preview') === false) {
+        $robotsContent .= ', max-image-preview:large, max-snippet:-1, max-video-preview:-1';
+    }
     $rb = '<meta name="robots" content="' . $robotsContent . '">' . "\n";
     // フォントはメイリオ（端末ローカル）を使用するため Web フォントの読込は不要。
     $css = '<link rel="stylesheet" href="' . $prefix . 'assets/style.css?v=20260613c">' . "\n"
@@ -1054,7 +1058,15 @@ function render_aboutaruku(): string
     $prefix = '';
     $title = 'あるくとは？｜あるく';
     $desc = '「あるく」は歩くことの総合メディア。歩数別カロリー・コラム・記録機能など、サービスの特長をご紹介します。';
-    $head = head_html($prefix, $title, $desc, $s['url'] . '/about-aruku.html', '', null, 'website', 'index, follow');
+    $jsonld = [[
+        '@context' => 'https://schema.org',
+        '@type' => 'BreadcrumbList',
+        'itemListElement' => [
+            ['@type' => 'ListItem', 'position' => 1, 'name' => 'あるく', 'item' => $s['url'] . '/'],
+            ['@type' => 'ListItem', 'position' => 2, 'name' => 'あるくとは？'],
+        ],
+    ]];
+    $head = head_html($prefix, $title, $desc, $s['url'] . '/about-aruku.html', '', $jsonld, 'website', 'index, follow');
     $footer = footer_html($prefix);
     $crumb = breadcrumb_nav($prefix, 'あるくとは？', true);
     $body = <<<HTML
@@ -1198,7 +1210,15 @@ function render_board(): string
     $prefix = '';
     $title = 'みんなのつぶやき掲示板';
     $desc = '「あるく」ことのなんでもOKなつぶやき掲示板。ログインも登録もいらず、だれでも気軽に、今日の一歩や見つけた景色をシェアできます。';
-    $head = head_html($prefix, $title . '｜あるく', $desc, $s['url'] . '/board.html', '', null, 'website', 'index, follow');
+    $jsonld = [[
+        '@context' => 'https://schema.org',
+        '@type' => 'BreadcrumbList',
+        'itemListElement' => [
+            ['@type' => 'ListItem', 'position' => 1, 'name' => 'あるく', 'item' => $s['url'] . '/'],
+            ['@type' => 'ListItem', 'position' => 2, 'name' => 'みんなのつぶやき掲示板'],
+        ],
+    ]];
+    $head = head_html($prefix, $title . '｜あるく', $desc, $s['url'] . '/board.html', '', $jsonld, 'website', 'index, follow');
     $footer = footer_html($prefix);
     $crumb = breadcrumb_nav($prefix, 'みんなのつぶやき掲示板', true);
 
