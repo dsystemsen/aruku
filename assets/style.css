@@ -952,6 +952,8 @@ table.app-rank tr:nth-child(3) .app-rank-no { background: #c98a4b; }
 .about-inner { max-width: 920px; margin: 0 auto; }
 .about-title { text-align: center; font-size: 1.7rem; font-weight: 800; color: var(--forest-800); margin: 0 0 6px; letter-spacing: -.01em; }
 .about-title::after { content: ""; display: block; width: 48px; height: 4px; background: var(--forest-500); border-radius: 2px; margin: 14px auto 0; }
+.about-subtitle { text-align: center; font-size: 1.35rem; font-weight: 800; color: var(--forest-800); margin: 0 0 4px; }
+.about-subtitle::after { content: ""; display: block; width: 40px; height: 3px; background: var(--forest-500); border-radius: 2px; margin: 12px auto 0; }
 .about-lead { text-align: center; color: var(--ink-2); line-height: 1.95; margin: 18px 0 36px; }
 .about-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
 .about-card { background: #fff; border: 1px solid var(--line); border-radius: 18px; padding: 26px 24px; box-shadow: var(--shadow-sm); transition: transform .18s, box-shadow .18s; }

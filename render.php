@@ -127,7 +127,7 @@ function nav_html(string $prefix): string
     return <<<HTML
 <nav class="lp-nav" data-auth="{$authAttr}">
   <div class="lp-nav-inner">
-    <a href="{$prefix}index.html" class="lp-brand"><img src="{$prefix}assets/logo.svg?v=20260612e" alt="あるくロゴ"><span class="lp-brand-text"><span class="lp-brand-tagline">-歩くことで健康に-</span><span class="lp-brand-name">あるく</span></span></a>
+    <a href="{$prefix}index.html" class="lp-brand"><img src="{$prefix}assets/logo.svg?v=20260612f" alt="あるくロゴ"><span class="lp-brand-text"><span class="lp-brand-tagline">-歩くことで健康に-</span><span class="lp-brand-name">あるく</span></span></a>
     <div class="lp-nav-links">
       {$adminLink}<a href="{$prefix}member/mypage.php" class="lp-nav-cta">マイページ</a>
       <a href="{$prefix}member/register.php" class="lp-nav-cta">会員登録</a>
@@ -146,7 +146,7 @@ function footer_html(string $prefix): string
 <footer class="lp-footer">
   <div class="lp-footer-inner">
     <div>
-      <div class="lp-footer-brand"><img src="{$prefix}assets/logo.svg?v=20260612e" alt="あるく ロゴ">あるく</div>
+      <div class="lp-footer-brand"><img src="{$prefix}assets/logo.svg?v=20260612f" alt="あるく ロゴ">あるく</div>
       <p class="lp-footer-tagline">{$s['tagline']}</p>
     </div>
     <nav class="lp-footer-links">
@@ -187,8 +187,8 @@ function head_html(string $prefix, string $title, string $desc, string $canonica
     $robotsContent = $robots !== '' ? $robots : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1';
     $rb = '<meta name="robots" content="' . $robotsContent . '">' . "\n";
     // フォントはメイリオ（端末ローカル）を使用するため Web フォントの読込は不要。
-    $css = '<link rel="stylesheet" href="' . $prefix . 'assets/style.css?v=20260612e">' . "\n"
-        . '<link rel="stylesheet" href="' . $prefix . 'assets/column.css?v=20260612e">' . "\n"
+    $css = '<link rel="stylesheet" href="' . $prefix . 'assets/style.css?v=20260612f">' . "\n"
+        . '<link rel="stylesheet" href="' . $prefix . 'assets/column.css?v=20260612f">' . "\n"
         . '<noscript><style>.reveal,.reveal-stagger>*,.hero-anim,.hero-art-anim{opacity:1!important;transform:none!important;animation:none!important}</style></noscript>';
     // meta keywords は Google・各AIともに無視するため出力しない（引数は後方互換で受けるだけ）。
     $kw = '';
@@ -238,7 +238,7 @@ function head_html(string $prefix, string $title, string $desc, string $canonica
 <meta name="twitter:description" content="{$desc}">
 <meta name="twitter:image" content="{$ogp}">
 {$twSite}<meta name="theme-color" content="#29b183">
-{$headExtra}<link rel="icon" type="image/svg+xml" href="{$prefix}assets/logo.svg?v=20260612e">
+{$headExtra}<link rel="icon" type="image/svg+xml" href="{$prefix}assets/logo.svg?v=20260612f">
 {$css}
 {$ld}</head>
 <body>
@@ -503,7 +503,7 @@ function render_article(string $slug): ?string
 </article>
 
 {$footer}
-<script src="../assets/app.js?v=20260612e" defer></script>
+<script src="../assets/app.js?v=20260612f" defer></script>
 </body>
 </html>
 HTML;
@@ -815,7 +815,7 @@ function render_column_index(): string
 </div>
 
 {$footer}
-<script src="../assets/app.js?v=20260612e" defer></script>
+<script src="../assets/app.js?v=20260612f" defer></script>
 </body>
 </html>
 HTML;
@@ -841,7 +841,7 @@ function render_category_columns(string $cat): string
             . '<meta name="viewport" content="width=device-width, initial-scale=1">'
             . '<meta name="robots" content="noindex, nofollow">'
             . '<title>ページが見つかりません｜あるく</title>'
-            . '<link rel="stylesheet" href="' . $prefix . 'assets/style.css?v=20260612e"></head><body>'
+            . '<link rel="stylesheet" href="' . $prefix . 'assets/style.css?v=20260612f"></head><body>'
             . '<main style="max-width:640px;margin:14vh auto;padding:0 24px;text-align:center;">'
             . '<h1 style="font-size:1.6rem;margin-bottom:12px;">ページが見つかりません</h1>'
             . '<p style="color:#5d6362;margin-bottom:28px;">お探しのページは削除されました。</p>'
@@ -932,7 +932,7 @@ function render_category_columns(string $cat): string
   </div>
 </div>
 {$footer}
-<script src="{$prefix}assets/app.js?v=20260612e" defer></script>
+<script src="{$prefix}assets/app.js?v=20260612f" defer></script>
 </body>
 </html>
 HTML;
@@ -988,7 +988,7 @@ function render_editorial_policy(): string
   </div>
 </section>
 {$footer}
-<script src="{$prefix}assets/app.js?v=20260612e" defer></script>
+<script src="{$prefix}assets/app.js?v=20260612f" defer></script>
 </body>
 </html>
 HTML;
@@ -1038,7 +1038,7 @@ function render_search_page(string $q): string
   </div>
 </div>
 {$footer}
-<script src="{$prefix}assets/app.js?v=20260612e" defer></script>
+<script src="{$prefix}assets/app.js?v=20260612f" defer></script>
 </body>
 </html>
 HTML;
@@ -1075,7 +1075,7 @@ function render_aboutaruku(): string
   </div>
 </section>
 {$footer}
-<script src="assets/app.js?v=20260612e" defer></script>
+<script src="assets/app.js?v=20260612f" defer></script>
 </body>
 </html>
 HTML;
@@ -1089,8 +1089,8 @@ function render_faq_page(): string
 {
     $s = site();
     $prefix = '';
-    $title = '歩く・健康のよくある質問（FAQ）｜あるく';
-    $desc = '歩くことと健康についてのよくある質問。ウォーキングの健康効果、1日の目標歩数、続け方、朝と夜の違い、料金・会員機能・消費カロリーの目安まで、「あるく」と歩く健康習慣のギモンにお答えします。';
+    $title = '歩く・健康のよくある質問（FAQ）｜歩くとふらつく原因・高齢者の歩数・ウォーキングとの違いも｜あるく';
+    $desc = '歩くことと健康についてのよくある質問。ウォーキングの健康効果や1日の目標歩数に加え、歩くとふらつく原因、70歳・75歳は1日何歩歩くべきか、赤ちゃんが歩く時期、「歩く」と「ウォーキング」の違い、42.195kmを歩くと何時間か、歩く哲学、サルコペニア対策、Walk in Her Shoes（歩く国際協力）まで、歩くにまつわる素朴な疑問にお答えします。';
     $faqLd = [[
         '@context' => 'https://schema.org',
         '@type' => 'FAQPage',
@@ -1107,6 +1107,16 @@ function render_faq_page(): string
             ['@type' => 'Question', 'name' => 'スマートフォンでも使えますか？', 'acceptedAnswer' => ['@type' => 'Answer', 'text' => 'はい。スマホ・タブレット・PCのどの画面にも対応しています。']],
             ['@type' => 'Question', 'name' => '表示される消費カロリーは正確ですか？', 'acceptedAnswer' => ['@type' => 'Answer', 'text' => '体重や歩数から算出した目安です（消費kcal ≒ 歩数 × 体重 × 0.0005）。体質や歩き方で前後します。']],
             ['@type' => 'Question', 'name' => '退会したいときはどうすればいいですか？', 'acceptedAnswer' => ['@type' => 'Answer', 'text' => 'ログイン後のマイページ下部にある「解約手続き」ボタンからお手続きいただけます。解約すると登録情報・記録はすべて削除され、元に戻せませんのでご注意ください。']],
+            ['@type' => 'Question', 'name' => '歩くとふらつくのは何が原因ですか？', 'acceptedAnswer' => ['@type' => 'Answer', 'text' => '歩くときのふらつきは、加齢による足腰の筋力低下やバランス感覚の衰え、めまい（内耳の異常）、起立性低血圧、貧血、脱水、薬の副作用、神経の病気など、さまざまな原因が考えられます。一時的でなく繰り返す・転倒しそうになる場合は、自己判断せず早めに医療機関を受診してください。本サイトの情報は一般的な健康情報であり、診断ではありません。']],
+            ['@type' => 'Question', 'name' => '70歳は1日何歩歩くべきですか？', 'acceptedAnswer' => ['@type' => 'Answer', 'text' => '厚生労働省「健康日本21（第三次）」では、65歳以上の歩数目標を1日約6,000歩としています。70歳の方も6,000歩前後が一つの目安ですが、無理は禁物です。これまで歩いていなかった方は5,000歩程度からでも十分に健康効果が期待できます。体調や持病に合わせ、医師と相談しながら少しずつ増やしましょう。']],
+            ['@type' => 'Question', 'name' => '75歳は1日何歩歩くべきですか？', 'acceptedAnswer' => ['@type' => 'Answer', 'text' => '75歳の方も、65歳以上の目安である1日約6,000歩を基準に、ご自身の体力に合わせて調整するとよいでしょう。大切なのは歩数そのものより継続です。5,000歩前後でも、座りっぱなしを減らしてこまめに歩くだけで、フレイル（虚弱）予防に役立ちます。持病のある方は事前に医師へご相談ください。']],
+            ['@type' => 'Question', 'name' => '「歩く国際協力 Walk in Her Shoes」とは？2024年はどんな活動でしたか？', 'acceptedAnswer' => ['@type' => 'Answer', 'text' => 'Walk in Her Shoes（ウォーク・イン・ハー・シューズ）は、国際協力NGOのCARE（ケア・インターナショナル ジャパン）が主催する「歩く国際協力」キャンペーンです。途上国で毎日水くみなどに長い距離を歩く女性や女の子の現実に思いをはせながら、参加者が歩いた歩数を寄付につなげます。2024年は3月8日〜5月31日に開催され、多くの参加者の歩数が支援に役立てられました。']],
+            ['@type' => 'Question', 'name' => '赤ちゃんはいつから歩くようになりますか？', 'acceptedAnswer' => ['@type' => 'Answer', 'text' => '個人差が大きいですが、多くの赤ちゃんは1歳前後（おおむね生後11〜15か月ごろ）に最初の一歩を踏み出します。早い・遅いは発達のリズムによるもので、1歳半を過ぎても歩かないなど気になる場合は、かかりつけの小児科や乳幼児健診で相談すると安心です。']],
+            ['@type' => 'Question', 'name' => '高齢者はどれくらいの時間歩けばよいですか？', 'acceptedAnswer' => ['@type' => 'Answer', 'text' => '目安は1日合計20〜30分程度のウォーキングです。一度にまとめてでも、10分×2〜3回に分けても効果は期待できます。「少し汗ばむ・会話できる程度」の速さが目安です。体力に不安がある方は5〜10分から始め、徐々に時間を延ばしましょう。持病のある方は医師にご相談ください。']],
+            ['@type' => 'Question', 'name' => '「歩く」と「ウォーキング」の違いは何ですか？', 'acceptedAnswer' => ['@type' => 'Answer', 'text' => '「歩く」は移動や日常動作を含めた歩行全般を指すのに対し、「ウォーキング」は健康・運動を目的に、姿勢や歩幅・ペースを意識して行う歩行を指すのが一般的です。同じ歩く動作でも、背すじを伸ばし腕を振って少し速めに歩くと、運動効果が高まります。']],
+            ['@type' => 'Question', 'name' => 'フルマラソンの42.195kmを歩くと何時間かかりますか？', 'acceptedAnswer' => ['@type' => 'Answer', 'text' => '歩く速さにもよりますが、時速5km（ふつうの速さ）なら約8時間半、時速4km（ゆっくり）なら約10時間半が目安です。早歩き（時速6km前後）なら約7時間。実際は休憩や信号待ちが加わるため、これより長めに見ておくとよいでしょう。']],
+            ['@type' => 'Question', 'name' => '「歩く哲学」とは何ですか？簡単に教えてください。', 'acceptedAnswer' => ['@type' => 'Answer', 'text' => '「歩く哲学」とは、歩きながら考えることで思索が深まるという、古くからの考え方を指します。古代ギリシャのアリストテレスは歩きながら弟子に教え（逍遥学派）、カントやニーチェ、ルソーといった哲学者も日々の散歩を思考の時間にしていました。歩くと血流が促されて頭がすっきりし、新しい発想が生まれやすくなるといわれます。']],
+            ['@type' => 'Question', 'name' => '歩くのが遅い・握力がないのはサルコペニアですか？やり方（対策）は？', 'acceptedAnswer' => ['@type' => 'Answer', 'text' => '歩く速度の低下や握力の低下は、加齢で筋肉量が減る「サルコペニア」のサインの一つです。目安として、握力が男性28kg・女性18kg未満、歩く速さが秒速1.0m（横断歩道を青信号で渡り切れない程度）未満だと注意が必要とされます。対策のやり方は、スクワットなどの筋トレ＋たんぱく質をしっかりとる食事＋ウォーキングの習慣化です。気になる場合は医療機関でご相談ください。本サイトの情報は一般的な健康情報であり、診断ではありません。']],
         ],
     ]];
     $head = head_html($prefix, $title, $desc, $s['url'] . '/faq.html', '', $faqLd, 'website', 'index, follow');
@@ -1130,11 +1140,24 @@ function render_faq_page(): string
     <details class="column-faq-item"><summary>スマートフォンでも使えますか？</summary><div class="column-faq-a">はい。スマホ・タブレット・PCのどの画面にも対応しています。通勤や外出先でも気軽にご覧いただけます。</div></details>
     <details class="column-faq-item"><summary>表示される消費カロリーは正確ですか？</summary><div class="column-faq-a">表示される数値は、歩数や体重などから算出した目安です（消費kcal ≒ 歩数 × 体重 × 0.0005）。体質や歩き方で前後するため、参考値としてご活用ください。</div></details>
     <details class="column-faq-item"><summary>退会したいときはどうすればいいですか？</summary><div class="column-faq-a">ログイン後の<a href="member/mypage.php">マイページ</a>下部にある「解約手続き」ボタンからお手続きいただけます。解約すると登録情報・記録はすべて削除され、元に戻せませんのでご注意ください。</div></details>
+
+    <h2 class="about-subtitle" style="margin-top:48px;">歩くにまつわる素朴な疑問Q&amp;A</h2>
+    <p class="about-lead">「歩くとふらつく原因は？」「高齢者は1日何歩？」「歩くとウォーキングの違いは？」など、歩くことにまつわるよくある疑問をまとめました。</p>
+    <details class="column-faq-item"><summary>歩くとふらつくのは何が原因ですか？</summary><div class="column-faq-a">歩くときのふらつきは、加齢による足腰の筋力低下やバランス感覚の衰え、めまい（内耳の異常）、起立性低血圧、貧血、脱水、薬の副作用、神経の病気など、さまざまな原因が考えられます。一時的でなく繰り返す・転倒しそうになる場合は、自己判断せず早めに医療機関を受診してください。本サイトの情報は一般的な健康情報であり、診断ではありません。詳しくは<a href="editorial-policy.html">編集・監修ポリシー</a>をご覧ください。</div></details>
+    <details class="column-faq-item"><summary>70歳は1日何歩歩くべきですか？</summary><div class="column-faq-a">厚生労働省「健康日本21（第三次）」では、65歳以上の歩数目標を1日約6,000歩としています。70歳の方も6,000歩前後が一つの目安ですが、無理は禁物です。これまで歩いていなかった方は5,000歩程度からでも十分に健康効果が期待できます。体調や持病に合わせ、医師と相談しながら少しずつ増やしましょう。歩数ごとの消費カロリーは<a href="calorie-table.html">歩数別カロリー早見表</a>で確認できます。</div></details>
+    <details class="column-faq-item"><summary>75歳は1日何歩歩くべきですか？</summary><div class="column-faq-a">75歳の方も、65歳以上の目安である1日約6,000歩を基準に、ご自身の体力に合わせて調整するとよいでしょう。大切なのは歩数そのものより継続です。5,000歩前後でも、座りっぱなしを減らしてこまめに歩くだけで、フレイル（虚弱）予防に役立ちます。持病のある方は事前に医師へご相談ください。</div></details>
+    <details class="column-faq-item"><summary>「歩く国際協力 Walk in Her Shoes」とは？2024年はどんな活動でしたか？</summary><div class="column-faq-a">Walk in Her Shoes（ウォーク・イン・ハー・シューズ）は、国際協力NGOのCARE（ケア・インターナショナル ジャパン）が主催する「歩く国際協力」キャンペーンです。途上国で毎日水くみなどに長い距離を歩く女性や女の子の現実に思いをはせながら、参加者が歩いた歩数を寄付につなげます。2024年は3月8日〜5月31日に開催され、多くの参加者の歩数が支援に役立てられました。</div></details>
+    <details class="column-faq-item"><summary>赤ちゃんはいつから歩くようになりますか？</summary><div class="column-faq-a">個人差が大きいですが、多くの赤ちゃんは1歳前後（おおむね生後11〜15か月ごろ）に最初の一歩を踏み出します。早い・遅いは発達のリズムによるもので、1歳半を過ぎても歩かないなど気になる場合は、かかりつけの小児科や乳幼児健診で相談すると安心です。</div></details>
+    <details class="column-faq-item"><summary>高齢者はどれくらいの時間歩けばよいですか？</summary><div class="column-faq-a">目安は1日合計20〜30分程度のウォーキングです。一度にまとめてでも、10分×2〜3回に分けても効果は期待できます。「少し汗ばむ・会話できる程度」の速さが目安です。体力に不安がある方は5〜10分から始め、徐々に時間を延ばしましょう。持病のある方は医師にご相談ください。</div></details>
+    <details class="column-faq-item"><summary>「歩く」と「ウォーキング」の違いは何ですか？</summary><div class="column-faq-a">「歩く」は移動や日常動作を含めた歩行全般を指すのに対し、「ウォーキング」は健康・運動を目的に、姿勢や歩幅・ペースを意識して行う歩行を指すのが一般的です。同じ歩く動作でも、背すじを伸ばし腕を振って少し速めに歩くと、運動効果が高まります。</div></details>
+    <details class="column-faq-item"><summary>フルマラソンの42.195kmを歩くと何時間かかりますか？</summary><div class="column-faq-a">歩く速さにもよりますが、時速5km（ふつうの速さ）なら約8時間半、時速4km（ゆっくり）なら約10時間半が目安です。早歩き（時速6km前後）なら約7時間。実際は休憩や信号待ちが加わるため、これより長めに見ておくとよいでしょう。歩く時間と消費カロリーの目安は<a href="calorie-table.html">歩数別カロリー早見表</a>も参考にしてください。</div></details>
+    <details class="column-faq-item"><summary>「歩く哲学」とは何ですか？簡単に教えてください。</summary><div class="column-faq-a">「歩く哲学」とは、歩きながら考えることで思索が深まるという、古くからの考え方を指します。古代ギリシャのアリストテレスは歩きながら弟子に教え（逍遥学派）、カントやニーチェ、ルソーといった哲学者も日々の散歩を思考の時間にしていました。歩くと血流が促されて頭がすっきりし、新しい発想が生まれやすくなるといわれます。</div></details>
+    <details class="column-faq-item"><summary>歩くのが遅い・握力がないのはサルコペニアですか？やり方（対策）は？</summary><div class="column-faq-a">歩く速度の低下や握力の低下は、加齢で筋肉量が減る「サルコペニア」のサインの一つです。目安として、握力が男性28kg・女性18kg未満、歩く速さが秒速1.0m（横断歩道を青信号で渡り切れない程度）未満だと注意が必要とされます。対策のやり方は、スクワットなどの筋トレ＋たんぱく質をしっかりとる食事＋ウォーキングの習慣化です。気になる場合は医療機関でご相談ください。本サイトの情報は一般的な健康情報であり、診断ではありません。</div></details>
     <div class="about-actions"><a class="lp-btn lp-btn-secondary" href="about-aruku.html">あるくとは？→</a><a class="lp-btn lp-btn-primary" href="index.html">トップへ戻る</a></div>
   </div>
 </section>
 {$footer}
-<script src="assets/app.js?v=20260612e" defer></script>
+<script src="assets/app.js?v=20260612f" defer></script>
 </body>
 </html>
 HTML;
@@ -1469,7 +1492,7 @@ HTML;
 </section>
 
 {$footer}
-<script src="assets/app.js?v=20260612e" defer></script>
+<script src="assets/app.js?v=20260612f" defer></script>
 </body>
 </html>
 HTML;
@@ -1675,7 +1698,7 @@ HTML;
 </article>
 
 {$footer}
-<script src="assets/app.js?v=20260612e" defer></script>
+<script src="assets/app.js?v=20260612f" defer></script>
 </body>
 </html>
 HTML;
@@ -1731,7 +1754,7 @@ function render_page(string $key): ?string
 </article>
 
 {$footer}
-<script src="assets/app.js?v=20260612e" defer></script>
+<script src="assets/app.js?v=20260612f" defer></script>
 </body>
 </html>
 HTML;
