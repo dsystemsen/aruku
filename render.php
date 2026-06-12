@@ -1479,6 +1479,27 @@ HTML;
               <td class="app-rank-price">完全無料<small>体組成計連携に対応</small></td>
               <td><a class="app-rank-btn" href="https://www.healthplanet.jp/" target="_blank" rel="noopener">公式ページ →</a></td>
             </tr>
+            <tr>
+              <td><span class="app-rank-no">8</span></td>
+              <td><span class="app-rank-name">カロママプラス</span></td>
+              <td class="app-rank-feat">AI管理栄養士が2億通りからアドバイス。食事・運動・体重をまとめて記録でき、栄養面を整えたい人に。</td>
+              <td class="app-rank-price">基本無料<small>個人向けは無料で利用可</small></td>
+              <td><a class="app-rank-btn" href="https://calomama.com/" target="_blank" rel="noopener">公式ページ →</a></td>
+            </tr>
+            <tr>
+              <td><span class="app-rank-no">9</span></td>
+              <td><span class="app-rank-name">YAZIO（ヤジオ）</span></td>
+              <td class="app-rank-feat">ヨーロッパ発の人気カロリー計算アプリ。断食（ファスティング）管理にも対応し、PROが手頃な価格。</td>
+              <td class="app-rank-price">無料<small>PRO 年2,200円〜</small></td>
+              <td><a class="app-rank-btn" href="https://www.yazio.com/ja" target="_blank" rel="noopener">公式ページ →</a></td>
+            </tr>
+            <tr>
+              <td><span class="app-rank-no">10</span></td>
+              <td><span class="app-rank-name">Noom（ヌーム）</span></td>
+              <td class="app-rank-feat">心理学×専属コーチで生活習慣から改善する本格派。料金は高めだが、しっかり伴走してほしい人に。</td>
+              <td class="app-rank-price">月約5,000円〜<small>2週間100円でお試し可</small></td>
+              <td><a class="app-rank-btn" href="https://www.noom.com/jp/" target="_blank" rel="noopener">公式ページ →</a></td>
+            </tr>
           </tbody>
         </table>
       </div>
