@@ -890,7 +890,16 @@ function render_category_columns(string $cat): string
 
     $catNav = aruku_category_nav($prefix, $cat);
     $title = $name . '｜あるく コラム';
-    $desc = '「' . $name . '」に関するコラム一覧（' . $count . '本）。';
+    // meta description は記事タイトルを織り込んでカテゴリごとに固有化（SEO）
+    $sampleTitles = [];
+    foreach ($editArts as $a) { $sampleTitles[] = $a['title']; if (count($sampleTitles) >= 2) break; }
+    foreach ($pp as $p) { if (count($sampleTitles) >= 3) break; $sampleTitles[] = $p['title']; }
+    $descSample = '';
+    if ($sampleTitles) {
+        $descSample = implode('／', array_map(static fn($t) => mb_substr((string) $t, 0, 30), $sampleTitles)) . ' など、';
+    }
+    $desc = '「' . $name . '」に関する歩く・ウォーキングのコラム一覧（全' . $count . '本）。'
+        . $descSample . $name . 'について役立つ記事を「あるく」がまとめています。';
     $listItems = [];
     $i = 1;
     foreach ($editArts as $a) {
@@ -1013,7 +1022,9 @@ function render_search_page(string $q): string
     $count = count($results);
     $url = $s['url'] . '/search.html' . ($q !== '' ? '?q=' . rawurlencode($q) : '');
     $title = ($q !== '' ? '「' . $q . '」の検索結果' : 'コラムを検索') . '｜あるく';
-    $desc = $q !== '' ? '「' . $q . '」に関するコラムの検索結果（' . $count . '本）。' : 'あるくのコラムをキーワードで検索できます。';
+    $desc = $q !== ''
+        ? '「' . $q . '」に関するコラムの検索結果（' . $count . '本）。歩く・ウォーキング・ダイエット・消費カロリー・健康のコラムから探せます。'
+        : 'あるくのコラムをキーワードで検索。歩く効果・正しい歩き方・歩数別の消費カロリー・ダイエット・ポイ活など、知りたいテーマからウォーキングの記事を探せます。';
     // 検索結果ページはインデックスさせない（薄い・重複回避）。リンクは追う。
     $head = head_html($prefix, $title, $desc, $url, '', null, 'website', 'noindex, follow', '');
     $footer = footer_html($prefix);
