@@ -936,7 +936,7 @@ table.app-rank tr:nth-child(3) .app-rank-no { background: #c98a4b; }
 
 /* トップ上部：あるくとは／FAQ への誘導ボックス（calomeal風） */
 .info-nav-section { max-width: var(--maxw); margin: 0 auto; padding: 28px 24px 0; }
-.info-nav { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+.info-nav { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
 .info-nav-card {
   display: flex; align-items: center; justify-content: center; gap: 12px;
   background: var(--forest-700); border: 1.5px solid var(--forest-700);
