@@ -366,6 +366,31 @@ table.app-rank tr:nth-child(3) .app-rank-no { background: #c98a4b; }
 .aboutpage-free-note { margin: 22px 0 0; padding: 14px 18px; background: var(--forest-100); border-radius: 12px; color: var(--ink); line-height: 1.8; font-size: .98rem; }
 .aboutpage-free-note b { color: var(--forest-700); }
 
+/* 誰でも掲示板（つぶやき） */
+.board { max-width: 760px; }
+.board-lead { color: var(--ink-2); line-height: 1.9; margin: 0 0 18px; }
+.board-flash { margin: 0 0 16px; padding: 12px 16px; border-radius: 10px; font-weight: 700; }
+.board-flash--ok { background: var(--forest-100); color: var(--forest-700); }
+.board-flash--ng { background: #fdecec; color: #b3261e; }
+.board-form { background: #fff; border: 1px solid #e6e6e6; border-radius: 16px; padding: 18px; box-shadow: 0 8px 24px rgba(41,177,131,.08); }
+.board-hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+.board-form-row { margin-bottom: 10px; }
+.board-nick { width: 100%; max-width: 280px; padding: 10px 12px; border: 1px solid #dcdcdc; border-radius: 10px; font-size: .95rem; }
+.board-text { width: 100%; padding: 12px 14px; border: 1px solid #dcdcdc; border-radius: 12px; font-size: 1rem; line-height: 1.7; resize: vertical; font-family: inherit; }
+.board-nick:focus, .board-text:focus { outline: none; border-color: var(--forest-500); box-shadow: 0 0 0 3px rgba(62,198,144,.18); }
+.board-form-foot { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-top: 12px; flex-wrap: wrap; }
+.board-note { color: var(--ink-2); font-size: .8rem; line-height: 1.6; flex: 1 1 220px; }
+.board-submit { white-space: nowrap; }
+.board-list { list-style: none; margin: 22px 0 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+.board-item { background: #fff; border: 1px solid #ececec; border-radius: 14px; padding: 14px 16px; }
+.board-item-head { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; flex-wrap: wrap; }
+.board-name { font-weight: 800; color: var(--ink); font-size: .95rem; }
+.board-tag { font-size: .72rem; color: #fff; background: var(--forest-500); border-radius: 999px; padding: 1px 8px; letter-spacing: .03em; }
+.board-time { font-size: .8rem; color: var(--ink-2); margin-left: auto; }
+.board-body { margin: 0; color: var(--ink); line-height: 1.8; word-break: break-word; }
+.board-empty { color: var(--ink-2); padding: 18px; text-align: center; }
+.board-count { margin: 14px 2px 0; font-size: .82rem; color: var(--ink-2); }
+
 .hero-actions { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; }
 .hero-art {
   position: relative;

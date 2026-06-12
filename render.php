@@ -127,7 +127,7 @@ function nav_html(string $prefix): string
     return <<<HTML
 <nav class="lp-nav" data-auth="{$authAttr}">
   <div class="lp-nav-inner">
-    <a href="{$prefix}index.html" class="lp-brand"><img src="{$prefix}assets/logo.svg?v=20260612g" alt="あるくロゴ"><span class="lp-brand-text"><span class="lp-brand-tagline">-歩くことで健康に-</span><span class="lp-brand-name">あるく</span></span></a>
+    <a href="{$prefix}index.html" class="lp-brand"><img src="{$prefix}assets/logo.svg?v=20260613a" alt="あるくロゴ"><span class="lp-brand-text"><span class="lp-brand-tagline">-歩くことで健康に-</span><span class="lp-brand-name">あるく</span></span></a>
     <div class="lp-nav-links">
       {$adminLink}<a href="{$prefix}member/mypage.php" class="lp-nav-cta">マイページ</a>
       <a href="{$prefix}member/register.php" class="lp-nav-cta">会員登録</a>
@@ -146,7 +146,7 @@ function footer_html(string $prefix): string
 <footer class="lp-footer">
   <div class="lp-footer-inner">
     <div>
-      <div class="lp-footer-brand"><img src="{$prefix}assets/logo.svg?v=20260612g" alt="あるく ロゴ">あるく</div>
+      <div class="lp-footer-brand"><img src="{$prefix}assets/logo.svg?v=20260613a" alt="あるく ロゴ">あるく</div>
       <p class="lp-footer-tagline">{$s['tagline']}</p>
     </div>
     <nav class="lp-footer-links">
@@ -187,8 +187,8 @@ function head_html(string $prefix, string $title, string $desc, string $canonica
     $robotsContent = $robots !== '' ? $robots : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1';
     $rb = '<meta name="robots" content="' . $robotsContent . '">' . "\n";
     // フォントはメイリオ（端末ローカル）を使用するため Web フォントの読込は不要。
-    $css = '<link rel="stylesheet" href="' . $prefix . 'assets/style.css?v=20260612g">' . "\n"
-        . '<link rel="stylesheet" href="' . $prefix . 'assets/column.css?v=20260612g">' . "\n"
+    $css = '<link rel="stylesheet" href="' . $prefix . 'assets/style.css?v=20260613a">' . "\n"
+        . '<link rel="stylesheet" href="' . $prefix . 'assets/column.css?v=20260613a">' . "\n"
         . '<noscript><style>.reveal,.reveal-stagger>*,.hero-anim,.hero-art-anim{opacity:1!important;transform:none!important;animation:none!important}</style></noscript>';
     // meta keywords は Google・各AIともに無視するため出力しない（引数は後方互換で受けるだけ）。
     $kw = '';
@@ -238,7 +238,7 @@ function head_html(string $prefix, string $title, string $desc, string $canonica
 <meta name="twitter:description" content="{$desc}">
 <meta name="twitter:image" content="{$ogp}">
 {$twSite}<meta name="theme-color" content="#29b183">
-{$headExtra}<link rel="icon" type="image/svg+xml" href="{$prefix}assets/logo.svg?v=20260612g">
+{$headExtra}<link rel="icon" type="image/svg+xml" href="{$prefix}assets/logo.svg?v=20260613a">
 {$css}
 {$ld}</head>
 <body>
@@ -503,7 +503,7 @@ function render_article(string $slug): ?string
 </article>
 
 {$footer}
-<script src="../assets/app.js?v=20260612g" defer></script>
+<script src="../assets/app.js?v=20260613a" defer></script>
 </body>
 </html>
 HTML;
@@ -815,7 +815,7 @@ function render_column_index(): string
 </div>
 
 {$footer}
-<script src="../assets/app.js?v=20260612g" defer></script>
+<script src="../assets/app.js?v=20260613a" defer></script>
 </body>
 </html>
 HTML;
@@ -841,7 +841,7 @@ function render_category_columns(string $cat): string
             . '<meta name="viewport" content="width=device-width, initial-scale=1">'
             . '<meta name="robots" content="noindex, nofollow">'
             . '<title>ページが見つかりません｜あるく</title>'
-            . '<link rel="stylesheet" href="' . $prefix . 'assets/style.css?v=20260612g"></head><body>'
+            . '<link rel="stylesheet" href="' . $prefix . 'assets/style.css?v=20260613a"></head><body>'
             . '<main style="max-width:640px;margin:14vh auto;padding:0 24px;text-align:center;">'
             . '<h1 style="font-size:1.6rem;margin-bottom:12px;">ページが見つかりません</h1>'
             . '<p style="color:#5d6362;margin-bottom:28px;">お探しのページは削除されました。</p>'
@@ -932,7 +932,7 @@ function render_category_columns(string $cat): string
   </div>
 </div>
 {$footer}
-<script src="{$prefix}assets/app.js?v=20260612g" defer></script>
+<script src="{$prefix}assets/app.js?v=20260613a" defer></script>
 </body>
 </html>
 HTML;
@@ -988,7 +988,7 @@ function render_editorial_policy(): string
   </div>
 </section>
 {$footer}
-<script src="{$prefix}assets/app.js?v=20260612g" defer></script>
+<script src="{$prefix}assets/app.js?v=20260613a" defer></script>
 </body>
 </html>
 HTML;
@@ -1038,7 +1038,7 @@ function render_search_page(string $q): string
   </div>
 </div>
 {$footer}
-<script src="{$prefix}assets/app.js?v=20260612g" defer></script>
+<script src="{$prefix}assets/app.js?v=20260613a" defer></script>
 </body>
 </html>
 HTML;
@@ -1076,7 +1076,7 @@ function render_aboutaruku(): string
   </div>
 </section>
 {$footer}
-<script src="assets/app.js?v=20260612g" defer></script>
+<script src="assets/app.js?v=20260613a" defer></script>
 </body>
 </html>
 HTML;
@@ -1158,7 +1158,7 @@ function render_faq_page(): string
   </div>
 </section>
 {$footer}
-<script src="assets/app.js?v=20260612g" defer></script>
+<script src="assets/app.js?v=20260613a" defer></script>
 </body>
 </html>
 HTML;
@@ -1340,6 +1340,55 @@ HTML;
     $columnFeed = '<div class="column-layout col-layout--flush"><aside class="column-side">' . $catNavTop . '</aside>'
         . '<div class="column-main col-box">' . $mainContent . '</div></div>';
 
+    // ４．誰でも掲示板（ログイン不要のつぶやき）
+    require_once __DIR__ . '/inc/member.php';
+    require_once __DIR__ . '/inc/board.php';
+    member_session_start();
+    $boardToken = member_csrf_token();
+    $boardFlash = $_SESSION['board_flash'] ?? null;
+    unset($_SESSION['board_flash']);
+    $boardFlashHtml = '';
+    if ($boardFlash) {
+        $cls = !empty($boardFlash['ok']) ? 'board-flash board-flash--ok' : 'board-flash board-flash--ng';
+        $boardFlashHtml = '<p class="' . $cls . '">' . h($boardFlash['msg'] ?? '') . '</p>';
+    }
+    $boardItems = '';
+    foreach (board_recent() as $bp) {
+        $boardItems .= '<li class="board-item">'
+            . '<div class="board-item-head"><span class="board-name">' . h($bp['nickname']) . '</span>'
+            . '<span class="board-tag">No.' . h($bp['author_tag']) . '</span>'
+            . '<span class="board-time">' . h(board_relative_time($bp['created_at'])) . '</span></div>'
+            . '<p class="board-body">' . nl2br(h($bp['body'])) . '</p>'
+            . '</li>';
+    }
+    if ($boardItems === '') {
+        $boardItems = '<li class="board-empty">まだつぶやきはありません。最初の一歩を、あなたから。</li>';
+    }
+    $boardCount = board_count();
+    $boardSection = <<<HTML
+    <div class="section-head section-head--left reveal" id="board" style="margin-top:56px; scroll-margin-top:90px;">
+      <h2>４．みんなのつぶやき掲示板</h2>
+    </div>
+    <div class="board reveal">
+      <p class="board-lead">「あるく」ことの、なんでもOKなつぶやき掲示板です。今日の一歩、見つけた景色、ちょっとした目標——<strong>ログインも登録もいらず、だれでも気軽に</strong>つぶやけます。前向きな一歩をシェアしましょう（愚痴ではなく、ね😊）。</p>
+      {$boardFlashHtml}
+      <form class="board-form" action="board.php" method="post">
+        <input type="hidden" name="csrf" value="{$boardToken}">
+        <input type="text" name="website" class="board-hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <div class="board-form-row">
+          <input class="board-nick" type="text" name="nickname" maxlength="20" placeholder="ニックネーム（任意）">
+        </div>
+        <textarea class="board-text" name="body" maxlength="140" rows="3" placeholder="歩いて感じたこと、今日の目標、ひとことどうぞ（140文字まで）" required></textarea>
+        <div class="board-form-foot">
+          <span class="board-note">URL・連絡先は投稿できません。みんなが気持ちよく使えるよう、やさしい言葉で。</span>
+          <button type="submit" class="lp-btn lp-btn-primary board-submit">つぶやく</button>
+        </div>
+      </form>
+      <ul class="board-list">{$boardItems}</ul>
+      <p class="board-count">これまでのつぶやき：{$boardCount}件</p>
+    </div>
+HTML;
+
     $body = <<<HTML
 <header class="hero">
   <div class="hero-inner">
@@ -1506,15 +1555,16 @@ HTML;
       </div>
       <p class="app-rank-note">※ ランキングは編集部の総合評価による目安です。※ 料金・サービス内容は2026年6月時点のもので、変更される場合があります。最新の情報は各公式サイトをご確認ください。</p>
     </div>
+{$boardSection}
     <div class="section-head section-head--left reveal" id="columns" style="margin-top:56px; scroll-margin-top:90px;">
-      <h2>４．コラム</h2>
+      <h2>５．コラム</h2>
     </div>
     {$columnFeed}
   </div>
 </section>
 
 {$footer}
-<script src="assets/app.js?v=20260612g" defer></script>
+<script src="assets/app.js?v=20260613a" defer></script>
 </body>
 </html>
 HTML;
@@ -1720,7 +1770,7 @@ HTML;
 </article>
 
 {$footer}
-<script src="assets/app.js?v=20260612g" defer></script>
+<script src="assets/app.js?v=20260613a" defer></script>
 </body>
 </html>
 HTML;
@@ -1776,7 +1826,7 @@ function render_page(string $key): ?string
 </article>
 
 {$footer}
-<script src="assets/app.js?v=20260612g" defer></script>
+<script src="assets/app.js?v=20260613a" defer></script>
 </body>
 </html>
 HTML;

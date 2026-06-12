@@ -207,6 +207,19 @@ function aruku_db_init(PDO $pdo): void
     )");
     aruku_ensure_index($pdo, $driver, false, 'idx_reports', 'reports', 'handled, id');
 
+    // 誰でも掲示板（ログイン不要・匿名つぶやき）。hidden=1 は非表示（運営による削除）
+    $pdo->exec("CREATE TABLE IF NOT EXISTS board_posts (
+        id $pk,
+        nickname VARCHAR(40) NOT NULL,
+        author_tag VARCHAR(12) NOT NULL DEFAULT '',
+        body VARCHAR(300) NOT NULL,
+        ip_hash VARCHAR(64) NOT NULL DEFAULT '',
+        hidden INT NOT NULL DEFAULT 0,
+        created_at $ts
+    )");
+    aruku_ensure_index($pdo, $driver, false, 'idx_board_created', 'board_posts', 'hidden, id');
+    aruku_ensure_index($pdo, $driver, false, 'idx_board_ip', 'board_posts', 'ip_hash, id');
+
     // 集計・取得を速く（存在しなければ作成）
     aruku_ensure_index($pdo, $driver, false, 'idx_logs_member_date', 'activity_logs', 'member_id, log_date');
     aruku_ensure_index($pdo, $driver, false, 'idx_posts_status', 'posts', 'status, id');
