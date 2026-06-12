@@ -390,6 +390,10 @@ table.app-rank tr:nth-child(3) .app-rank-no { background: #c98a4b; }
 .board-body { margin: 0; color: var(--ink); line-height: 1.8; word-break: break-word; }
 .board-empty { color: var(--ink-2); padding: 18px; text-align: center; }
 .board-count { margin: 14px 2px 0; font-size: .82rem; color: var(--ink-2); }
+.board-page { max-width: 820px; }
+.board--teaser .board-list { margin-top: 0; }
+.board-more { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; margin: 18px 0 0; }
+.board-more .board-count { margin: 0; }
 
 .hero-actions { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; }
 .hero-art {

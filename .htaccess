@@ -51,6 +51,9 @@ DirectoryIndex index.php index.html
     RewriteRule ^search\.html$ search.php [L,QSA]
     RewriteRule ^editorial-policy\.html$ editorial-policy.php [L]
 
+    # みんなのつぶやき掲示板 /board.html（GET=表示／POST=投稿受付）→ board.php
+    RewriteRule ^board\.html$ board.php [L,QSA]
+
     # カテゴリ別コラム一覧 /category/<cat>.html → category.php?cat=<cat>（index等はrenderer側で404）
     RewriteRule ^category/([a-z0-9_-]+)\.html$ category.php?cat=$1 [L,QSA]
 
