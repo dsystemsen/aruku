@@ -127,7 +127,7 @@ function nav_html(string $prefix): string
     return <<<HTML
 <nav class="lp-nav" data-auth="{$authAttr}">
   <div class="lp-nav-inner">
-    <a href="{$prefix}index.html" class="lp-brand"><img src="{$prefix}assets/logo.svg?v=20260612f" alt="あるくロゴ"><span class="lp-brand-text"><span class="lp-brand-tagline">-歩くことで健康に-</span><span class="lp-brand-name">あるく</span></span></a>
+    <a href="{$prefix}index.html" class="lp-brand"><img src="{$prefix}assets/logo.svg?v=20260612g" alt="あるくロゴ"><span class="lp-brand-text"><span class="lp-brand-tagline">-歩くことで健康に-</span><span class="lp-brand-name">あるく</span></span></a>
     <div class="lp-nav-links">
       {$adminLink}<a href="{$prefix}member/mypage.php" class="lp-nav-cta">マイページ</a>
       <a href="{$prefix}member/register.php" class="lp-nav-cta">会員登録</a>
@@ -146,7 +146,7 @@ function footer_html(string $prefix): string
 <footer class="lp-footer">
   <div class="lp-footer-inner">
     <div>
-      <div class="lp-footer-brand"><img src="{$prefix}assets/logo.svg?v=20260612f" alt="あるく ロゴ">あるく</div>
+      <div class="lp-footer-brand"><img src="{$prefix}assets/logo.svg?v=20260612g" alt="あるく ロゴ">あるく</div>
       <p class="lp-footer-tagline">{$s['tagline']}</p>
     </div>
     <nav class="lp-footer-links">
@@ -187,8 +187,8 @@ function head_html(string $prefix, string $title, string $desc, string $canonica
     $robotsContent = $robots !== '' ? $robots : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1';
     $rb = '<meta name="robots" content="' . $robotsContent . '">' . "\n";
     // フォントはメイリオ（端末ローカル）を使用するため Web フォントの読込は不要。
-    $css = '<link rel="stylesheet" href="' . $prefix . 'assets/style.css?v=20260612f">' . "\n"
-        . '<link rel="stylesheet" href="' . $prefix . 'assets/column.css?v=20260612f">' . "\n"
+    $css = '<link rel="stylesheet" href="' . $prefix . 'assets/style.css?v=20260612g">' . "\n"
+        . '<link rel="stylesheet" href="' . $prefix . 'assets/column.css?v=20260612g">' . "\n"
         . '<noscript><style>.reveal,.reveal-stagger>*,.hero-anim,.hero-art-anim{opacity:1!important;transform:none!important;animation:none!important}</style></noscript>';
     // meta keywords は Google・各AIともに無視するため出力しない（引数は後方互換で受けるだけ）。
     $kw = '';
@@ -238,7 +238,7 @@ function head_html(string $prefix, string $title, string $desc, string $canonica
 <meta name="twitter:description" content="{$desc}">
 <meta name="twitter:image" content="{$ogp}">
 {$twSite}<meta name="theme-color" content="#29b183">
-{$headExtra}<link rel="icon" type="image/svg+xml" href="{$prefix}assets/logo.svg?v=20260612f">
+{$headExtra}<link rel="icon" type="image/svg+xml" href="{$prefix}assets/logo.svg?v=20260612g">
 {$css}
 {$ld}</head>
 <body>
@@ -503,7 +503,7 @@ function render_article(string $slug): ?string
 </article>
 
 {$footer}
-<script src="../assets/app.js?v=20260612f" defer></script>
+<script src="../assets/app.js?v=20260612g" defer></script>
 </body>
 </html>
 HTML;
@@ -815,7 +815,7 @@ function render_column_index(): string
 </div>
 
 {$footer}
-<script src="../assets/app.js?v=20260612f" defer></script>
+<script src="../assets/app.js?v=20260612g" defer></script>
 </body>
 </html>
 HTML;
@@ -841,7 +841,7 @@ function render_category_columns(string $cat): string
             . '<meta name="viewport" content="width=device-width, initial-scale=1">'
             . '<meta name="robots" content="noindex, nofollow">'
             . '<title>ページが見つかりません｜あるく</title>'
-            . '<link rel="stylesheet" href="' . $prefix . 'assets/style.css?v=20260612f"></head><body>'
+            . '<link rel="stylesheet" href="' . $prefix . 'assets/style.css?v=20260612g"></head><body>'
             . '<main style="max-width:640px;margin:14vh auto;padding:0 24px;text-align:center;">'
             . '<h1 style="font-size:1.6rem;margin-bottom:12px;">ページが見つかりません</h1>'
             . '<p style="color:#5d6362;margin-bottom:28px;">お探しのページは削除されました。</p>'
@@ -932,7 +932,7 @@ function render_category_columns(string $cat): string
   </div>
 </div>
 {$footer}
-<script src="{$prefix}assets/app.js?v=20260612f" defer></script>
+<script src="{$prefix}assets/app.js?v=20260612g" defer></script>
 </body>
 </html>
 HTML;
@@ -988,7 +988,7 @@ function render_editorial_policy(): string
   </div>
 </section>
 {$footer}
-<script src="{$prefix}assets/app.js?v=20260612f" defer></script>
+<script src="{$prefix}assets/app.js?v=20260612g" defer></script>
 </body>
 </html>
 HTML;
@@ -1038,7 +1038,7 @@ function render_search_page(string $q): string
   </div>
 </div>
 {$footer}
-<script src="{$prefix}assets/app.js?v=20260612f" defer></script>
+<script src="{$prefix}assets/app.js?v=20260612g" defer></script>
 </body>
 </html>
 HTML;
@@ -1067,15 +1067,16 @@ function render_aboutaruku(): string
       <p class="aboutpage-sub">「歩くだけでやせるって、ホント？」——ホントです。「あるく」がダイエットと健康習慣の相棒になる、5つのうれしいポイント。</p>
       <div class="aboutpage-point"><span class="pt-no">1</span><div class="pt-tx"><b>サイフにやさしい。タダで始められる</b><span>ジムの月会費も、高い器具もいりません。必要なのは靴1足だけ。コラムも歩数別カロリーツールも会員登録もぜんぶ無料だから、お金の心配なしで今日からスタートできます。</span></div></div>
       <div class="aboutpage-point"><span class="pt-no">2</span><div class="pt-tx"><b>「何歩で何kcal？」がひと目でわかる</b><span>早見表と計算ツールで、目標までに歩く歩数と消費カロリーがパッと丸わかり。なんとなく歩くより、ぐっと効率よく、ムダなくやせられます。</span></div></div>
-      <div class="aboutpage-point"><span class="pt-no">3</span><div class="pt-tx"><b>がんばりが数字で見えるから、続く＆リバウンドしにくい</b><span>体重と歩数を記録すれば、消費カロリーが自動でどんどん積み上がる。減っていく数字を見るのが楽しくなって、気づけば「やせ習慣」が身についています。</span></div></div>
+      <div class="aboutpage-point"><span class="pt-no">3</span><div class="pt-tx"><b>がんばりが数字で見えるから、続く＆リバウンドしにくい</b><span>無料の会員登録をすれば、<a href="member/mypage.php">マイページ</a>で体重・運動・消費カロリーをぜんぶ無料で記録できます。数字が自動で積み上がって、減っていくのを見るのが楽しくなり、気づけば「やせ習慣」が身についています。</span></div></div>
       <div class="aboutpage-point"><span class="pt-no">4</span><div class="pt-tx"><b>やせるだけじゃない、カラダの中から元気に</b><span>歩くことは、脂肪燃焼だけじゃなく血圧・血糖値ケアや睡眠の質アップにもうれしい運動。見た目スッキリ＆中身も健康、一石二鳥をまるごと狙えます。</span></div></div>
       <div class="aboutpage-point"><span class="pt-no">5</span><div class="pt-tx"><b>ひとりじゃないから、心が折れない</b><span>同じように歩いてがんばる仲間の投稿が、毎日の励みに。続け方のコツが詰まったコラムも読み放題。「今日はサボりたいな」って日も、そっと背中を押してくれます。</span></div></div>
-      <div class="about-actions"><a class="lp-btn lp-btn-secondary" href="faq.html">よくある質問（FAQ）→</a><a class="lp-btn lp-btn-primary" href="index.html">トップへ戻る</a></div>
+      <p class="aboutpage-free-note">📒 <b>会員登録は無料。</b>マイページで体重・運動・消費カロリーの記録が、ずっと無料で使えます。</p>
+      <div class="about-actions"><a class="lp-btn lp-btn-primary" href="member/register.php">無料で記録を始める →</a><a class="lp-btn lp-btn-secondary" href="faq.html">よくある質問（FAQ）→</a></div>
     </div>
   </div>
 </section>
 {$footer}
-<script src="assets/app.js?v=20260612f" defer></script>
+<script src="assets/app.js?v=20260612g" defer></script>
 </body>
 </html>
 HTML;
@@ -1157,7 +1158,7 @@ function render_faq_page(): string
   </div>
 </section>
 {$footer}
-<script src="assets/app.js?v=20260612f" defer></script>
+<script src="assets/app.js?v=20260612g" defer></script>
 </body>
 </html>
 HTML;
@@ -1513,7 +1514,7 @@ HTML;
 </section>
 
 {$footer}
-<script src="assets/app.js?v=20260612f" defer></script>
+<script src="assets/app.js?v=20260612g" defer></script>
 </body>
 </html>
 HTML;
@@ -1719,7 +1720,7 @@ HTML;
 </article>
 
 {$footer}
-<script src="assets/app.js?v=20260612f" defer></script>
+<script src="assets/app.js?v=20260612g" defer></script>
 </body>
 </html>
 HTML;
@@ -1775,7 +1776,7 @@ function render_page(string $key): ?string
 </article>
 
 {$footer}
-<script src="assets/app.js?v=20260612f" defer></script>
+<script src="assets/app.js?v=20260612g" defer></script>
 </body>
 </html>
 HTML;
