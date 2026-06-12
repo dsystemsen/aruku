@@ -5,13 +5,20 @@
 あるくは 株式会社D-SYSTEMS-EN が運営する日本語の健康情報メディアです。消費カロリーの目安は「消費kcal ≒ 歩数 × 体重kg × 0.0005」で算出しています（あくまで目安）。
 
 ## 主要ページ
-- [トップ](https://aruku.ne.jp/): 歩数別カロリー早見表・消費カロリー計算ツール・新着コラム
+- [トップ](https://aruku.ne.jp/): 歩数別カロリー早見表・消費カロリー計算ツール・健康管理アプリ比較ランキング・新着コラム
+- [歩数別カロリー早見表＆計算ツール](https://aruku.ne.jp/calorie-table.html): 歩数・体重・速度（早歩き／ジョギング／ランニング）別の消費カロリー早見表と計算ツール
+- [みんなのつぶやき掲示板](https://aruku.ne.jp/board.html): ログイン不要で「あるく」ことを気軽につぶやける匿名掲示板
 - [あるくとは？](https://aruku.ne.jp/about-aruku.html): メディアの目的と特徴
-- [よくある質問（FAQ）](https://aruku.ne.jp/faq.html)
+- [よくある質問（FAQ）](https://aruku.ne.jp/faq.html): 歩く健康効果・1日の目標歩数・歩くとふらつく原因・高齢者の歩数・サルコペニアなど
 - [運営者情報](https://aruku.ne.jp/about.html)
 - [編集・監修ポリシー](https://aruku.ne.jp/editorial-policy.html): YMYL免責・編集方針
 - [プライバシーポリシー](https://aruku.ne.jp/privacy.html)
 - [サイト内検索](https://aruku.ne.jp/search.html)
+
+## 編集部の深掘りコラム（健康トピック）
+- [サルコペニアは歩き方でわかる？歩く速度・握力チェックと予防の歩き方](https://aruku.ne.jp/column/sarcopenia-walking.html): 歩く速度や握力の低下はサルコペニア（加齢性の筋肉減少）のサイン。AWGS2019の目安（握力 男28kg・女18kg／歩行速度1.0m/s未満）でのセルフチェックと、歩く×筋トレ×たんぱく質の予防・対策を解説。
+- [歩くとふらつくのは何が原因？考えられる理由と受診の目安](https://aruku.ne.jp/column/walking-dizzy-causes.html): 歩行時のふらつきの原因（加齢・筋力低下、低血圧、貧血、脱水、内耳の不調、薬の影響など）と、すぐ受診すべきサイン、ふらつきを防ぐ歩き方をまとめた健康解説。
+- [歩くのがちょっと楽しくなる小話4つ](https://aruku.ne.jp/column/walking-fun-facts.html): 歩く哲学（逍遥学派・カント等）、赤ちゃんが歩き出す時期（1歳前後）、フルマラソン42.195kmを歩くと約7〜10時間、歩く国際協力「Walk in Her Shoes」（CARE主催・2024）の雑学読み物。
 
 ## 全コラム（カテゴリ別・要約付き）
 
