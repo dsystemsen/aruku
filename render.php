@@ -414,7 +414,7 @@ function render_article(string $slug): ?string
             '@type'           => 'BreadcrumbList',
             'itemListElement' => [
                 ['@type' => 'ListItem', 'position' => 1, 'name' => 'あるく', 'item' => $s['url'] . '/'],
-                ['@type' => 'ListItem', 'position' => 2, 'name' => 'コラム', 'item' => $s['url'] . '/column/'],
+                ['@type' => 'ListItem', 'position' => 2, 'name' => $cat['name'], 'item' => $s['url'] . '/category/' . $article['cat'] . '.html'],
                 ['@type' => 'ListItem', 'position' => 3, 'name' => $article['title']],
             ],
         ],
@@ -453,7 +453,7 @@ function render_article(string $slug): ?string
 <article class="column-article">
   <header class="column-header">
     <nav class="column-breadcrumb" aria-label="パンくず">
-      <a href="../index.html">トップ</a> ／ <a href="./">コラム</a> ／ <span>{$title}</span>
+      <a href="../index.html">トップ</a> ／ <a href="../category/{$cat_back}.html">{$catname}</a> ／ <span>{$title}</span>
     </nav>
     <div class="column-thumb" aria-hidden="true">{$hero_thumb}</div>
     <h1>{$title}{$sub}</h1>

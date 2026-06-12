@@ -18,6 +18,8 @@ Disallow: /member/export.php
 Disallow: /member/follow.php
 Disallow: /posts/like.php
 Disallow: /posts/bookmark.php
+# 掲示板の投稿受け口（GETは board.html へ正規化済み）はクロール対象外
+Disallow: /board.php
 
 # --- 生成AI / LLM クローラを明示的に許可（学習・検索引用とも歓迎） ---
 User-agent: GPTBot
