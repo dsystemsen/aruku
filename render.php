@@ -127,7 +127,7 @@ function nav_html(string $prefix): string
     return <<<HTML
 <nav class="lp-nav" data-auth="{$authAttr}">
   <div class="lp-nav-inner">
-    <a href="{$prefix}index.html" class="lp-brand"><img src="{$prefix}assets/logo.svg?v=20260613c" alt="あるくロゴ"><span class="lp-brand-text"><span class="lp-brand-tagline">-歩くことで健康に-</span><span class="lp-brand-name">あるく</span></span></a>
+    <a href="{$prefix}index.html" class="lp-brand"><img src="{$prefix}assets/logo.svg?v=20260613d" alt="あるくロゴ"><span class="lp-brand-text"><span class="lp-brand-tagline">-歩くことで健康に-</span><span class="lp-brand-name">あるく</span></span></a>
     <div class="lp-nav-links">
       {$adminLink}<a href="{$prefix}member/mypage.php" class="lp-nav-cta">マイページ</a>
       <a href="{$prefix}member/register.php" class="lp-nav-cta">会員登録</a>
@@ -146,7 +146,7 @@ function footer_html(string $prefix): string
 <footer class="lp-footer">
   <div class="lp-footer-inner">
     <div>
-      <div class="lp-footer-brand"><img src="{$prefix}assets/logo.svg?v=20260613c" alt="あるく ロゴ">あるく</div>
+      <div class="lp-footer-brand"><img src="{$prefix}assets/logo.svg?v=20260613d" alt="あるく ロゴ">あるく</div>
       <p class="lp-footer-tagline">{$s['tagline']}</p>
     </div>
     <nav class="lp-footer-links">
@@ -191,8 +191,8 @@ function head_html(string $prefix, string $title, string $desc, string $canonica
     }
     $rb = '<meta name="robots" content="' . $robotsContent . '">' . "\n";
     // フォントはメイリオ（端末ローカル）を使用するため Web フォントの読込は不要。
-    $css = '<link rel="stylesheet" href="' . $prefix . 'assets/style.css?v=20260613c">' . "\n"
-        . '<link rel="stylesheet" href="' . $prefix . 'assets/column.css?v=20260613c">' . "\n"
+    $css = '<link rel="stylesheet" href="' . $prefix . 'assets/style.css?v=20260613d">' . "\n"
+        . '<link rel="stylesheet" href="' . $prefix . 'assets/column.css?v=20260613d">' . "\n"
         . '<noscript><style>.reveal,.reveal-stagger>*,.hero-anim,.hero-art-anim{opacity:1!important;transform:none!important;animation:none!important}</style></noscript>';
     // meta keywords は Google・各AIともに無視するため出力しない（引数は後方互換で受けるだけ）。
     $kw = '';
@@ -242,7 +242,7 @@ function head_html(string $prefix, string $title, string $desc, string $canonica
 <meta name="twitter:description" content="{$desc}">
 <meta name="twitter:image" content="{$ogp}">
 {$twSite}<meta name="theme-color" content="#29b183">
-{$headExtra}<link rel="icon" type="image/svg+xml" href="{$prefix}assets/logo.svg?v=20260613c">
+{$headExtra}<link rel="icon" type="image/svg+xml" href="{$prefix}assets/logo.svg?v=20260613d">
 {$css}
 {$ld}</head>
 <body>
@@ -507,7 +507,7 @@ function render_article(string $slug): ?string
 </article>
 
 {$footer}
-<script src="../assets/app.js?v=20260613c" defer></script>
+<script src="../assets/app.js?v=20260613d" defer></script>
 </body>
 </html>
 HTML;
@@ -819,7 +819,7 @@ function render_column_index(): string
 </div>
 
 {$footer}
-<script src="../assets/app.js?v=20260613c" defer></script>
+<script src="../assets/app.js?v=20260613d" defer></script>
 </body>
 </html>
 HTML;
@@ -845,7 +845,7 @@ function render_category_columns(string $cat): string
             . '<meta name="viewport" content="width=device-width, initial-scale=1">'
             . '<meta name="robots" content="noindex, nofollow">'
             . '<title>ページが見つかりません｜あるく</title>'
-            . '<link rel="stylesheet" href="' . $prefix . 'assets/style.css?v=20260613c"></head><body>'
+            . '<link rel="stylesheet" href="' . $prefix . 'assets/style.css?v=20260613d"></head><body>'
             . '<main style="max-width:640px;margin:14vh auto;padding:0 24px;text-align:center;">'
             . '<h1 style="font-size:1.6rem;margin-bottom:12px;">ページが見つかりません</h1>'
             . '<p style="color:#5d6362;margin-bottom:28px;">お探しのページは削除されました。</p>'
@@ -865,7 +865,7 @@ function render_category_columns(string $cat): string
     // 編集部の特集記事（/column/）はカテゴリページには表示しない（要望により撤去）。
     $editSection = '';
     $feedHeader = $cards
-        ? '<h2 class="column-cat-title"><span class="cat-emoji">📝</span>みんなのコラム</h2>'
+        ? '<h2 class="column-cat-title column-cat-title--plain"><span class="cat-emoji">📝</span>みんなのコラム</h2>'
         : '';
 
     $catNav = aruku_category_nav($prefix, $cat);
@@ -921,7 +921,7 @@ function render_category_columns(string $cat): string
   </div>
 </div>
 {$footer}
-<script src="{$prefix}assets/app.js?v=20260613c" defer></script>
+<script src="{$prefix}assets/app.js?v=20260613d" defer></script>
 </body>
 </html>
 HTML;
@@ -977,7 +977,7 @@ function render_editorial_policy(): string
   </div>
 </section>
 {$footer}
-<script src="{$prefix}assets/app.js?v=20260613c" defer></script>
+<script src="{$prefix}assets/app.js?v=20260613d" defer></script>
 </body>
 </html>
 HTML;
@@ -1029,7 +1029,7 @@ function render_search_page(string $q): string
   </div>
 </div>
 {$footer}
-<script src="{$prefix}assets/app.js?v=20260613c" defer></script>
+<script src="{$prefix}assets/app.js?v=20260613d" defer></script>
 </body>
 </html>
 HTML;
@@ -1075,7 +1075,7 @@ function render_aboutaruku(): string
   </div>
 </section>
 {$footer}
-<script src="assets/app.js?v=20260613c" defer></script>
+<script src="assets/app.js?v=20260613d" defer></script>
 </body>
 </html>
 HTML;
@@ -1157,7 +1157,7 @@ function render_faq_page(): string
   </div>
 </section>
 {$footer}
-<script src="assets/app.js?v=20260613c" defer></script>
+<script src="assets/app.js?v=20260613d" defer></script>
 </body>
 </html>
 HTML;
@@ -1249,7 +1249,7 @@ function render_board(): string
   </div>
 </section>
 {$footer}
-<script src="assets/app.js?v=20260613c" defer></script>
+<script src="assets/app.js?v=20260613d" defer></script>
 </body>
 </html>
 HTML;
@@ -1620,7 +1620,7 @@ HTML;
 </section>
 
 {$footer}
-<script src="assets/app.js?v=20260613c" defer></script>
+<script src="assets/app.js?v=20260613d" defer></script>
 </body>
 </html>
 HTML;
@@ -1826,7 +1826,7 @@ HTML;
 </article>
 
 {$footer}
-<script src="assets/app.js?v=20260613c" defer></script>
+<script src="assets/app.js?v=20260613d" defer></script>
 </body>
 </html>
 HTML;
@@ -1882,7 +1882,7 @@ function render_page(string $key): ?string
 </article>
 
 {$footer}
-<script src="assets/app.js?v=20260613c" defer></script>
+<script src="assets/app.js?v=20260613d" defer></script>
 </body>
 </html>
 HTML;
