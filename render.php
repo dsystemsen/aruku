@@ -127,7 +127,7 @@ function nav_html(string $prefix): string
     return <<<HTML
 <nav class="lp-nav" data-auth="{$authAttr}">
   <div class="lp-nav-inner">
-    <a href="{$prefix}index.html" class="lp-brand"><img src="{$prefix}assets/logo.svg?v=20260612b" alt="あるくロゴ"><span class="lp-brand-text"><span class="lp-brand-tagline">-歩くことで健康に-</span><span class="lp-brand-name">あるく</span></span></a>
+    <a href="{$prefix}index.html" class="lp-brand"><img src="{$prefix}assets/logo.svg?v=20260612e" alt="あるくロゴ"><span class="lp-brand-text"><span class="lp-brand-tagline">-歩くことで健康に-</span><span class="lp-brand-name">あるく</span></span></a>
     <div class="lp-nav-links">
       {$adminLink}<a href="{$prefix}member/mypage.php" class="lp-nav-cta">マイページ</a>
       <a href="{$prefix}member/register.php" class="lp-nav-cta">会員登録</a>
@@ -146,7 +146,7 @@ function footer_html(string $prefix): string
 <footer class="lp-footer">
   <div class="lp-footer-inner">
     <div>
-      <div class="lp-footer-brand"><img src="{$prefix}assets/logo.svg?v=20260612b" alt="あるく ロゴ">あるく</div>
+      <div class="lp-footer-brand"><img src="{$prefix}assets/logo.svg?v=20260612e" alt="あるく ロゴ">あるく</div>
       <p class="lp-footer-tagline">{$s['tagline']}</p>
     </div>
     <nav class="lp-footer-links">
@@ -187,8 +187,8 @@ function head_html(string $prefix, string $title, string $desc, string $canonica
     $robotsContent = $robots !== '' ? $robots : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1';
     $rb = '<meta name="robots" content="' . $robotsContent . '">' . "\n";
     // フォントはメイリオ（端末ローカル）を使用するため Web フォントの読込は不要。
-    $css = '<link rel="stylesheet" href="' . $prefix . 'assets/style.css?v=20260612b">' . "\n"
-        . '<link rel="stylesheet" href="' . $prefix . 'assets/column.css?v=20260612b">' . "\n"
+    $css = '<link rel="stylesheet" href="' . $prefix . 'assets/style.css?v=20260612e">' . "\n"
+        . '<link rel="stylesheet" href="' . $prefix . 'assets/column.css?v=20260612e">' . "\n"
         . '<noscript><style>.reveal,.reveal-stagger>*,.hero-anim,.hero-art-anim{opacity:1!important;transform:none!important;animation:none!important}</style></noscript>';
     // meta keywords は Google・各AIともに無視するため出力しない（引数は後方互換で受けるだけ）。
     $kw = '';
@@ -238,7 +238,7 @@ function head_html(string $prefix, string $title, string $desc, string $canonica
 <meta name="twitter:description" content="{$desc}">
 <meta name="twitter:image" content="{$ogp}">
 {$twSite}<meta name="theme-color" content="#29b183">
-{$headExtra}<link rel="icon" type="image/svg+xml" href="{$prefix}assets/logo.svg?v=20260612b">
+{$headExtra}<link rel="icon" type="image/svg+xml" href="{$prefix}assets/logo.svg?v=20260612e">
 {$css}
 {$ld}</head>
 <body>
@@ -503,7 +503,7 @@ function render_article(string $slug): ?string
 </article>
 
 {$footer}
-<script src="../assets/app.js?v=20260612b" defer></script>
+<script src="../assets/app.js?v=20260612e" defer></script>
 </body>
 </html>
 HTML;
@@ -815,7 +815,7 @@ function render_column_index(): string
 </div>
 
 {$footer}
-<script src="../assets/app.js?v=20260612b" defer></script>
+<script src="../assets/app.js?v=20260612e" defer></script>
 </body>
 </html>
 HTML;
@@ -841,7 +841,7 @@ function render_category_columns(string $cat): string
             . '<meta name="viewport" content="width=device-width, initial-scale=1">'
             . '<meta name="robots" content="noindex, nofollow">'
             . '<title>ページが見つかりません｜あるく</title>'
-            . '<link rel="stylesheet" href="' . $prefix . 'assets/style.css?v=20260612b"></head><body>'
+            . '<link rel="stylesheet" href="' . $prefix . 'assets/style.css?v=20260612e"></head><body>'
             . '<main style="max-width:640px;margin:14vh auto;padding:0 24px;text-align:center;">'
             . '<h1 style="font-size:1.6rem;margin-bottom:12px;">ページが見つかりません</h1>'
             . '<p style="color:#5d6362;margin-bottom:28px;">お探しのページは削除されました。</p>'
@@ -932,7 +932,7 @@ function render_category_columns(string $cat): string
   </div>
 </div>
 {$footer}
-<script src="{$prefix}assets/app.js?v=20260612b" defer></script>
+<script src="{$prefix}assets/app.js?v=20260612e" defer></script>
 </body>
 </html>
 HTML;
@@ -988,7 +988,7 @@ function render_editorial_policy(): string
   </div>
 </section>
 {$footer}
-<script src="{$prefix}assets/app.js?v=20260612b" defer></script>
+<script src="{$prefix}assets/app.js?v=20260612e" defer></script>
 </body>
 </html>
 HTML;
@@ -1038,7 +1038,7 @@ function render_search_page(string $q): string
   </div>
 </div>
 {$footer}
-<script src="{$prefix}assets/app.js?v=20260612b" defer></script>
+<script src="{$prefix}assets/app.js?v=20260612e" defer></script>
 </body>
 </html>
 HTML;
@@ -1064,16 +1064,18 @@ function render_aboutaruku(): string
     <div class="aboutpage-il-img"><img src="uploads/aruku_runner.png" alt="ランニングする女性のイラスト" loading="lazy"></div>
     <div class="aboutpage-il-text">
       <h1 class="aboutpage-title aboutpage-title--left">あるくとは？</h1>
-      <p class="aboutpage-sub">歩くことの総合メディア「あるく」の、3つのいいところ。</p>
-      <div class="aboutpage-point"><span class="pt-no">1</span><div class="pt-tx"><b>今日から無料で始められる</b><span>コラムも歩数別カロリーツールも会員登録も、すべて無料。</span></div></div>
-      <div class="aboutpage-point"><span class="pt-no">2</span><div class="pt-tx"><b>歩数別カロリーがひと目で分かる</b><span>早見表＆計算ツールで「どれくらい歩けばいいか」がすぐ分かります。</span></div></div>
-      <div class="aboutpage-point"><span class="pt-no">3</span><div class="pt-tx"><b>記録の見える化で続けられる</b><span>体重・運動を記録して消費カロリーを累計。投稿にも参加できます。</span></div></div>
+      <p class="aboutpage-sub">「歩くだけでやせるって、ホント？」——ホントです。「あるく」がダイエットと健康習慣の相棒になる、5つのうれしいポイント。</p>
+      <div class="aboutpage-point"><span class="pt-no">1</span><div class="pt-tx"><b>サイフにやさしい。タダで始められる</b><span>ジムの月会費も、高い器具もいりません。必要なのは靴1足だけ。コラムも歩数別カロリーツールも会員登録もぜんぶ無料だから、お金の心配なしで今日からスタートできます。</span></div></div>
+      <div class="aboutpage-point"><span class="pt-no">2</span><div class="pt-tx"><b>「何歩で何kcal？」がひと目でわかる</b><span>早見表と計算ツールで、目標までに歩く歩数と消費カロリーがパッと丸わかり。なんとなく歩くより、ぐっと効率よく、ムダなくやせられます。</span></div></div>
+      <div class="aboutpage-point"><span class="pt-no">3</span><div class="pt-tx"><b>がんばりが数字で見えるから、続く＆リバウンドしにくい</b><span>体重と歩数を記録すれば、消費カロリーが自動でどんどん積み上がる。減っていく数字を見るのが楽しくなって、気づけば「やせ習慣」が身についています。</span></div></div>
+      <div class="aboutpage-point"><span class="pt-no">4</span><div class="pt-tx"><b>やせるだけじゃない、カラダの中から元気に</b><span>歩くことは、脂肪燃焼だけじゃなく血圧・血糖値ケアや睡眠の質アップにもうれしい運動。見た目スッキリ＆中身も健康、一石二鳥をまるごと狙えます。</span></div></div>
+      <div class="aboutpage-point"><span class="pt-no">5</span><div class="pt-tx"><b>ひとりじゃないから、心が折れない</b><span>同じように歩いてがんばる仲間の投稿が、毎日の励みに。続け方のコツが詰まったコラムも読み放題。「今日はサボりたいな」って日も、そっと背中を押してくれます。</span></div></div>
       <div class="about-actions"><a class="lp-btn lp-btn-secondary" href="faq.html">よくある質問（FAQ）→</a><a class="lp-btn lp-btn-primary" href="index.html">トップへ戻る</a></div>
     </div>
   </div>
 </section>
 {$footer}
-<script src="assets/app.js?v=20260612b" defer></script>
+<script src="assets/app.js?v=20260612e" defer></script>
 </body>
 </html>
 HTML;
@@ -1132,7 +1134,7 @@ function render_faq_page(): string
   </div>
 </section>
 {$footer}
-<script src="assets/app.js?v=20260612b" defer></script>
+<script src="assets/app.js?v=20260612e" defer></script>
 </body>
 </html>
 HTML;
@@ -1394,15 +1396,80 @@ HTML;
       calc();
     })();
     </script>
+    <div class="section-head section-head--left reveal" id="apps" style="margin-top:56px; scroll-margin-top:90px;">
+      <h2>３．健康管理アプリ比較ランキング<br>（カロリー計算・体重管理）</h2>
+    </div>
+    <div class="reveal">
+      <p class="app-rank-intro">「歩いて消費」とあわせて使いたい、<b>カロリー計算・体重管理アプリ</b>を、料金とサービス内容で比べてランキングにしました。あるくで歩数と消費カロリーを管理し、食事はアプリで記録——と組み合わせれば、ダイエットも健康づくりもぐっと続けやすくなります。</p>
+      <div class="app-rank-wrap">
+        <table class="app-rank">
+          <thead>
+            <tr><th>順位</th><th>アプリ名</th><th>特徴・主なサービス</th><th>料金（税込）</th><th>公式サイト</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="app-rank-no">1</span></td>
+              <td><span class="app-rank-name">あすけん</span></td>
+              <td class="app-rank-feat">AI栄養士が毎食アドバイス。栄養素を自動採点してくれる定番アプリ。栄養バランスごと整えたい人に。</td>
+              <td class="app-rank-price">無料<small>プレミアム 月480円〜</small></td>
+              <td><a class="app-rank-btn" href="https://www.asken.jp/" target="_blank" rel="noopener">公式ページ →</a></td>
+            </tr>
+            <tr>
+              <td><span class="app-rank-no">2</span></td>
+              <td><span class="app-rank-name">カロミル</span></td>
+              <td class="app-rank-feat">食事を写真でAIが自動記録。PFC・血糖・血圧もまとめて管理。ラクに続けたい人にぴったり。</td>
+              <td class="app-rank-price">無料<small>プレミアム 月480円〜</small></td>
+              <td><a class="app-rank-btn" href="https://www.calomeal.com/" target="_blank" rel="noopener">公式ページ →</a></td>
+            </tr>
+            <tr>
+              <td><span class="app-rank-no">3</span></td>
+              <td><span class="app-rank-name">MyFitnessPal</span></td>
+              <td class="app-rank-feat">世界最大級の食品データベースとバーコード読み取りが強み。海外食品も記録したい本格派に。</td>
+              <td class="app-rank-price">無料<small>プレミアム 月約3,100円〜</small></td>
+              <td><a class="app-rank-btn" href="https://www.myfitnesspal.com/ja" target="_blank" rel="noopener">公式ページ →</a></td>
+            </tr>
+            <tr>
+              <td><span class="app-rank-no">4</span></td>
+              <td><span class="app-rank-name">RecStyle（レックスタイル）</span></td>
+              <td class="app-rank-feat">体重・体脂肪の変化をグラフで見える化。完全無料でシンプル。記録を習慣にしたい人に。</td>
+              <td class="app-rank-price">完全無料<small>追加課金なし</small></td>
+              <td><a class="app-rank-btn" href="https://apps.apple.com/jp/app/id709213946" target="_blank" rel="noopener">公式ページ →</a></td>
+            </tr>
+            <tr>
+              <td><span class="app-rank-no">5</span></td>
+              <td><span class="app-rank-name">シンプルダイエット</span></td>
+              <td class="app-rank-feat">体重記録に特化した迷わず使える超シンプル設計。記録が続かなかった人の最後の1つに。</td>
+              <td class="app-rank-price">無料<small>一部機能のみ課金</small></td>
+              <td><a class="app-rank-btn" href="https://simpleweight.net/" target="_blank" rel="noopener">公式ページ →</a></td>
+            </tr>
+            <tr>
+              <td><span class="app-rank-no">6</span></td>
+              <td><span class="app-rank-name">FiNC（フィンク）</span></td>
+              <td class="app-rank-feat">体重・食事・歩数・睡眠をまるごと管理。記録でポイントも貯まり、ごほうび感覚で続けられる。</td>
+              <td class="app-rank-price">無料<small>FiNC Plus 月480円〜</small></td>
+              <td><a class="app-rank-btn" href="https://finc.com/" target="_blank" rel="noopener">公式ページ →</a></td>
+            </tr>
+            <tr>
+              <td><span class="app-rank-no">7</span></td>
+              <td><span class="app-rank-name">ヘルスプラネット（タニタ）</span></td>
+              <td class="app-rank-feat">タニタの体組成計と連携し、体重・体脂肪・筋肉量を自動でグラフ記録。数値で管理したい人に。</td>
+              <td class="app-rank-price">完全無料<small>体組成計連携に対応</small></td>
+              <td><a class="app-rank-btn" href="https://www.healthplanet.jp/" target="_blank" rel="noopener">公式ページ →</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="app-rank-note">※ ランキングは編集部の総合評価による目安です。※ 料金・サービス内容は2026年6月時点のもので、変更される場合があります。最新の情報は各公式サイトをご確認ください。</p>
+    </div>
     <div class="section-head section-head--left reveal" id="columns" style="margin-top:56px; scroll-margin-top:90px;">
-      <h2>３．コラム</h2>
+      <h2>４．コラム</h2>
     </div>
     {$columnFeed}
   </div>
 </section>
 
 {$footer}
-<script src="assets/app.js?v=20260612b" defer></script>
+<script src="assets/app.js?v=20260612e" defer></script>
 </body>
 </html>
 HTML;
@@ -1608,7 +1675,7 @@ HTML;
 </article>
 
 {$footer}
-<script src="assets/app.js?v=20260612b" defer></script>
+<script src="assets/app.js?v=20260612e" defer></script>
 </body>
 </html>
 HTML;
@@ -1664,7 +1731,7 @@ function render_page(string $key): ?string
 </article>
 
 {$footer}
-<script src="assets/app.js?v=20260612b" defer></script>
+<script src="assets/app.js?v=20260612e" defer></script>
 </body>
 </html>
 HTML;

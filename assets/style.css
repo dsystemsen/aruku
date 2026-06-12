@@ -330,18 +330,39 @@ img, svg { max-width: 100%; }
   max-width: none;
   white-space: nowrap;
 }
-.hero-free { margin: -18px 0 30px; }
+.hero-free { margin: -10px 0 30px; }
 .hero-free span {
   display: inline-block;
-  background: var(--forest-700);
-  color: #fff;
+  color: var(--forest-700);
   font-weight: 800;
   letter-spacing: .02em;
-  font-size: clamp(.92rem, 1.15vw, 1.08rem);
-  padding: .5em 1.15em;
-  border-radius: 999px;
-  box-shadow: 0 8px 22px rgba(15,159,115,.4);
+  font-size: clamp(1.2rem, 1.9vw, 1.5rem);
+  padding: 0 .1em .12em;
+  background-image: linear-gradient(90deg, var(--forest-500), var(--forest-700));
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 100% .18em;
 }
+/* 健康管理アプリ比較ランキング表 */
+.app-rank-intro { color: var(--ink-2); margin: 0 0 18px; line-height: 1.85; }
+.app-rank-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: 16px; box-shadow: 0 10px 30px rgba(41,177,131,.10); }
+table.app-rank { width: 100%; min-width: 680px; border-collapse: collapse; background: #fff; font-size: .96rem; }
+table.app-rank th, table.app-rank td { padding: 16px 18px; text-align: left; vertical-align: middle; border: 1px solid #e6e6e6; }
+table.app-rank tbody td { height: 92px; }
+table.app-rank thead th { background: var(--forest-700); color: #fff; font-weight: 800; letter-spacing: .02em; white-space: nowrap; border-color: #e6e6e6; }
+.app-rank-no { display: inline-flex; align-items: center; justify-content: center; min-width: 2.4em; height: 2.4em; border-radius: 999px; background: var(--forest-500); color: #fff; font-weight: 800; font-size: 1.02rem; }
+table.app-rank tr:nth-child(1) .app-rank-no { background: #e0a400; }
+table.app-rank tr:nth-child(2) .app-rank-no { background: #9aa6b2; }
+table.app-rank tr:nth-child(3) .app-rank-no { background: #c98a4b; }
+.app-rank-name { font-weight: 800; color: var(--ink); font-size: 1.05rem; }
+.app-rank-feat { color: var(--ink-2); line-height: 1.7; min-width: 220px; }
+.app-rank-price { font-weight: 700; color: var(--forest-700); white-space: nowrap; }
+.app-rank-price small { display: block; font-weight: 500; color: var(--ink-2); font-size: .82em; margin-top: 2px; }
+.app-rank-btn { display: inline-block; white-space: nowrap; background: var(--forest-700); color: #fff; font-weight: 700; text-decoration: none; padding: .55em 1.1em; border-radius: 999px; transition: background .2s, transform .2s; }
+.app-rank-btn:hover { background: var(--forest-500); transform: translateY(-1px); color: #fff; }
+.app-rank-note { font-size: .82rem; color: var(--ink-2); margin: 12px 2px 0; line-height: 1.7; }
+@media (max-width: 720px) { table.app-rank { font-size: .9rem; } table.app-rank th, table.app-rank td { padding: 13px 12px; } }
+
 .hero-actions { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; }
 .hero-art {
   position: relative;
