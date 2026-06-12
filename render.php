@@ -1198,7 +1198,7 @@ function render_board(): string
     $prefix = '';
     $title = 'みんなのつぶやき掲示板';
     $desc = '「あるく」ことのなんでもOKなつぶやき掲示板。ログインも登録もいらず、だれでも気軽に、今日の一歩や見つけた景色をシェアできます。';
-    $head = head_html($prefix, $title . '｜あるく', $desc, $s['url'] . '/board.html', '', null, 'website', 'noindex, follow');
+    $head = head_html($prefix, $title . '｜あるく', $desc, $s['url'] . '/board.html', '', null, 'website', 'index, follow');
     $footer = footer_html($prefix);
     $crumb = breadcrumb_nav($prefix, 'みんなのつぶやき掲示板', true);
 
@@ -1426,7 +1426,6 @@ HTML;
 
     // ４．みんなのつぶやき掲示板（本体は /board.html。トップは最新3件の入口だけ＝伸びない）
     require_once __DIR__ . '/inc/board.php';
-    $boardTeaser = aruku_board_items_html(board_recent(3));
     $boardCount  = board_count();
     $boardSection = <<<HTML
     <div class="section-head section-head--left reveal" id="board" style="margin-top:56px; scroll-margin-top:90px;">
@@ -1434,7 +1433,6 @@ HTML;
     </div>
     <div class="board board--teaser reveal">
       <p class="board-lead">「あるく」ことの、なんでもOKなつぶやき掲示板。今日の一歩、見つけた景色、ちょっとした目標を、<strong>ログインも登録もいらず、だれでも気軽に</strong>。前向きな一歩をシェアしましょう（愚痴ではなく、ね😊）。</p>
-      <ul class="board-list">{$boardTeaser}</ul>
       <p class="board-more"><a href="board.html" class="lp-btn lp-btn-primary">つぶやき掲示板を開く（つぶやく）→</a><span class="board-count">これまで{$boardCount}件のつぶやき</span></p>
     </div>
 HTML;
@@ -1896,6 +1894,7 @@ function render_sitemap(): string
         [$s['url'] . '/', $today, '1.0'],
         [$s['url'] . '/calorie-table.html', $today, '0.9'],
         [$s['url'] . '/about-aruku.html', $today, '0.6'],
+        [$s['url'] . '/board.html', $today, '0.5'],
         [$s['url'] . '/faq.html', $today, '0.5'],
         [$s['url'] . '/editorial-policy.html', $today, '0.4'],
         [$s['url'] . '/about.html', $today, '0.4'],
