@@ -220,6 +220,15 @@ function aruku_db_init(PDO $pdo): void
     aruku_ensure_index($pdo, $driver, false, 'idx_board_created', 'board_posts', 'hidden, id');
     aruku_ensure_index($pdo, $driver, false, 'idx_board_ip', 'board_posts', 'ip_hash, id');
 
+    // CTAクリック計測（1クリック1行のイベントログ。集計はGROUP BYで行う）
+    $pdo->exec("CREATE TABLE IF NOT EXISTS cta_clicks (
+        id $pk,
+        cta_key VARCHAR(40) NOT NULL,
+        page VARCHAR(120) NOT NULL DEFAULT '',
+        created_at $ts
+    )");
+    aruku_ensure_index($pdo, $driver, false, 'idx_cta_key', 'cta_clicks', 'cta_key, id');
+
     // 集計・取得を速く（存在しなければ作成）
     aruku_ensure_index($pdo, $driver, false, 'idx_logs_member_date', 'activity_logs', 'member_id, log_date');
     aruku_ensure_index($pdo, $driver, false, 'idx_posts_status', 'posts', 'status, id');

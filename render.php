@@ -127,11 +127,11 @@ function nav_html(string $prefix): string
     return <<<HTML
 <nav class="lp-nav" data-auth="{$authAttr}">
   <div class="lp-nav-inner">
-    <a href="{$prefix}index.html" class="lp-brand"><img src="{$prefix}assets/logo.svg?v=20260613d" alt="あるくロゴ"><span class="lp-brand-text"><span class="lp-brand-tagline">-歩くことで健康に-</span><span class="lp-brand-name">あるく</span></span></a>
+    <a href="{$prefix}index.html" class="lp-brand"><img src="{$prefix}assets/logo.svg?v=20260616e" alt="あるくロゴ"><span class="lp-brand-text"><span class="lp-brand-tagline">-歩くことで健康に-</span><span class="lp-brand-name">あるく</span></span></a>
     <div class="lp-nav-links">
       {$adminLink}<a href="{$prefix}member/mypage.php" class="lp-nav-cta">マイページ</a>
-      <a href="{$prefix}member/register.php" class="lp-nav-cta">会員登録</a>
-      <a href="{$prefix}member/login.php" class="lp-nav-cta">ログイン</a>
+      <a href="{$prefix}member/register.php" class="lp-nav-cta" data-cta="nav_register">無料ではじめる</a>
+      <a href="{$prefix}member/login.php" class="lp-nav-cta" data-cta="nav_login">ログイン</a>
       <a href="{$prefix}member/logout.php" class="lp-nav-logout">ログアウト</a>
     </div>
   </div>
@@ -146,7 +146,7 @@ function footer_html(string $prefix): string
 <footer class="lp-footer">
   <div class="lp-footer-inner">
     <div>
-      <div class="lp-footer-brand"><img src="{$prefix}assets/logo.svg?v=20260613d" alt="あるく ロゴ">あるく</div>
+      <div class="lp-footer-brand"><img src="{$prefix}assets/logo.svg?v=20260616e" alt="あるく ロゴ">あるく</div>
       <p class="lp-footer-tagline">{$s['tagline']}</p>
     </div>
     <nav class="lp-footer-links">
@@ -191,8 +191,8 @@ function head_html(string $prefix, string $title, string $desc, string $canonica
     }
     $rb = '<meta name="robots" content="' . $robotsContent . '">' . "\n";
     // フォントはメイリオ（端末ローカル）を使用するため Web フォントの読込は不要。
-    $css = '<link rel="stylesheet" href="' . $prefix . 'assets/style.css?v=20260613d">' . "\n"
-        . '<link rel="stylesheet" href="' . $prefix . 'assets/column.css?v=20260613d">' . "\n"
+    $css = '<link rel="stylesheet" href="' . $prefix . 'assets/style.css?v=20260616e">' . "\n"
+        . '<link rel="stylesheet" href="' . $prefix . 'assets/column.css?v=20260616e">' . "\n"
         . '<noscript><style>.reveal,.reveal-stagger>*,.hero-anim,.hero-art-anim{opacity:1!important;transform:none!important;animation:none!important}</style></noscript>';
     // meta keywords は Google・各AIともに無視するため出力しない（引数は後方互換で受けるだけ）。
     $kw = '';
@@ -242,7 +242,7 @@ function head_html(string $prefix, string $title, string $desc, string $canonica
 <meta name="twitter:description" content="{$desc}">
 <meta name="twitter:image" content="{$ogp}">
 {$twSite}<meta name="theme-color" content="#29b183">
-{$headExtra}<link rel="icon" type="image/svg+xml" href="{$prefix}assets/logo.svg?v=20260613d">
+{$headExtra}<link rel="icon" type="image/svg+xml" href="{$prefix}assets/logo.svg?v=20260616e">
 {$css}
 {$ld}</head>
 <body>
@@ -507,7 +507,7 @@ function render_article(string $slug): ?string
 </article>
 
 {$footer}
-<script src="../assets/app.js?v=20260613d" defer></script>
+<script src="../assets/app.js?v=20260616e" defer></script>
 </body>
 </html>
 HTML;
@@ -819,7 +819,7 @@ function render_column_index(): string
 </div>
 
 {$footer}
-<script src="../assets/app.js?v=20260613d" defer></script>
+<script src="../assets/app.js?v=20260616e" defer></script>
 </body>
 </html>
 HTML;
@@ -845,7 +845,7 @@ function render_category_columns(string $cat): string
             . '<meta name="viewport" content="width=device-width, initial-scale=1">'
             . '<meta name="robots" content="noindex, nofollow">'
             . '<title>ページが見つかりません｜あるく</title>'
-            . '<link rel="stylesheet" href="' . $prefix . 'assets/style.css?v=20260613d"></head><body>'
+            . '<link rel="stylesheet" href="' . $prefix . 'assets/style.css?v=20260616e"></head><body>'
             . '<main style="max-width:640px;margin:14vh auto;padding:0 24px;text-align:center;">'
             . '<h1 style="font-size:1.6rem;margin-bottom:12px;">ページが見つかりません</h1>'
             . '<p style="color:#5d6362;margin-bottom:28px;">お探しのページは削除されました。</p>'
@@ -921,7 +921,7 @@ function render_category_columns(string $cat): string
   </div>
 </div>
 {$footer}
-<script src="{$prefix}assets/app.js?v=20260613d" defer></script>
+<script src="{$prefix}assets/app.js?v=20260616e" defer></script>
 </body>
 </html>
 HTML;
@@ -977,7 +977,7 @@ function render_editorial_policy(): string
   </div>
 </section>
 {$footer}
-<script src="{$prefix}assets/app.js?v=20260613d" defer></script>
+<script src="{$prefix}assets/app.js?v=20260616e" defer></script>
 </body>
 </html>
 HTML;
@@ -1029,7 +1029,7 @@ function render_search_page(string $q): string
   </div>
 </div>
 {$footer}
-<script src="{$prefix}assets/app.js?v=20260613d" defer></script>
+<script src="{$prefix}assets/app.js?v=20260616e" defer></script>
 </body>
 </html>
 HTML;
@@ -1075,7 +1075,7 @@ function render_aboutaruku(): string
   </div>
 </section>
 {$footer}
-<script src="assets/app.js?v=20260613d" defer></script>
+<script src="assets/app.js?v=20260616e" defer></script>
 </body>
 </html>
 HTML;
@@ -1157,7 +1157,7 @@ function render_faq_page(): string
   </div>
 </section>
 {$footer}
-<script src="assets/app.js?v=20260613d" defer></script>
+<script src="assets/app.js?v=20260616e" defer></script>
 </body>
 </html>
 HTML;
@@ -1249,7 +1249,7 @@ function render_board(): string
   </div>
 </section>
 {$footer}
-<script src="assets/app.js?v=20260613d" defer></script>
+<script src="assets/app.js?v=20260616e" defer></script>
 </body>
 </html>
 HTML;
@@ -1392,7 +1392,7 @@ HTML;
         $sel = $m === 30 ? ' selected' : '';
         $tOpts .= '<option value="' . $m . '"' . $sel . '>' . $m . '分</option>';
     }
-    // ３．コラム：note.com 風にカテゴリ別の横スクロール（レール）で表示
+    // ６．コラム：note.com 風にカテゴリ別の横スクロール（レール）で表示
     require_once __DIR__ . '/inc/posts.php';
     $catEmoji = aruku_post_category_emoji();
     $catNavTop = aruku_category_nav('', '');
@@ -1431,12 +1431,12 @@ HTML;
     $columnFeed = '<div class="column-layout col-layout--flush"><aside class="column-side">' . $catNavTop . '</aside>'
         . '<div class="column-main col-box">' . $mainContent . '</div></div>';
 
-    // ４．みんなのつぶやき掲示板（本体は /board.html。トップは最新3件の入口だけ＝伸びない）
+    // ５．みんなのつぶやき掲示板（本体は /board.html。トップは最新3件の入口だけ＝伸びない）
     require_once __DIR__ . '/inc/board.php';
     $boardCount  = board_count();
     $boardSection = <<<HTML
     <div class="section-head section-head--left reveal" id="board" style="margin-top:56px; scroll-margin-top:90px;">
-      <h2>４．みんなのつぶやき掲示板</h2>
+      <h2>５．みんなのつぶやき掲示板</h2>
     </div>
     <div class="board board--teaser reveal">
       <p class="board-lead">「あるく」ことの、なんでもOKなつぶやき掲示板。今日の一歩、見つけた景色、ちょっとした目標を、<strong>ログインも登録もいらず、だれでも気軽に</strong>。前向きな一歩をシェアしましょう（愚痴ではなく、ね😊）。</p>
@@ -1452,6 +1452,11 @@ HTML;
       <h1 class="hero-anim hero-anim-2">{$top['hero_title_1']}<span class="hero-keep"><span class="accent">{$top['hero_accent']}</span>{$top['hero_title_2']}</span></h1>
       <p class="hero-lead hero-anim hero-anim-3">{$top['hero_lead']}</p>
       <p class="hero-free hero-anim hero-anim-4"><span>全機能無料で利用できます。</span></p>
+      <div class="hero-cta hero-anim hero-anim-4">
+        <a href="member/register.php" class="lp-btn lp-btn-primary" data-cta="hero_register">無料で歩数・体重を記録する →</a>
+        <a href="#columns" class="lp-btn lp-btn-secondary" data-cta="hero_columns">コラムを読む</a>
+      </div>
+      <p class="hero-cta-note hero-anim hero-anim-4">メール登録だけ・約30秒で完了・ずっと無料</p>
     </div>
   </div>
 </header>
@@ -1506,6 +1511,11 @@ HTML;
         <span class="calc-result-sub" id="calc-distance"></span>
       </div>
       <p class="calc-note">※ 計算式：METs × 体重(kg) × 時間(h) × 1.05 ×（性別係数）。<br>※一般的な時速・METs（早歩き5.0／ジョギング8.3／ランニング10.0）を用いた目安です。<br>性別係数：男性1.00／女性0.95。</p>
+      <div class="calc-cta">
+        <p class="calc-cta-lead">📒 この消費カロリーを<b>マイページに記録</b>して、毎日の積み重ねを“見える化”しませんか？</p>
+        <a href="member/register.php" class="lp-btn lp-btn-primary" data-cta="calc_register">無料で記録を始める →</a>
+        <span class="calc-cta-note">メール登録だけ・約30秒・ずっと無料</span>
+      </div>
     </div>
     <p class="calc-more"><a href="calorie-table.html" class="lp-btn lp-btn-secondary">歩数別カロリー早見表＆計算ツールの詳細を見る →</a></p>
     <script>
@@ -1525,8 +1535,30 @@ HTML;
       calc();
     })();
     </script>
+    <div class="section-head section-head--left reveal" id="ideal-calorie" style="margin-top:56px; scroll-margin-top:90px;">
+      <h2>３．年齢別の摂取カロリー・消費カロリー<br>（1日の理想の目安）</h2>
+    </div>
+    <div class="reveal">
+      <p class="app-rank-intro">1日にどれくらい食べて、どれくらい動くのが理想？　厚生労働省「日本人の食事摂取基準（2020年版）」をもとに、年齢・性別ごとの<b>1日の推定エネルギー必要量</b>をまとめました。これは<b>「理想的な摂取カロリー」</b>であると同時に、体重を維持したいなら<b>同じだけ消費する</b>のが目安になる数値です。</p>
+      <div class="app-rank-wrap">
+        <table class="kcal-ideal">
+          <thead>
+            <tr><th>年齢</th><th>男性</th><th>女性</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>18〜29歳</td><td>2,650<span class="kcal-unit">kcal</span></td><td>2,000<span class="kcal-unit">kcal</span></td></tr>
+            <tr><td>30〜49歳</td><td>2,700<span class="kcal-unit">kcal</span></td><td>2,050<span class="kcal-unit">kcal</span></td></tr>
+            <tr><td>50〜64歳</td><td>2,600<span class="kcal-unit">kcal</span></td><td>1,950<span class="kcal-unit">kcal</span></td></tr>
+            <tr><td>65〜74歳</td><td>2,400<span class="kcal-unit">kcal</span></td><td>1,850<span class="kcal-unit">kcal</span></td></tr>
+            <tr><td>75歳以上</td><td>2,100<span class="kcal-unit">kcal</span></td><td>1,650<span class="kcal-unit">kcal</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="kcal-ideal-callout">💡 <b>ダイエットしたい人は</b>、上の目安より「摂取カロリー ＜ 消費カロリー」になるよう、少しだけ差をつくるのがコツ。食事を減らしすぎるより、<b>歩いて消費を増やす</b>ほうが続けやすく、健康的です。まずは「食べた分、いつもより少し多く歩く」から始めてみましょう。</p>
+      <p class="app-rank-note">※ 数値は厚生労働省「日本人の食事摂取基準（2020年版）」の推定エネルギー必要量（身体活動レベルII＝「ふつう」）に基づく1日あたりの目安です。活動量が多い人はこれより多く、少ない人は少なくなります。妊娠・授乳中の方、成長期のお子さま、持病のある方などは必要量が異なります。一般的な健康情報であり、医療上の指導に代わるものではありません。</p>
+    </div>
     <div class="section-head section-head--left reveal" id="apps" style="margin-top:56px; scroll-margin-top:90px;">
-      <h2>３．健康管理アプリ比較ランキング<br>（カロリー計算・体重管理）</h2>
+      <h2>４．健康管理アプリ比較ランキング<br>（カロリー計算・体重管理）</h2>
     </div>
     <div class="reveal">
       <p class="app-rank-intro">「歩いて消費」とあわせて使いたい、<b>カロリー計算・体重管理アプリ</b>を、料金とサービス内容で比べてランキングにしました。あるくで歩数と消費カロリーを管理し、食事はアプリで記録——と組み合わせれば、ダイエットも健康づくりもぐっと続けやすくなります。</p>
@@ -1613,14 +1645,66 @@ HTML;
     </div>
 {$boardSection}
     <div class="section-head section-head--left reveal" id="columns" style="margin-top:56px; scroll-margin-top:90px;">
-      <h2>５．コラム</h2>
+      <h2>６．コラム</h2>
     </div>
     {$columnFeed}
   </div>
 </section>
+<script>
+(function(){
+  var side=document.querySelector('.col-layout--flush .column-side');
+  var box=document.querySelector('.col-layout--flush .col-box');
+  if(!side||!box){return;}
+  var mq=window.matchMedia('(max-width:880px)');
+  function sync(){
+    if(mq.matches){ box.style.maxHeight=''; return; }
+    box.style.maxHeight=side.offsetHeight+'px';
+  }
+  sync();
+  window.addEventListener('load',sync);
+  window.addEventListener('resize',sync);
+  if(window.ResizeObserver){ new ResizeObserver(sync).observe(side); }
+})();
+</script>
+
+<section class="lp-cta-band reveal">
+  <div class="lp-cta-inner">
+    <h2 class="lp-cta-title">{$top['cta_title']}</h2>
+    <p class="lp-cta-sub">{$top['cta_sub']}<br>無料の会員登録で、体重・運動・消費カロリーをマイページにずっと無料で記録できます。</p>
+    <div class="lp-cta-actions">
+      <a href="member/register.php" class="lp-btn lp-btn-primary lp-btn-lg" data-cta="bottom_register">無料で記録を始める →</a>
+      <a href="calorie-table.html" class="lp-btn lp-btn-ghost" data-cta="bottom_calorie">歩数別カロリー表を見る</a>
+    </div>
+    <p class="lp-cta-note">メール登録だけ・約30秒・ずっと無料　／　これまで{$boardCount}件のつぶやきがシェアされています</p>
+  </div>
+</section>
 
 {$footer}
-<script src="assets/app.js?v=20260613d" defer></script>
+
+<div class="mobile-cta-bar" id="mobileCtaBar" aria-hidden="true">
+  <span class="mobile-cta-text">体重・カロリーを<b>無料で記録</b></span>
+  <a href="member/register.php" class="lp-btn lp-btn-primary" data-cta="mobile_register">無料で始める →</a>
+</div>
+<script>
+(function(){
+  var bar=document.getElementById('mobileCtaBar');
+  if(!bar){return;}
+  var footer=document.querySelector('footer, .lp-footer');
+  function onScroll(){
+    var show=window.scrollY>620;
+    // フッターに重ならないよう、最下部付近では隠す
+    if(footer){
+      var fr=footer.getBoundingClientRect();
+      if(fr.top<window.innerHeight){ show=false; }
+    }
+    bar.classList.toggle('is-visible',show);
+  }
+  onScroll();
+  window.addEventListener('scroll',onScroll,{passive:true});
+  window.addEventListener('resize',onScroll);
+})();
+</script>
+<script src="assets/app.js?v=20260616e" defer></script>
 </body>
 </html>
 HTML;
@@ -1826,7 +1910,7 @@ HTML;
 </article>
 
 {$footer}
-<script src="assets/app.js?v=20260613d" defer></script>
+<script src="assets/app.js?v=20260616e" defer></script>
 </body>
 </html>
 HTML;
@@ -1882,7 +1966,7 @@ function render_page(string $key): ?string
 </article>
 
 {$footer}
-<script src="assets/app.js?v=20260613d" defer></script>
+<script src="assets/app.js?v=20260616e" defer></script>
 </body>
 </html>
 HTML;

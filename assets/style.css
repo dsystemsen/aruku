@@ -228,6 +228,45 @@ img, svg { max-width: 100%; }
   border-color: var(--forest-700);
   transform: translateY(-2px);
 }
+/* CTA ボタンのバリアント */
+.lp-btn-lg { padding: 17px 38px; font-size: 1.06rem; }
+.lp-btn-ghost { background: rgba(255,255,255,.14); color: #fff; border-color: rgba(255,255,255,.55); }
+.lp-btn-ghost:hover { background: rgba(255,255,255,.24); border-color: #fff; transform: translateY(-2px); color: #fff; }
+
+/* ヒーロー CTA */
+.hero-cta { display: flex; flex-wrap: wrap; gap: 12px; margin: 4px 0 12px; }
+.hero-cta-note { color: rgba(255,255,255,.85); font-size: .86rem; margin: 0 0 6px; }
+
+/* カロリー計算結果直後の登録CTA */
+.calc-cta { margin: 18px 0 0; padding: 18px 20px; background: var(--forest-100); border: 1px solid var(--forest-300); border-radius: 14px; text-align: center; }
+.calc-cta-lead { margin: 0 0 12px; color: var(--ink); line-height: 1.8; font-size: .98rem; }
+.calc-cta-lead b { color: var(--forest-700); }
+.calc-cta-note { display: block; margin-top: 10px; font-size: .82rem; color: var(--ink-2); }
+
+/* 最下部CTA帯 */
+.lp-cta-band { background: linear-gradient(135deg, var(--forest-600), var(--forest-800)); color: #fff; padding: 56px 22px; text-align: center; }
+.lp-cta-inner { max-width: 720px; margin: 0 auto; }
+.lp-cta-title { color: #fff; font-size: clamp(1.5rem, 4vw, 2.1rem); font-weight: 800; margin: 0 0 14px; letter-spacing: -.01em; }
+.lp-cta-sub { color: rgba(255,255,255,.92); line-height: 1.9; margin: 0 0 24px; }
+.lp-cta-actions { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; }
+.lp-cta-note { color: rgba(255,255,255,.8); font-size: .85rem; margin: 18px 0 0; }
+
+/* モバイル追従CTAバー */
+.mobile-cta-bar { display: none; }
+@media (max-width: 880px) {
+  .mobile-cta-bar {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 60;
+    padding: 10px 14px calc(10px + env(safe-area-inset-bottom));
+    background: rgba(255,255,255,.97); border-top: 1px solid var(--line);
+    box-shadow: 0 -8px 24px rgba(0,0,0,.12);
+    transform: translateY(115%); transition: transform .28s ease; visibility: hidden;
+  }
+  .mobile-cta-bar.is-visible { transform: translateY(0); visibility: visible; }
+  .mobile-cta-text { font-size: .9rem; font-weight: 700; color: var(--ink); line-height: 1.4; }
+  .mobile-cta-text b { color: var(--forest-700); }
+  .mobile-cta-bar .lp-btn { padding: 11px 18px; font-size: .92rem; white-space: nowrap; }
+}
 
 /* ===== ヒーロー ===== */
 .hero {
@@ -362,6 +401,17 @@ table.app-rank tr:nth-child(3) .app-rank-no { background: #c98a4b; }
 .app-rank-btn:hover { background: var(--forest-500); transform: translateY(-1px); color: #fff; }
 .app-rank-note { font-size: .82rem; color: var(--ink-2); margin: 12px 2px 0; line-height: 1.7; }
 @media (max-width: 720px) { table.app-rank { font-size: .9rem; } table.app-rank th, table.app-rank td { padding: 13px 12px; } }
+
+/* 年齢別・1日の摂取／消費カロリー理想値テーブル */
+table.kcal-ideal { width: 100%; min-width: 480px; border-collapse: collapse; background: #fff; font-size: 1rem; }
+table.kcal-ideal th, table.kcal-ideal td { padding: 15px 18px; text-align: center; border: 1px solid #e6e6e6; vertical-align: middle; }
+table.kcal-ideal thead th { background: var(--forest-700); color: #fff; font-weight: 800; letter-spacing: .02em; white-space: nowrap; }
+table.kcal-ideal tbody td:first-child { text-align: left; font-weight: 700; color: var(--ink); background: var(--forest-100); white-space: nowrap; }
+table.kcal-ideal tbody td { font-weight: 800; color: var(--forest-700); }
+table.kcal-ideal .kcal-unit { font-weight: 500; color: var(--ink-2); font-size: .78em; margin-left: 2px; }
+.kcal-ideal-callout { margin: 18px 0 0; padding: 16px 18px; background: var(--forest-100); border-radius: 12px; color: var(--ink); line-height: 1.9; font-size: .98rem; }
+.kcal-ideal-callout b { color: var(--forest-700); }
+@media (max-width: 720px) { table.kcal-ideal { font-size: .92rem; } table.kcal-ideal th, table.kcal-ideal td { padding: 12px 12px; } }
 
 .aboutpage-free-note { margin: 22px 0 0; padding: 14px 18px; background: var(--forest-100); border-radius: 12px; color: var(--ink); line-height: 1.8; font-size: .98rem; }
 .aboutpage-free-note b { color: var(--forest-700); }

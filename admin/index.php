@@ -91,9 +91,62 @@ switch ($p) {
     case 'site':
         echo view_site($content);
         break;
+    case 'cta':
+        echo view_cta();
+        break;
     case 'dashboard':
     default:
         echo view_dashboard($content);
+}
+
+/** CTAクリック計測の表示。 */
+function view_cta(): string
+{
+    require_once __DIR__ . '/../inc/cta.php';
+    $labels = cta_labels();
+    try {
+        $c = cta_counts();
+    } catch (\Throwable $e) {
+        $c = ['total' => [], 'd30' => []];
+    }
+    $total = $c['total'];
+    $d30   = $c['d30'];
+    $sumTotal = array_sum($total);
+    $sum30    = array_sum($d30);
+
+    // 合計の多い順に並べる（ラベル定義順をベースに件数で安定ソート）
+    $keys = array_keys($labels);
+    usort($keys, function ($a, $b) use ($total) {
+        return ($total[$b] ?? 0) <=> ($total[$a] ?? 0);
+    });
+
+    $rows = '';
+    foreach ($keys as $k) {
+        $t = (int)($total[$k] ?? 0);
+        $d = (int)($d30[$k] ?? 0);
+        $share = $sumTotal > 0 ? round($t / $sumTotal * 100) : 0;
+        $rows .= '<tr>'
+            . '<td>' . h($labels[$k]) . '<br><small style="color:#8a8f8d;">' . h($k) . '</small></td>'
+            . '<td style="text-align:right;font-weight:700;">' . number_format($t) . '</td>'
+            . '<td style="text-align:right;">' . number_format($d) . '</td>'
+            . '<td style="text-align:right;color:#5d6362;">' . $share . '%</td>'
+            . '</tr>';
+    }
+
+    $inner = '<section class="card">'
+        . '<h1 class="card-title">CTA計測</h1>'
+        . '<p style="color:#5d6362;line-height:1.8;margin:0 0 18px;">サイト各所のCTA（行動ボタン）のクリック数です。Cookieや外部送信を使わず、自前で集計しています。'
+        . '<br>合計クリック: <b>' . number_format($sumTotal) . '</b>　／　直近30日: <b>' . number_format($sum30) . '</b></p>'
+        . '<table class="data-table" style="width:100%;border-collapse:collapse;">'
+        . '<thead><tr>'
+        . '<th style="text-align:left;">CTA</th>'
+        . '<th style="text-align:right;">合計</th>'
+        . '<th style="text-align:right;">直近30日</th>'
+        . '<th style="text-align:right;">構成比</th>'
+        . '</tr></thead><tbody>' . $rows . '</tbody></table>'
+        . ($sumTotal === 0 ? '<p style="color:#8a8f8d;margin-top:16px;">まだクリックデータがありません。サイト公開後、CTAが押されると数値が記録されます。</p>' : '')
+        . '</section>';
+    return layout('CTA計測', 'cta', $inner);
 }
 
 // ============================================================
@@ -374,7 +427,8 @@ function layout(string $title, string $active, string $inner): string
         . $nav('categories', 'カテゴリ', $base . '?p=categories')
         . $nav('page_about', '運営者ページ', $base . '?p=page&key=about')
         . $nav('page_privacy', 'プライバシー', $base . '?p=page&key=privacy')
-        . $nav('site', 'トップ／サイト文言', $base . '?p=site');
+        . $nav('site', 'トップ／サイト文言', $base . '?p=site')
+        . $nav('cta', 'CTA計測', $base . '?p=cta');
     $email = h($_SESSION['admin_email'] ?? '');
     return <<<HTML
 <!doctype html><html lang="ja"><head>

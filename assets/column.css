@@ -555,6 +555,16 @@
 }
 .col-box > .cat-rail-block:last-child { margin-bottom: 0; }
 @media (max-width: 880px) { .col-box { padding: 16px; } }
+/* トップ「６．コラム」：右パネル（コラム一覧）だけを縦スクロールに収める。
+   左ペイン側でスクロールすればページは一気に最下部（フッター）まで届き、
+   コラムの全量はこのパネル内でスクロールして閲覧できる（デスクトップのみ／モバイルは従来どおり縦積み）。 */
+@media (min-width: 881px) {
+  .col-layout--flush .col-box {
+    max-height: calc(100vh - 90px);
+    overflow-y: auto;
+    scrollbar-gutter: stable;
+  }
+}
 .column-layout .column-article,
 .column-layout .column-main { max-width: none; margin: 0; padding: 0; min-width: 0; }
 .cat-nav { display: flex; flex-direction: column; gap: 2px; background: var(--paper-3); border: 1px solid var(--line); border-radius: var(--radius); padding: 10px; box-shadow: var(--shadow-sm); }
