@@ -156,7 +156,6 @@ function footer_html(string $prefix): string
       <a href="{$prefix}privacy.html">プライバシーポリシー</a>
       <a href="{$prefix}editorial-policy.html">編集・監修ポリシー</a>
       <a href="{$s['org_url']}" target="_blank" rel="noopener">🏢 運営会社</a>
-      <a href="{$s['x_url']}" target="_blank" rel="noopener">公式𝕏</a>
     </nav>
   </div>
   <div class="lp-footer-copy">&copy; {$s['year']} {$s['org']}. All rights reserved.</div>
