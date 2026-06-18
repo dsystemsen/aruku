@@ -439,3 +439,26 @@
     io.observe(el);
   });
 })();
+
+/* CTAクリックの軽量計測（自前・Cookie不要）。data-cta 属性を持つ要素のクリックを /track.php に送る。 */
+(function () {
+  function send(key) {
+    if (!key) { return; }
+    try {
+      var data = new URLSearchParams({ cta: key, page: location.pathname });
+      if (navigator.sendBeacon) {
+        navigator.sendBeacon("/track.php", data);
+      } else {
+        fetch("/track.php", { method: "POST", body: data, keepalive: true });
+      }
+    } catch (e) {}
+  }
+  document.addEventListener(
+    "click",
+    function (e) {
+      var el = e.target.closest("[data-cta]");
+      if (el) { send(el.getAttribute("data-cta")); }
+    },
+    true
+  );
+})();

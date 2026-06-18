@@ -36,14 +36,23 @@ DirectoryIndex index.php index.html
     # サイトマップ /sitemap.xml → sitemap.php
     RewriteRule ^sitemap\.xml$ sitemap.php [L]
 
+    # 消費カロリー専用ハブ /calorie-table.html → calorie.php（動的描画）
+    RewriteRule ^calorie-table\.html$ calorie.php [L]
+
     # コラム一覧 /column/index.html → column/index.php
     RewriteRule ^column/index\.html$ column/index.php [L]
+
+    # 個別コラム記事 /column/<slug>.html → column/article.php?slug=<slug>（無効slugはrenderer側で404）
+    RewriteRule ^column/([a-z0-9-]+)\.html$ column/article.php?slug=$1 [L,QSA]
 
     # 情報ページ
     RewriteRule ^about-aruku\.html$ aboutaruku.php [L]
     RewriteRule ^faq\.html$ faq.php [L]
     RewriteRule ^search\.html$ search.php [L,QSA]
     RewriteRule ^editorial-policy\.html$ editorial-policy.php [L]
+
+    # みんなのつぶやき掲示板 /board.html（GET=表示／POST=投稿受付）→ board.php
+    RewriteRule ^board\.html$ board.php [L,QSA]
 
     # カテゴリ別コラム一覧 /category/<cat>.html → category.php?cat=<cat>（index等はrenderer側で404）
     RewriteRule ^category/([a-z0-9_-]+)\.html$ category.php?cat=$1 [L,QSA]

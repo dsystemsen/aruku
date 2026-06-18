@@ -127,11 +127,11 @@ function nav_html(string $prefix): string
     return <<<HTML
 <nav class="lp-nav" data-auth="{$authAttr}">
   <div class="lp-nav-inner">
-    <a href="{$prefix}index.html" class="lp-brand"><img src="{$prefix}assets/logo.svg?v=20260610" alt="あるくロゴ"><span class="lp-brand-text"><span class="lp-brand-tagline">-歩くことで健康に-</span><span class="lp-brand-name">あるく</span></span></a>
+    <a href="{$prefix}index.html" class="lp-brand"><img src="{$prefix}assets/logo.svg?v=20260616e" alt="あるくロゴ"><span class="lp-brand-text"><span class="lp-brand-tagline">-歩くことで健康に-</span><span class="lp-brand-name">あるく</span></span></a>
     <div class="lp-nav-links">
       {$adminLink}<a href="{$prefix}member/mypage.php" class="lp-nav-cta">マイページ</a>
-      <a href="{$prefix}member/register.php" class="lp-nav-cta">会員登録</a>
-      <a href="{$prefix}member/login.php" class="lp-nav-cta">ログイン</a>
+      <a href="{$prefix}member/register.php" class="lp-nav-cta" data-cta="nav_register">無料ではじめる</a>
+      <a href="{$prefix}member/login.php" class="lp-nav-cta" data-cta="nav_login">ログイン</a>
       <a href="{$prefix}member/logout.php" class="lp-nav-logout">ログアウト</a>
     </div>
   </div>
@@ -146,16 +146,16 @@ function footer_html(string $prefix): string
 <footer class="lp-footer">
   <div class="lp-footer-inner">
     <div>
-      <div class="lp-footer-brand"><img src="{$prefix}assets/logo.svg?v=20260610" alt="あるく ロゴ">あるく</div>
+      <div class="lp-footer-brand"><img src="{$prefix}assets/logo.svg?v=20260616e" alt="あるく ロゴ">あるく</div>
       <p class="lp-footer-tagline">{$s['tagline']}</p>
     </div>
     <nav class="lp-footer-links">
       <a href="{$prefix}index.html">トップ</a>
+      <a href="{$prefix}calorie-table.html">消費カロリー</a>
       <a href="{$prefix}about.html">運営者情報</a>
       <a href="{$prefix}privacy.html">プライバシーポリシー</a>
       <a href="{$prefix}editorial-policy.html">編集・監修ポリシー</a>
       <a href="{$s['org_url']}" target="_blank" rel="noopener">🏢 運営会社</a>
-      <a href="{$s['x_url']}" target="_blank" rel="noopener">公式𝕏</a>
     </nav>
   </div>
   <div class="lp-footer-copy">&copy; {$s['year']} {$s['org']}. All rights reserved.</div>
@@ -182,12 +182,16 @@ function head_html(string $prefix, string $title, string $desc, string $canonica
         header('Cache-Control: no-cache, must-revalidate, max-age=0');
         header('Expires: 0');
     }
-    // 既定（index系）は rich-result 拡張を付与。noindex系は渡された値をそのまま使う。
+    // 既定（index系）は rich-result 拡張を付与。
     $robotsContent = $robots !== '' ? $robots : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1';
+    // index系で拡張ディレクティブ未指定なら自動付与（全ページで統一）。noindex系はそのまま。
+    if (stripos($robotsContent, 'noindex') === false && stripos($robotsContent, 'max-image-preview') === false) {
+        $robotsContent .= ', max-image-preview:large, max-snippet:-1, max-video-preview:-1';
+    }
     $rb = '<meta name="robots" content="' . $robotsContent . '">' . "\n";
     // フォントはメイリオ（端末ローカル）を使用するため Web フォントの読込は不要。
-    $css = '<link rel="stylesheet" href="' . $prefix . 'assets/style.css?v=20260610">' . "\n"
-        . '<link rel="stylesheet" href="' . $prefix . 'assets/column.css?v=20260610">' . "\n"
+    $css = '<link rel="stylesheet" href="' . $prefix . 'assets/style.css?v=20260616e">' . "\n"
+        . '<link rel="stylesheet" href="' . $prefix . 'assets/column.css?v=20260616e">' . "\n"
         . '<noscript><style>.reveal,.reveal-stagger>*,.hero-anim,.hero-art-anim{opacity:1!important;transform:none!important;animation:none!important}</style></noscript>';
     // meta keywords は Google・各AIともに無視するため出力しない（引数は後方互換で受けるだけ）。
     $kw = '';
@@ -237,7 +241,7 @@ function head_html(string $prefix, string $title, string $desc, string $canonica
 <meta name="twitter:description" content="{$desc}">
 <meta name="twitter:image" content="{$ogp}">
 {$twSite}<meta name="theme-color" content="#29b183">
-{$headExtra}<link rel="icon" type="image/svg+xml" href="{$prefix}assets/logo.svg?v=20260610">
+{$headExtra}<link rel="icon" type="image/svg+xml" href="{$prefix}assets/logo.svg?v=20260616e">
 {$css}
 {$ld}</head>
 <body>
@@ -413,7 +417,7 @@ function render_article(string $slug): ?string
             '@type'           => 'BreadcrumbList',
             'itemListElement' => [
                 ['@type' => 'ListItem', 'position' => 1, 'name' => 'あるく', 'item' => $s['url'] . '/'],
-                ['@type' => 'ListItem', 'position' => 2, 'name' => 'コラム', 'item' => $s['url'] . '/column/'],
+                ['@type' => 'ListItem', 'position' => 2, 'name' => $cat['name'], 'item' => $s['url'] . '/category/' . $article['cat'] . '.html'],
                 ['@type' => 'ListItem', 'position' => 3, 'name' => $article['title']],
             ],
         ],
@@ -446,12 +450,13 @@ function render_article(string $slug): ?string
     $footer    = footer_html($prefix);
     $author      = $s['author'];
     $author_role = $s['author_role'];
+    $cat_back    = $article['cat']; // 「コラム一覧」戻り先＝同カテゴリのページ
 
     $body = <<<HTML
 <article class="column-article">
   <header class="column-header">
     <nav class="column-breadcrumb" aria-label="パンくず">
-      <a href="../index.html">トップ</a> ／ <a href="./">コラム</a> ／ <span>{$title}</span>
+      <a href="../index.html">トップ</a> ／ <a href="../category/{$cat_back}.html">{$catname}</a> ／ <span>{$title}</span>
     </nav>
     <div class="column-thumb" aria-hidden="true">{$hero_thumb}</div>
     <h1>{$title}{$sub}</h1>
@@ -474,7 +479,7 @@ function render_article(string $slug): ?string
 
   <nav class="column-nav-prevnext">
     {$prev_html}
-    <a href="./" class="column-nav-back">コラム一覧</a>
+    <a href="../category/{$cat_back}.html" class="column-nav-back">コラム一覧</a>
     {$next_html}
   </nav>
 
@@ -501,7 +506,7 @@ function render_article(string $slug): ?string
 </article>
 
 {$footer}
-<script src="../assets/app.js?v=20260610" defer></script>
+<script src="../assets/app.js?v=20260616e" defer></script>
 </body>
 </html>
 HTML;
@@ -805,15 +810,15 @@ function render_column_index(): string
       <h2>まずはここから</h2>
       <p>「何歩でどれくらい消費するの？」が気になる方は、まず歩数別カロリー表をチェック。歩くことの全体像は効果・効能ガイドからどうぞ。</p>
       <div class="column-cta">
-        <a href="./calorie-table.html" class="lp-btn lp-btn-primary">歩数別カロリー表</a>
-        <a href="./walking-effects.html" class="lp-btn lp-btn-secondary">ウォーキングの効果・効能</a>
+        <a href="../calorie-table.html" class="lp-btn lp-btn-primary">歩数別カロリー表</a>
+        <a href="../category/koka.html" class="lp-btn lp-btn-secondary">ウォーキングの効果・効能</a>
       </div>
     </section>
   </div>
 </div>
 
 {$footer}
-<script src="../assets/app.js?v=20260610" defer></script>
+<script src="../assets/app.js?v=20260616e" defer></script>
 </body>
 </html>
 HTML;
@@ -839,7 +844,7 @@ function render_category_columns(string $cat): string
             . '<meta name="viewport" content="width=device-width, initial-scale=1">'
             . '<meta name="robots" content="noindex, nofollow">'
             . '<title>ページが見つかりません｜あるく</title>'
-            . '<link rel="stylesheet" href="' . $prefix . 'assets/style.css?v=20260610"></head><body>'
+            . '<link rel="stylesheet" href="' . $prefix . 'assets/style.css?v=20260616e"></head><body>'
             . '<main style="max-width:640px;margin:14vh auto;padding:0 24px;text-align:center;">'
             . '<h1 style="font-size:1.6rem;margin-bottom:12px;">ページが見つかりません</h1>'
             . '<p style="color:#5d6362;margin-bottom:28px;">お探しのページは削除されました。</p>'
@@ -855,9 +860,24 @@ function render_category_columns(string $cat): string
     $feed = $cards
         ? '<div class="note-feed">' . $cards . '</div>'
         : '<p class="rail-empty">このカテゴリのコラムはまだありません。<a href="' . $prefix . 'member/post.php">最初のコラムを書いてみませんか？ →</a></p>';
+
+    // 編集部の特集記事（/column/）はカテゴリページには表示しない（要望により撤去）。
+    $editSection = '';
+    $feedHeader = $cards
+        ? '<h2 class="column-cat-title column-cat-title--plain"><span class="cat-emoji">📝</span>みんなのコラム</h2>'
+        : '';
+
     $catNav = aruku_category_nav($prefix, $cat);
     $title = $name . '｜あるく コラム';
-    $desc = '「' . $name . '」に関するコラム一覧（' . $count . '本）。';
+    // meta description は記事タイトルを織り込んでカテゴリごとに固有化（SEO）
+    $sampleTitles = [];
+    foreach ($pp as $p) { if (count($sampleTitles) >= 3) break; $sampleTitles[] = $p['title']; }
+    $descSample = '';
+    if ($sampleTitles) {
+        $descSample = implode('／', array_map(static fn($t) => mb_substr((string) $t, 0, 30), $sampleTitles)) . ' など、';
+    }
+    $desc = '「' . $name . '」に関する歩く・ウォーキングのコラム一覧（全' . $count . '本）。'
+        . $descSample . $name . 'について役立つ記事を「あるく」がまとめています。';
     $listItems = [];
     $i = 1;
     foreach ($pp as $p) {
@@ -894,11 +914,13 @@ function render_category_columns(string $cat): string
 <div class="column-layout">
   <aside class="column-side">{$catNav}</aside>
   <div class="column-main column-article">
+    {$editSection}
+    {$feedHeader}
     {$feed}
   </div>
 </div>
 {$footer}
-<script src="{$prefix}assets/app.js?v=20260610" defer></script>
+<script src="{$prefix}assets/app.js?v=20260616e" defer></script>
 </body>
 </html>
 HTML;
@@ -954,7 +976,7 @@ function render_editorial_policy(): string
   </div>
 </section>
 {$footer}
-<script src="{$prefix}assets/app.js?v=20260610" defer></script>
+<script src="{$prefix}assets/app.js?v=20260616e" defer></script>
 </body>
 </html>
 HTML;
@@ -975,7 +997,9 @@ function render_search_page(string $q): string
     $count = count($results);
     $url = $s['url'] . '/search.html' . ($q !== '' ? '?q=' . rawurlencode($q) : '');
     $title = ($q !== '' ? '「' . $q . '」の検索結果' : 'コラムを検索') . '｜あるく';
-    $desc = $q !== '' ? '「' . $q . '」に関するコラムの検索結果（' . $count . '本）。' : 'あるくのコラムをキーワードで検索できます。';
+    $desc = $q !== ''
+        ? '「' . $q . '」に関するコラムの検索結果（' . $count . '本）。歩く・ウォーキング・ダイエット・消費カロリー・健康のコラムから探せます。'
+        : 'あるくのコラムをキーワードで検索。歩く効果・正しい歩き方・歩数別の消費カロリー・ダイエット・ポイ活など、知りたいテーマからウォーキングの記事を探せます。';
     // 検索結果ページはインデックスさせない（薄い・重複回避）。リンクは追う。
     $head = head_html($prefix, $title, $desc, $url, '', null, 'website', 'noindex, follow', '');
     $footer = footer_html($prefix);
@@ -1004,7 +1028,7 @@ function render_search_page(string $q): string
   </div>
 </div>
 {$footer}
-<script src="{$prefix}assets/app.js?v=20260610" defer></script>
+<script src="{$prefix}assets/app.js?v=20260616e" defer></script>
 </body>
 </html>
 HTML;
@@ -1020,7 +1044,15 @@ function render_aboutaruku(): string
     $prefix = '';
     $title = 'あるくとは？｜あるく';
     $desc = '「あるく」は歩くことの総合メディア。歩数別カロリー・コラム・記録機能など、サービスの特長をご紹介します。';
-    $head = head_html($prefix, $title, $desc, $s['url'] . '/about-aruku.html', '', null, 'website', 'index, follow');
+    $jsonld = [[
+        '@context' => 'https://schema.org',
+        '@type' => 'BreadcrumbList',
+        'itemListElement' => [
+            ['@type' => 'ListItem', 'position' => 1, 'name' => 'あるく', 'item' => $s['url'] . '/'],
+            ['@type' => 'ListItem', 'position' => 2, 'name' => 'あるくとは？'],
+        ],
+    ]];
+    $head = head_html($prefix, $title, $desc, $s['url'] . '/about-aruku.html', '', $jsonld, 'website', 'index, follow');
     $footer = footer_html($prefix);
     $crumb = breadcrumb_nav($prefix, 'あるくとは？', true);
     $body = <<<HTML
@@ -1030,16 +1062,19 @@ function render_aboutaruku(): string
     <div class="aboutpage-il-img"><img src="uploads/aruku_runner.png" alt="ランニングする女性のイラスト" loading="lazy"></div>
     <div class="aboutpage-il-text">
       <h1 class="aboutpage-title aboutpage-title--left">あるくとは？</h1>
-      <p class="aboutpage-sub">歩くことの総合メディア「あるく」の、3つのいいところ。</p>
-      <div class="aboutpage-point"><span class="pt-no">1</span><div class="pt-tx"><b>今日から無料で始められる</b><span>コラムも歩数別カロリーツールも会員登録も、すべて無料。</span></div></div>
-      <div class="aboutpage-point"><span class="pt-no">2</span><div class="pt-tx"><b>歩数別カロリーがひと目で分かる</b><span>早見表＆計算ツールで「どれくらい歩けばいいか」がすぐ分かります。</span></div></div>
-      <div class="aboutpage-point"><span class="pt-no">3</span><div class="pt-tx"><b>記録の見える化で続けられる</b><span>体重・運動を記録して消費カロリーを累計。投稿にも参加できます。</span></div></div>
-      <div class="about-actions"><a class="lp-btn lp-btn-secondary" href="faq.html">よくある質問（FAQ）→</a><a class="lp-btn lp-btn-primary" href="index.html">トップへ戻る</a></div>
+      <p class="aboutpage-sub">「歩くだけでやせるって、ホント？」——ホントです。「あるく」がダイエットと健康習慣の相棒になる、5つのうれしいポイント。</p>
+      <div class="aboutpage-point"><span class="pt-no">1</span><div class="pt-tx"><b>サイフにやさしい。タダで始められる</b><span>ジムの月会費も、高い器具もいりません。必要なのは靴1足だけ。コラムも歩数別カロリーツールも会員登録もぜんぶ無料だから、お金の心配なしで今日からスタートできます。</span></div></div>
+      <div class="aboutpage-point"><span class="pt-no">2</span><div class="pt-tx"><b>「何歩で何kcal？」がひと目でわかる</b><span>早見表と計算ツールで、目標までに歩く歩数と消費カロリーがパッと丸わかり。なんとなく歩くより、ぐっと効率よく、ムダなくやせられます。</span></div></div>
+      <div class="aboutpage-point"><span class="pt-no">3</span><div class="pt-tx"><b>がんばりが数字で見えるから、続く＆リバウンドしにくい</b><span>無料の会員登録をすれば、<a href="member/mypage.php">マイページ</a>で体重・運動・消費カロリーをぜんぶ無料で記録できます。数字が自動で積み上がって、減っていくのを見るのが楽しくなり、気づけば「やせ習慣」が身についています。</span></div></div>
+      <div class="aboutpage-point"><span class="pt-no">4</span><div class="pt-tx"><b>やせるだけじゃない、カラダの中から元気に</b><span>歩くことは、脂肪燃焼だけじゃなく血圧・血糖値ケアや睡眠の質アップにもうれしい運動。見た目スッキリ＆中身も健康、一石二鳥をまるごと狙えます。</span></div></div>
+      <div class="aboutpage-point"><span class="pt-no">5</span><div class="pt-tx"><b>ひとりじゃないから、心が折れない</b><span>同じように歩いてがんばる仲間の投稿が、毎日の励みに。続け方のコツが詰まったコラムも読み放題。「今日はサボりたいな」って日も、そっと背中を押してくれます。</span></div></div>
+      <p class="aboutpage-free-note">📒 <b>会員登録は無料。</b>マイページで体重・運動・消費カロリーの記録が、ずっと無料で使えます。</p>
+      <div class="about-actions"><a class="lp-btn lp-btn-primary" href="member/register.php">無料で記録を始める →</a><a class="lp-btn lp-btn-secondary" href="faq.html">よくある質問（FAQ）→</a></div>
     </div>
   </div>
 </section>
 {$footer}
-<script src="assets/app.js?v=20260610" defer></script>
+<script src="assets/app.js?v=20260616e" defer></script>
 </body>
 </html>
 HTML;
@@ -1053,18 +1088,34 @@ function render_faq_page(): string
 {
     $s = site();
     $prefix = '';
-    $title = 'よくある質問（FAQ）｜あるく';
-    $desc = '「あるく」のよくある質問。料金・会員機能・コラム・消費カロリーの目安などにお答えします。';
+    $title = '歩く・健康のよくある質問（FAQ）｜歩くとふらつく原因・高齢者の歩数・ウォーキングとの違いも｜あるく';
+    $desc = '歩くことと健康についてのよくある質問。ウォーキングの健康効果や1日の目標歩数に加え、歩くとふらつく原因、70歳・75歳は1日何歩歩くべきか、赤ちゃんが歩く時期、「歩く」と「ウォーキング」の違い、42.195kmを歩くと何時間か、歩く哲学、サルコペニア対策、Walk in Her Shoes（歩く国際協力）まで、歩くにまつわる素朴な疑問にお答えします。';
     $faqLd = [[
         '@context' => 'https://schema.org',
         '@type' => 'FAQPage',
         'mainEntity' => [
+            ['@type' => 'Question', 'name' => '歩くと健康にどんな効果がありますか？', 'acceptedAnswer' => ['@type' => 'Answer', 'text' => 'ウォーキングには、脂肪燃焼によるダイエット効果、血圧・血糖値の改善、心肺機能の向上、骨や筋力の維持、ストレス軽減や睡眠の質アップなど、心と体の幅広い健康効果が期待できます。特別な道具がいらず、誰でも今日から始められるのが最大の魅力です。']],
+            ['@type' => 'Question', 'name' => '1日何歩あるけば健康にいいですか？', 'acceptedAnswer' => ['@type' => 'Answer', 'text' => '一般的な目安は1日8,000歩・週合計150分の活動です。1万歩を目標にする方も多いですが、もともと歩数が少ない人ほど、少し増やすだけで健康効果が大きいとされています。まずは今より1,000歩多く歩くことから始めてみましょう。']],
+            ['@type' => 'Question', 'name' => '毎日歩かないと健康効果はありませんか？', 'acceptedAnswer' => ['@type' => 'Answer', 'text' => '毎日でなくても、週の合計時間が確保できれば効果は期待できます。10分×3回のこま切れウォーキングでも、まとめて30分歩くのとほぼ同じ効果があるとされています。続けやすい形で習慣にすることが一番大切です。']],
+            ['@type' => 'Question', 'name' => '運動が苦手でも、歩くだけで健康になれますか？', 'acceptedAnswer' => ['@type' => 'Answer', 'text' => 'はい。ウォーキングは強度を自分で調整できる有酸素運動で、運動が苦手な方にもおすすめです。「少し息が弾む」程度の早歩きを取り入れると、無理なく健康効果を高められます。'] ],
+            ['@type' => 'Question', 'name' => '朝と夜、健康のために歩くならどちらがいいですか？', 'acceptedAnswer' => ['@type' => 'Answer', 'text' => 'どちらにも利点があります。朝の歩行は生活リズムが整い目覚めが良くなり、夜（食後30〜60分）の歩行は血糖値対策に向いています。大切なのは時間帯よりも継続です。自分の生活に合うタイミングを選びましょう。']],
+            ['@type' => 'Question', 'name' => '高齢者や運動不足の人が歩いても大丈夫ですか？', 'acceptedAnswer' => ['@type' => 'Answer', 'text' => 'ウォーキングは年齢を問わず取り組みやすい運動ですが、持病のある方・治療中の方・長く運動していなかった方は、始める前に医師にご相談ください。本サイトの情報は一般的な健康情報であり、医療行為・診断ではありません。']],
             ['@type' => 'Question', 'name' => 'あるくは無料で使えますか？', 'acceptedAnswer' => ['@type' => 'Answer', 'text' => 'はい。コラムの閲覧も、歩数別カロリー早見表・計算ツールも無料でご利用いただけます。会員登録も無料です。']],
             ['@type' => 'Question', 'name' => '会員登録すると何ができますか？', 'acceptedAnswer' => ['@type' => 'Answer', 'text' => '体重・運動の記録から消費カロリーを自動で計算・累計できます。コラムの投稿、いいね、コメント、保存などのコミュニティ機能もご利用いただけます。']],
             ['@type' => 'Question', 'name' => 'コラムは誰が書いていますか？', 'acceptedAnswer' => ['@type' => 'Answer', 'text' => '編集部のほか、会員のみなさんも投稿しています。投稿されたコラムは、公開前に内容を確認しています。']],
             ['@type' => 'Question', 'name' => 'スマートフォンでも使えますか？', 'acceptedAnswer' => ['@type' => 'Answer', 'text' => 'はい。スマホ・タブレット・PCのどの画面にも対応しています。']],
             ['@type' => 'Question', 'name' => '表示される消費カロリーは正確ですか？', 'acceptedAnswer' => ['@type' => 'Answer', 'text' => '体重や歩数から算出した目安です（消費kcal ≒ 歩数 × 体重 × 0.0005）。体質や歩き方で前後します。']],
             ['@type' => 'Question', 'name' => '退会したいときはどうすればいいですか？', 'acceptedAnswer' => ['@type' => 'Answer', 'text' => 'ログイン後のマイページ下部にある「解約手続き」ボタンからお手続きいただけます。解約すると登録情報・記録はすべて削除され、元に戻せませんのでご注意ください。']],
+            ['@type' => 'Question', 'name' => '歩くとふらつくのは何が原因ですか？', 'acceptedAnswer' => ['@type' => 'Answer', 'text' => '歩くときのふらつきは、加齢による足腰の筋力低下やバランス感覚の衰え、めまい（内耳の異常）、起立性低血圧、貧血、脱水、薬の副作用、神経の病気など、さまざまな原因が考えられます。一時的でなく繰り返す・転倒しそうになる場合は、自己判断せず早めに医療機関を受診してください。本サイトの情報は一般的な健康情報であり、診断ではありません。']],
+            ['@type' => 'Question', 'name' => '70歳は1日何歩歩くべきですか？', 'acceptedAnswer' => ['@type' => 'Answer', 'text' => '厚生労働省「健康日本21（第三次）」では、65歳以上の歩数目標を1日約6,000歩としています。70歳の方も6,000歩前後が一つの目安ですが、無理は禁物です。これまで歩いていなかった方は5,000歩程度からでも十分に健康効果が期待できます。体調や持病に合わせ、医師と相談しながら少しずつ増やしましょう。']],
+            ['@type' => 'Question', 'name' => '75歳は1日何歩歩くべきですか？', 'acceptedAnswer' => ['@type' => 'Answer', 'text' => '75歳の方も、65歳以上の目安である1日約6,000歩を基準に、ご自身の体力に合わせて調整するとよいでしょう。大切なのは歩数そのものより継続です。5,000歩前後でも、座りっぱなしを減らしてこまめに歩くだけで、フレイル（虚弱）予防に役立ちます。持病のある方は事前に医師へご相談ください。']],
+            ['@type' => 'Question', 'name' => '「歩く国際協力 Walk in Her Shoes」とは？2024年はどんな活動でしたか？', 'acceptedAnswer' => ['@type' => 'Answer', 'text' => 'Walk in Her Shoes（ウォーク・イン・ハー・シューズ）は、国際協力NGOのCARE（ケア・インターナショナル ジャパン）が主催する「歩く国際協力」キャンペーンです。途上国で毎日水くみなどに長い距離を歩く女性や女の子の現実に思いをはせながら、参加者が歩いた歩数を寄付につなげます。2024年は3月8日〜5月31日に開催され、多くの参加者の歩数が支援に役立てられました。']],
+            ['@type' => 'Question', 'name' => '赤ちゃんはいつから歩くようになりますか？', 'acceptedAnswer' => ['@type' => 'Answer', 'text' => '個人差が大きいですが、多くの赤ちゃんは1歳前後（おおむね生後11〜15か月ごろ）に最初の一歩を踏み出します。早い・遅いは発達のリズムによるもので、1歳半を過ぎても歩かないなど気になる場合は、かかりつけの小児科や乳幼児健診で相談すると安心です。']],
+            ['@type' => 'Question', 'name' => '高齢者はどれくらいの時間歩けばよいですか？', 'acceptedAnswer' => ['@type' => 'Answer', 'text' => '目安は1日合計20〜30分程度のウォーキングです。一度にまとめてでも、10分×2〜3回に分けても効果は期待できます。「少し汗ばむ・会話できる程度」の速さが目安です。体力に不安がある方は5〜10分から始め、徐々に時間を延ばしましょう。持病のある方は医師にご相談ください。']],
+            ['@type' => 'Question', 'name' => '「歩く」と「ウォーキング」の違いは何ですか？', 'acceptedAnswer' => ['@type' => 'Answer', 'text' => '「歩く」は移動や日常動作を含めた歩行全般を指すのに対し、「ウォーキング」は健康・運動を目的に、姿勢や歩幅・ペースを意識して行う歩行を指すのが一般的です。同じ歩く動作でも、背すじを伸ばし腕を振って少し速めに歩くと、運動効果が高まります。']],
+            ['@type' => 'Question', 'name' => 'フルマラソンの42.195kmを歩くと何時間かかりますか？', 'acceptedAnswer' => ['@type' => 'Answer', 'text' => '歩く速さにもよりますが、時速5km（ふつうの速さ）なら約8時間半、時速4km（ゆっくり）なら約10時間半が目安です。早歩き（時速6km前後）なら約7時間。実際は休憩や信号待ちが加わるため、これより長めに見ておくとよいでしょう。']],
+            ['@type' => 'Question', 'name' => '「歩く哲学」とは何ですか？簡単に教えてください。', 'acceptedAnswer' => ['@type' => 'Answer', 'text' => '「歩く哲学」とは、歩きながら考えることで思索が深まるという、古くからの考え方を指します。古代ギリシャのアリストテレスは歩きながら弟子に教え（逍遥学派）、カントやニーチェ、ルソーといった哲学者も日々の散歩を思考の時間にしていました。歩くと血流が促されて頭がすっきりし、新しい発想が生まれやすくなるといわれます。']],
+            ['@type' => 'Question', 'name' => '歩くのが遅い・握力がないのはサルコペニアですか？やり方（対策）は？', 'acceptedAnswer' => ['@type' => 'Answer', 'text' => '歩く速度の低下や握力の低下は、加齢で筋肉量が減る「サルコペニア」のサインの一つです。目安として、握力が男性28kg・女性18kg未満、歩く速さが秒速1.0m（横断歩道を青信号で渡り切れない程度）未満だと注意が必要とされます。対策のやり方は、スクワットなどの筋トレ＋たんぱく質をしっかりとる食事＋ウォーキングの習慣化です。気になる場合は医療機関でご相談ください。本サイトの情報は一般的な健康情報であり、診断ではありません。']],
         ],
     ]];
     $head = head_html($prefix, $title, $desc, $s['url'] . '/faq.html', '', $faqLd, 'website', 'index, follow');
@@ -1074,19 +1125,130 @@ function render_faq_page(): string
 {$crumb}
 <section class="about-section about-faq reveal" id="faq">
   <div class="about-inner">
-    <h1 class="about-title">よくある質問（FAQ）</h1>
-    <p class="about-lead">「あるく」についてよくいただくご質問をまとめました。</p>
+    <h1 class="about-title">歩く・健康のよくある質問（FAQ）</h1>
+    <p class="about-lead">歩くことと健康、そして「あるく」の使い方について、よくいただくご質問をまとめました。ウォーキングの健康効果や1日の目標歩数など、歩く健康習慣のギモン解消にお役立てください。</p>
+    <details class="column-faq-item"><summary>歩くと健康にどんな効果がありますか？</summary><div class="column-faq-a">ウォーキングには、脂肪燃焼によるダイエット効果、血圧・血糖値の改善、心肺機能の向上、骨や筋力の維持、ストレス軽減や睡眠の質アップなど、心と体の幅広い健康効果が期待できます。特別な道具がいらず、誰でも今日から始められるのが最大の魅力です。</div></details>
+    <details class="column-faq-item"><summary>1日何歩あるけば健康にいいですか？</summary><div class="column-faq-a">一般的な目安は1日8,000歩・週合計150分の活動です。1万歩を目標にする方も多いですが、もともと歩数が少ない人ほど、少し増やすだけで健康効果が大きいとされています。まずは今より1,000歩多く歩くことから始めてみましょう。歩数ごとの目安は<a href="calorie-table.html">歩数別カロリー早見表</a>で確認できます。</div></details>
+    <details class="column-faq-item"><summary>毎日歩かないと健康効果はありませんか？</summary><div class="column-faq-a">毎日でなくても、週の合計時間が確保できれば効果は期待できます。10分×3回のこま切れウォーキングでも、まとめて30分歩くのとほぼ同じ効果があるとされています。続けやすい形で習慣にすることが一番大切です。</div></details>
+    <details class="column-faq-item"><summary>運動が苦手でも、歩くだけで健康になれますか？</summary><div class="column-faq-a">はい。ウォーキングは強度を自分で調整できる有酸素運動で、運動が苦手な方にもおすすめです。「少し息が弾む」程度の早歩きを取り入れると、無理なく健康効果を高められます。</div></details>
+    <details class="column-faq-item"><summary>朝と夜、健康のために歩くならどちらがいいですか？</summary><div class="column-faq-a">どちらにも利点があります。朝の歩行は生活リズムが整い目覚めが良くなり、夜（食後30〜60分）の歩行は血糖値対策に向いています。大切なのは時間帯よりも継続です。自分の生活に合うタイミングを選びましょう。</div></details>
+    <details class="column-faq-item"><summary>高齢者や運動不足の人が歩いても大丈夫ですか？</summary><div class="column-faq-a">ウォーキングは年齢を問わず取り組みやすい運動ですが、持病のある方・治療中の方・長く運動していなかった方は、始める前に医師にご相談ください。本サイトの情報は一般的な健康情報であり、医療行為・診断ではありません。詳しくは<a href="editorial-policy.html">編集・監修ポリシー</a>をご覧ください。</div></details>
     <details class="column-faq-item"><summary>あるくは無料で使えますか？</summary><div class="column-faq-a">はい。コラムの閲覧も、歩数別カロリー早見表・計算ツールも無料でご利用いただけます。会員登録も無料です。</div></details>
     <details class="column-faq-item"><summary>会員登録すると何ができますか？</summary><div class="column-faq-a">体重・運動の記録から消費カロリーを自動で計算・累計できます。さらにコラムの投稿、いいね、コメント、保存（ブックマーク）などのコミュニティ機能もご利用いただけます。</div></details>
     <details class="column-faq-item"><summary>コラムは誰が書いていますか？</summary><div class="column-faq-a">編集部のほか、会員のみなさんも投稿しています。投稿されたコラムは、公開前に内容を確認しています。</div></details>
     <details class="column-faq-item"><summary>スマートフォンでも使えますか？</summary><div class="column-faq-a">はい。スマホ・タブレット・PCのどの画面にも対応しています。通勤や外出先でも気軽にご覧いただけます。</div></details>
     <details class="column-faq-item"><summary>表示される消費カロリーは正確ですか？</summary><div class="column-faq-a">表示される数値は、歩数や体重などから算出した目安です（消費kcal ≒ 歩数 × 体重 × 0.0005）。体質や歩き方で前後するため、参考値としてご活用ください。</div></details>
     <details class="column-faq-item"><summary>退会したいときはどうすればいいですか？</summary><div class="column-faq-a">ログイン後の<a href="member/mypage.php">マイページ</a>下部にある「解約手続き」ボタンからお手続きいただけます。解約すると登録情報・記録はすべて削除され、元に戻せませんのでご注意ください。</div></details>
+
+    <h2 class="about-subtitle" style="margin-top:48px;">歩くにまつわる素朴な疑問Q&amp;A</h2>
+    <p class="about-lead">「歩くとふらつく原因は？」「高齢者は1日何歩？」「歩くとウォーキングの違いは？」など、歩くことにまつわるよくある疑問をまとめました。</p>
+    <details class="column-faq-item"><summary>歩くとふらつくのは何が原因ですか？</summary><div class="column-faq-a">歩くときのふらつきは、加齢による足腰の筋力低下やバランス感覚の衰え、めまい（内耳の異常）、起立性低血圧、貧血、脱水、薬の副作用、神経の病気など、さまざまな原因が考えられます。一時的でなく繰り返す・転倒しそうになる場合は、自己判断せず早めに医療機関を受診してください。原因と受診の目安は<a href="column/walking-dizzy-causes.html">歩くとふらつく原因の記事</a>でくわしく解説しています。本サイトの情報は一般的な健康情報であり、診断ではありません。</div></details>
+    <details class="column-faq-item"><summary>70歳は1日何歩歩くべきですか？</summary><div class="column-faq-a">厚生労働省「健康日本21（第三次）」では、65歳以上の歩数目標を1日約6,000歩としています。70歳の方も6,000歩前後が一つの目安ですが、無理は禁物です。これまで歩いていなかった方は5,000歩程度からでも十分に健康効果が期待できます。体調や持病に合わせ、医師と相談しながら少しずつ増やしましょう。歩数ごとの消費カロリーは<a href="calorie-table.html">歩数別カロリー早見表</a>で確認できます。</div></details>
+    <details class="column-faq-item"><summary>75歳は1日何歩歩くべきですか？</summary><div class="column-faq-a">75歳の方も、65歳以上の目安である1日約6,000歩を基準に、ご自身の体力に合わせて調整するとよいでしょう。大切なのは歩数そのものより継続です。5,000歩前後でも、座りっぱなしを減らしてこまめに歩くだけで、フレイル（虚弱）予防に役立ちます。持病のある方は事前に医師へご相談ください。</div></details>
+    <details class="column-faq-item"><summary>「歩く国際協力 Walk in Her Shoes」とは？2024年はどんな活動でしたか？</summary><div class="column-faq-a">Walk in Her Shoes（ウォーク・イン・ハー・シューズ）は、国際協力NGOのCARE（ケア・インターナショナル ジャパン）が主催する「歩く国際協力」キャンペーンです。途上国で毎日水くみなどに長い距離を歩く女性や女の子の現実に思いをはせながら、参加者が歩いた歩数を寄付につなげます。2024年は3月8日〜5月31日に開催され、多くの参加者の歩数が支援に役立てられました。</div></details>
+    <details class="column-faq-item"><summary>赤ちゃんはいつから歩くようになりますか？</summary><div class="column-faq-a">個人差が大きいですが、多くの赤ちゃんは1歳前後（おおむね生後11〜15か月ごろ）に最初の一歩を踏み出します。早い・遅いは発達のリズムによるもので、1歳半を過ぎても歩かないなど気になる場合は、かかりつけの小児科や乳幼児健診で相談すると安心です。</div></details>
+    <details class="column-faq-item"><summary>高齢者はどれくらいの時間歩けばよいですか？</summary><div class="column-faq-a">目安は1日合計20〜30分程度のウォーキングです。一度にまとめてでも、10分×2〜3回に分けても効果は期待できます。「少し汗ばむ・会話できる程度」の速さが目安です。体力に不安がある方は5〜10分から始め、徐々に時間を延ばしましょう。持病のある方は医師にご相談ください。</div></details>
+    <details class="column-faq-item"><summary>「歩く」と「ウォーキング」の違いは何ですか？</summary><div class="column-faq-a">「歩く」は移動や日常動作を含めた歩行全般を指すのに対し、「ウォーキング」は健康・運動を目的に、姿勢や歩幅・ペースを意識して行う歩行を指すのが一般的です。同じ歩く動作でも、背すじを伸ばし腕を振って少し速めに歩くと、運動効果が高まります。</div></details>
+    <details class="column-faq-item"><summary>フルマラソンの42.195kmを歩くと何時間かかりますか？</summary><div class="column-faq-a">歩く速さにもよりますが、時速5km（ふつうの速さ）なら約8時間半、時速4km（ゆっくり）なら約10時間半が目安です。早歩き（時速6km前後）なら約7時間。実際は休憩や信号待ちが加わるため、これより長めに見ておくとよいでしょう。歩く時間と消費カロリーの目安は<a href="calorie-table.html">歩数別カロリー早見表</a>も参考にしてください。</div></details>
+    <details class="column-faq-item"><summary>「歩く哲学」とは何ですか？簡単に教えてください。</summary><div class="column-faq-a">「歩く哲学」とは、歩きながら考えることで思索が深まるという、古くからの考え方を指します。古代ギリシャのアリストテレスは歩きながら弟子に教え（逍遥学派）、カントやニーチェ、ルソーといった哲学者も日々の散歩を思考の時間にしていました。歩くと血流が促されて頭がすっきりし、新しい発想が生まれやすくなるといわれます。哲学や赤ちゃんの初歩、フルマラソンを歩く話などは<a href="column/walking-fun-facts.html">歩くのがちょっと楽しくなる小話</a>でやさしくご紹介しています。</div></details>
+    <details class="column-faq-item"><summary>歩くのが遅い・握力がないのはサルコペニアですか？やり方（対策）は？</summary><div class="column-faq-a">歩く速度の低下や握力の低下は、加齢で筋肉量が減る「サルコペニア」のサインの一つです。目安として、握力が男性28kg・女性18kg未満、歩く速さが秒速1.0m（横断歩道を青信号で渡り切れない程度）未満だと注意が必要とされます。対策のやり方は、スクワットなどの筋トレ＋たんぱく質をしっかりとる食事＋ウォーキングの習慣化です。セルフチェックと予防の歩き方は<a href="column/sarcopenia-walking.html">サルコペニアと歩く対策の記事</a>でくわしく解説しています。気になる場合は医療機関でご相談ください。本サイトの情報は一般的な健康情報であり、診断ではありません。</div></details>
     <div class="about-actions"><a class="lp-btn lp-btn-secondary" href="about-aruku.html">あるくとは？→</a><a class="lp-btn lp-btn-primary" href="index.html">トップへ戻る</a></div>
   </div>
 </section>
 {$footer}
-<script src="assets/app.js?v=20260610" defer></script>
+<script src="assets/app.js?v=20260616e" defer></script>
+</body>
+</html>
+HTML;
+    return $head . $body;
+}
+
+// ============================================================
+// つぶやき掲示板：投稿リストのHTML（トップの入口・専用ページで共用）
+// ============================================================
+function aruku_board_items_html(array $items): string
+{
+    if (!$items) {
+        return '<li class="board-empty">まだつぶやきはありません。最初の一歩を、あなたから。</li>';
+    }
+    require_once __DIR__ . '/inc/board.php';
+    $html = '';
+    foreach ($items as $bp) {
+        $html .= '<li class="board-item">'
+            . '<div class="board-item-head"><span class="board-name">' . h($bp['nickname']) . '</span>'
+            . '<span class="board-tag">No.' . h($bp['author_tag']) . '</span>'
+            . '<span class="board-time">' . h(board_relative_time($bp['created_at'])) . '</span></div>'
+            . '<p class="board-body">' . nl2br(h($bp['body'])) . '</p>'
+            . '</li>';
+    }
+    return $html;
+}
+
+// ============================================================
+// つぶやき掲示板の専用ページ /board.html
+// ============================================================
+function render_board(): string
+{
+    require_once __DIR__ . '/inc/member.php';
+    require_once __DIR__ . '/inc/board.php';
+    member_session_start();
+    $s = site();
+    $prefix = '';
+    $title = 'みんなのつぶやき掲示板';
+    $desc = '「あるく」ことのなんでもOKなつぶやき掲示板。ログインも登録もいらず、だれでも気軽に、今日の一歩や見つけた景色をシェアできます。';
+    $jsonld = [[
+        '@context' => 'https://schema.org',
+        '@type' => 'BreadcrumbList',
+        'itemListElement' => [
+            ['@type' => 'ListItem', 'position' => 1, 'name' => 'あるく', 'item' => $s['url'] . '/'],
+            ['@type' => 'ListItem', 'position' => 2, 'name' => 'みんなのつぶやき掲示板'],
+        ],
+    ]];
+    $head = head_html($prefix, $title . '｜あるく', $desc, $s['url'] . '/board.html', '', $jsonld, 'website', 'index, follow');
+    $footer = footer_html($prefix);
+    $crumb = breadcrumb_nav($prefix, 'みんなのつぶやき掲示板', true);
+
+    $token = member_csrf_token();
+    $flash = $_SESSION['board_flash'] ?? null;
+    unset($_SESSION['board_flash']);
+    $flashHtml = '';
+    if ($flash) {
+        $cls = !empty($flash['ok']) ? 'board-flash board-flash--ok' : 'board-flash board-flash--ng';
+        $flashHtml = '<p class="' . $cls . '">' . h($flash['msg'] ?? '') . '</p>';
+    }
+    $items = aruku_board_items_html(board_recent(50));
+    $count = board_count();
+
+    $body = <<<HTML
+{$crumb}
+<section class="section">
+  <div class="section-inner board-page">
+    <div class="section-head section-head--left">
+      <h1>みんなのつぶやき掲示板</h1>
+    </div>
+    <div class="board">
+      <p class="board-lead">「あるく」ことの、なんでもOKなつぶやき掲示板です。今日の一歩、見つけた景色、ちょっとした目標——<strong>ログインも登録もいらず、だれでも気軽に</strong>つぶやけます。前向きな一歩をシェアしましょう（愚痴ではなく、ね😊）。</p>
+      {$flashHtml}
+      <form class="board-form" action="board.html" method="post">
+        <input type="hidden" name="csrf" value="{$token}">
+        <input type="text" name="website" class="board-hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <div class="board-form-row">
+          <input class="board-nick" type="text" name="nickname" maxlength="20" placeholder="ニックネーム（任意）">
+        </div>
+        <textarea class="board-text" name="body" maxlength="140" rows="3" placeholder="歩いて感じたこと、今日の目標、ひとことどうぞ（140文字まで）" required></textarea>
+        <div class="board-form-foot">
+          <span class="board-note">URL・連絡先は投稿できません。みんなが気持ちよく使えるよう、やさしい言葉で。</span>
+          <button type="submit" class="lp-btn lp-btn-primary board-submit">つぶやく</button>
+        </div>
+      </form>
+      <ul class="board-list">{$items}</ul>
+      <p class="board-count">これまでのつぶやき：{$count}件（最新50件を表示）</p>
+      <div class="about-actions"><a class="lp-btn lp-btn-secondary" href="index.html">トップへ戻る</a></div>
+    </div>
+  </div>
+</section>
+{$footer}
+<script src="assets/app.js?v=20260616e" defer></script>
 </body>
 </html>
 HTML;
@@ -1109,7 +1271,7 @@ function render_top(): string
     $pillars = '';
     foreach ($d['order'] as $c) {
         $cat = $d['cats'][$c];
-        $pillars .= '<a href="column/index.html#' . $c . '" class="pillar-card">'
+        $pillars .= '<a href="category/' . $c . '.html" class="pillar-card">'
             . '<div class="pillar-icon">' . $cat['emoji'] . '</div>'
             . '<h3>' . $cat['name'] . '</h3>'
             . '<p>' . $cat['desc'] . '</p>'
@@ -1229,7 +1391,7 @@ HTML;
         $sel = $m === 30 ? ' selected' : '';
         $tOpts .= '<option value="' . $m . '"' . $sel . '>' . $m . '分</option>';
     }
-    // ３．コラム：note.com 風にカテゴリ別の横スクロール（レール）で表示
+    // ６．コラム：note.com 風にカテゴリ別の横スクロール（レール）で表示
     require_once __DIR__ . '/inc/posts.php';
     $catEmoji = aruku_post_category_emoji();
     $catNavTop = aruku_category_nav('', '');
@@ -1268,6 +1430,19 @@ HTML;
     $columnFeed = '<div class="column-layout col-layout--flush"><aside class="column-side">' . $catNavTop . '</aside>'
         . '<div class="column-main col-box">' . $mainContent . '</div></div>';
 
+    // ５．みんなのつぶやき掲示板（本体は /board.html。トップは最新3件の入口だけ＝伸びない）
+    require_once __DIR__ . '/inc/board.php';
+    $boardCount  = board_count();
+    $boardSection = <<<HTML
+    <div class="section-head section-head--left reveal" id="board" style="margin-top:56px; scroll-margin-top:90px;">
+      <h2>５．みんなのつぶやき掲示板</h2>
+    </div>
+    <div class="board board--teaser reveal">
+      <p class="board-lead">「あるく」ことの、なんでもOKなつぶやき掲示板。今日の一歩、見つけた景色、ちょっとした目標を、<strong>ログインも登録もいらず、だれでも気軽に</strong>。前向きな一歩をシェアしましょう（愚痴ではなく、ね😊）。</p>
+      <p class="board-more"><a href="board.html" class="lp-btn lp-btn-primary">つぶやき掲示板を開く（つぶやく）→</a><span class="board-count">これまで{$boardCount}件のつぶやき</span></p>
+    </div>
+HTML;
+
     $body = <<<HTML
 <header class="hero">
   <div class="hero-inner">
@@ -1276,6 +1451,11 @@ HTML;
       <h1 class="hero-anim hero-anim-2">{$top['hero_title_1']}<span class="hero-keep"><span class="accent">{$top['hero_accent']}</span>{$top['hero_title_2']}</span></h1>
       <p class="hero-lead hero-anim hero-anim-3">{$top['hero_lead']}</p>
       <p class="hero-free hero-anim hero-anim-4"><span>全機能無料で利用できます。</span></p>
+      <div class="hero-cta hero-anim hero-anim-4">
+        <a href="member/register.php" class="lp-btn lp-btn-primary" data-cta="hero_register">無料で歩数・体重を記録する →</a>
+        <a href="#columns" class="lp-btn lp-btn-secondary" data-cta="hero_columns">コラムを読む</a>
+      </div>
+      <p class="hero-cta-note hero-anim hero-anim-4">メール登録だけ・約30秒で完了・ずっと無料</p>
     </div>
   </div>
 </header>
@@ -1284,6 +1464,7 @@ HTML;
   <div class="info-nav">
     <a class="info-nav-card" href="about-aruku.html"><b>あるくとは？</b></a>
     <a class="info-nav-card" href="faq.html"><b>よくある質問（FAQ）</b></a>
+    <a class="info-nav-card" href="board.html"><b>つぶやき掲示板</b></a>
   </div>
 </section>
 
@@ -1329,7 +1510,13 @@ HTML;
         <span class="calc-result-sub" id="calc-distance"></span>
       </div>
       <p class="calc-note">※ 計算式：METs × 体重(kg) × 時間(h) × 1.05 ×（性別係数）。<br>※一般的な時速・METs（早歩き5.0／ジョギング8.3／ランニング10.0）を用いた目安です。<br>性別係数：男性1.00／女性0.95。</p>
+      <div class="calc-cta">
+        <p class="calc-cta-lead">📒 この消費カロリーを<b>マイページに記録</b>して、毎日の積み重ねを“見える化”しませんか？</p>
+        <a href="member/register.php" class="lp-btn lp-btn-primary" data-cta="calc_register">無料で記録を始める →</a>
+        <span class="calc-cta-note">メール登録だけ・約30秒・ずっと無料</span>
+      </div>
     </div>
+    <p class="calc-more"><a href="calorie-table.html" class="lp-btn lp-btn-secondary">歩数別カロリー早見表＆計算ツールの詳細を見る →</a></p>
     <script>
     (function(){
       var a=document.getElementById('calc-activity'),s=document.getElementById('calc-sex'),
@@ -1347,15 +1534,382 @@ HTML;
       calc();
     })();
     </script>
+    <div class="section-head section-head--left reveal" id="ideal-calorie" style="margin-top:56px; scroll-margin-top:90px;">
+      <h2>３．年齢別の摂取カロリー・消費カロリー<br>（1日の理想の目安）</h2>
+    </div>
+    <div class="reveal">
+      <p class="app-rank-intro">1日にどれくらい食べて、どれくらい動くのが理想？　厚生労働省「日本人の食事摂取基準（2020年版）」をもとに、年齢・性別ごとの<b>1日の推定エネルギー必要量</b>をまとめました。これは<b>「理想的な摂取カロリー」</b>であると同時に、体重を維持したいなら<b>同じだけ消費する</b>のが目安になる数値です。</p>
+      <div class="app-rank-wrap">
+        <table class="kcal-ideal">
+          <thead>
+            <tr><th>年齢</th><th>男性</th><th>女性</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>18〜29歳</td><td>2,650<span class="kcal-unit">kcal</span></td><td>2,000<span class="kcal-unit">kcal</span></td></tr>
+            <tr><td>30〜49歳</td><td>2,700<span class="kcal-unit">kcal</span></td><td>2,050<span class="kcal-unit">kcal</span></td></tr>
+            <tr><td>50〜64歳</td><td>2,600<span class="kcal-unit">kcal</span></td><td>1,950<span class="kcal-unit">kcal</span></td></tr>
+            <tr><td>65〜74歳</td><td>2,400<span class="kcal-unit">kcal</span></td><td>1,850<span class="kcal-unit">kcal</span></td></tr>
+            <tr><td>75歳以上</td><td>2,100<span class="kcal-unit">kcal</span></td><td>1,650<span class="kcal-unit">kcal</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="kcal-ideal-callout">💡 <b>ダイエットしたい人は</b>、上の目安より「摂取カロリー ＜ 消費カロリー」になるよう、少しだけ差をつくるのがコツ。食事を減らしすぎるより、<b>歩いて消費を増やす</b>ほうが続けやすく、健康的です。まずは「食べた分、いつもより少し多く歩く」から始めてみましょう。</p>
+      <p class="app-rank-note">※ 数値は厚生労働省「日本人の食事摂取基準（2020年版）」の推定エネルギー必要量（身体活動レベルII＝「ふつう」）に基づく1日あたりの目安です。活動量が多い人はこれより多く、少ない人は少なくなります。妊娠・授乳中の方、成長期のお子さま、持病のある方などは必要量が異なります。一般的な健康情報であり、医療上の指導に代わるものではありません。</p>
+    </div>
+    <div class="section-head section-head--left reveal" id="apps" style="margin-top:56px; scroll-margin-top:90px;">
+      <h2>４．健康管理アプリ比較ランキング<br>（カロリー計算・体重管理）</h2>
+    </div>
+    <div class="reveal">
+      <p class="app-rank-intro">「歩いて消費」とあわせて使いたい、<b>カロリー計算・体重管理アプリ</b>を、料金とサービス内容で比べてランキングにしました。あるくで歩数と消費カロリーを管理し、食事はアプリで記録——と組み合わせれば、ダイエットも健康づくりもぐっと続けやすくなります。</p>
+      <div class="app-rank-wrap">
+        <table class="app-rank">
+          <thead>
+            <tr><th>順位</th><th>アプリ名</th><th>特徴・主なサービス</th><th>料金（税込）</th><th>公式サイト</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="app-rank-no">1</span></td>
+              <td><span class="app-rank-name">あすけん</span></td>
+              <td class="app-rank-feat">AI栄養士が毎食アドバイス。栄養素を自動採点してくれる定番アプリ。栄養バランスごと整えたい人に。</td>
+              <td class="app-rank-price">無料<small>プレミアム 月480円〜</small></td>
+              <td><a class="app-rank-btn" href="https://www.asken.jp/" target="_blank" rel="noopener">公式ページ →</a></td>
+            </tr>
+            <tr>
+              <td><span class="app-rank-no">2</span></td>
+              <td><span class="app-rank-name">カロミル</span></td>
+              <td class="app-rank-feat">食事を写真でAIが自動記録。PFC・血糖・血圧もまとめて管理。ラクに続けたい人にぴったり。</td>
+              <td class="app-rank-price">無料<small>プレミアム 月480円〜</small></td>
+              <td><a class="app-rank-btn" href="https://www.calomeal.com/" target="_blank" rel="noopener">公式ページ →</a></td>
+            </tr>
+            <tr>
+              <td><span class="app-rank-no">3</span></td>
+              <td><span class="app-rank-name">MyFitnessPal</span></td>
+              <td class="app-rank-feat">世界最大級の食品データベースとバーコード読み取りが強み。海外食品も記録したい本格派に。</td>
+              <td class="app-rank-price">無料<small>プレミアム 月約3,100円〜</small></td>
+              <td><a class="app-rank-btn" href="https://www.myfitnesspal.com/ja" target="_blank" rel="noopener">公式ページ →</a></td>
+            </tr>
+            <tr>
+              <td><span class="app-rank-no">4</span></td>
+              <td><span class="app-rank-name">RecStyle（レックスタイル）</span></td>
+              <td class="app-rank-feat">体重・体脂肪の変化をグラフで見える化。完全無料でシンプル。記録を習慣にしたい人に。</td>
+              <td class="app-rank-price">完全無料<small>追加課金なし</small></td>
+              <td><a class="app-rank-btn" href="https://apps.apple.com/jp/app/id709213946" target="_blank" rel="noopener">公式ページ →</a></td>
+            </tr>
+            <tr>
+              <td><span class="app-rank-no">5</span></td>
+              <td><span class="app-rank-name">シンプルダイエット</span></td>
+              <td class="app-rank-feat">体重記録に特化した迷わず使える超シンプル設計。記録が続かなかった人の最後の1つに。</td>
+              <td class="app-rank-price">無料<small>一部機能のみ課金</small></td>
+              <td><a class="app-rank-btn" href="https://simpleweight.net/" target="_blank" rel="noopener">公式ページ →</a></td>
+            </tr>
+            <tr>
+              <td><span class="app-rank-no">6</span></td>
+              <td><span class="app-rank-name">FiNC（フィンク）</span></td>
+              <td class="app-rank-feat">体重・食事・歩数・睡眠をまるごと管理。記録でポイントも貯まり、ごほうび感覚で続けられる。</td>
+              <td class="app-rank-price">無料<small>FiNC Plus 月480円〜</small></td>
+              <td><a class="app-rank-btn" href="https://finc.com/" target="_blank" rel="noopener">公式ページ →</a></td>
+            </tr>
+            <tr>
+              <td><span class="app-rank-no">7</span></td>
+              <td><span class="app-rank-name">ヘルスプラネット（タニタ）</span></td>
+              <td class="app-rank-feat">タニタの体組成計と連携し、体重・体脂肪・筋肉量を自動でグラフ記録。数値で管理したい人に。</td>
+              <td class="app-rank-price">完全無料<small>体組成計連携に対応</small></td>
+              <td><a class="app-rank-btn" href="https://www.healthplanet.jp/" target="_blank" rel="noopener">公式ページ →</a></td>
+            </tr>
+            <tr>
+              <td><span class="app-rank-no">8</span></td>
+              <td><span class="app-rank-name">カロママプラス</span></td>
+              <td class="app-rank-feat">AI管理栄養士が2億通りからアドバイス。食事・運動・体重をまとめて記録でき、栄養面を整えたい人に。</td>
+              <td class="app-rank-price">基本無料<small>個人向けは無料で利用可</small></td>
+              <td><a class="app-rank-btn" href="https://calomama.com/" target="_blank" rel="noopener">公式ページ →</a></td>
+            </tr>
+            <tr>
+              <td><span class="app-rank-no">9</span></td>
+              <td><span class="app-rank-name">YAZIO（ヤジオ）</span></td>
+              <td class="app-rank-feat">ヨーロッパ発の人気カロリー計算アプリ。断食（ファスティング）管理にも対応し、PROが手頃な価格。</td>
+              <td class="app-rank-price">無料<small>PRO 年2,200円〜</small></td>
+              <td><a class="app-rank-btn" href="https://www.yazio.com/ja" target="_blank" rel="noopener">公式ページ →</a></td>
+            </tr>
+            <tr>
+              <td><span class="app-rank-no">10</span></td>
+              <td><span class="app-rank-name">Noom（ヌーム）</span></td>
+              <td class="app-rank-feat">心理学×専属コーチで生活習慣から改善する本格派。料金は高めだが、しっかり伴走してほしい人に。</td>
+              <td class="app-rank-price">月約5,000円〜<small>2週間100円でお試し可</small></td>
+              <td><a class="app-rank-btn" href="https://www.noom.com/jp/" target="_blank" rel="noopener">公式ページ →</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="app-rank-note">※ ランキングは編集部の総合評価による目安です。※ 料金・サービス内容は2026年6月時点のもので、変更される場合があります。最新の情報は各公式サイトをご確認ください。</p>
+    </div>
+{$boardSection}
     <div class="section-head section-head--left reveal" id="columns" style="margin-top:56px; scroll-margin-top:90px;">
-      <h2>３．コラム</h2>
+      <h2>６．コラム</h2>
     </div>
     {$columnFeed}
   </div>
 </section>
+<script>
+(function(){
+  var side=document.querySelector('.col-layout--flush .column-side');
+  var box=document.querySelector('.col-layout--flush .col-box');
+  if(!side||!box){return;}
+  var mq=window.matchMedia('(max-width:880px)');
+  function sync(){
+    if(mq.matches){ box.style.maxHeight=''; return; }
+    box.style.maxHeight=side.offsetHeight+'px';
+  }
+  sync();
+  window.addEventListener('load',sync);
+  window.addEventListener('resize',sync);
+  if(window.ResizeObserver){ new ResizeObserver(sync).observe(side); }
+})();
+</script>
+
+<section class="lp-cta-band reveal">
+  <div class="lp-cta-inner">
+    <h2 class="lp-cta-title">{$top['cta_title']}</h2>
+    <p class="lp-cta-sub">{$top['cta_sub']}<br>無料の会員登録で、体重・運動・消費カロリーをマイページにずっと無料で記録できます。</p>
+    <div class="lp-cta-actions">
+      <a href="member/register.php" class="lp-btn lp-btn-primary lp-btn-lg" data-cta="bottom_register">無料で記録を始める →</a>
+      <a href="calorie-table.html" class="lp-btn lp-btn-ghost" data-cta="bottom_calorie">歩数別カロリー表を見る</a>
+    </div>
+    <p class="lp-cta-note">メール登録だけ・約30秒・ずっと無料　／　これまで{$boardCount}件のつぶやきがシェアされています</p>
+  </div>
+</section>
 
 {$footer}
-<script src="assets/app.js?v=20260610" defer></script>
+
+<div class="mobile-cta-bar" id="mobileCtaBar" aria-hidden="true">
+  <span class="mobile-cta-text">体重・カロリーを<b>無料で記録</b></span>
+  <a href="member/register.php" class="lp-btn lp-btn-primary" data-cta="mobile_register">無料で始める →</a>
+</div>
+<script>
+(function(){
+  var bar=document.getElementById('mobileCtaBar');
+  if(!bar){return;}
+  var footer=document.querySelector('footer, .lp-footer');
+  function onScroll(){
+    var show=window.scrollY>620;
+    // フッターに重ならないよう、最下部付近では隠す
+    if(footer){
+      var fr=footer.getBoundingClientRect();
+      if(fr.top<window.innerHeight){ show=false; }
+    }
+    bar.classList.toggle('is-visible',show);
+  }
+  onScroll();
+  window.addEventListener('scroll',onScroll,{passive:true});
+  window.addEventListener('resize',onScroll);
+})();
+</script>
+<script src="assets/app.js?v=20260616e" defer></script>
+</body>
+</html>
+HTML;
+    return $head . $body;
+}
+
+// ============================================================
+// 消費カロリー専用ハブページ — /calorie-table.html
+//   「歩く カロリー / ウォーキング 消費カロリー / 1万歩 カロリー」の着地ページ。
+//   早見表（CMS calorie-table を流用）＋計算ツール＋計算式＋FAQ＋構造化データ。
+// ============================================================
+function render_calorie(): string
+{
+    require_once __DIR__ . '/inc/member.php'; // h()
+    $s = site();
+    $prefix = '';
+    $url = $s['url'] . '/calorie-table.html';
+    $title = '歩く・ウォーキングの消費カロリー｜歩数別カロリー早見表＆計算ツール｜あるく';
+    $desc = '歩く・ウォーキングの消費カロリーを歩数別・体重別の早見表と無料の計算ツールで確認。1,000歩〜2万歩、体重40〜90kgの目安、「1万歩＝約300kcal」の計算式、早歩き・ジョギング・ランニング別の消費kcalまで分かりやすく解説します。';
+
+    $d = aruku_data();
+    $ct = $d['by_slug']['calorie-table'] ?? null;
+
+    // 早見表（CMS calorie-table の各セクションを流用＝管理画面の編集に自動追従）
+    $tableBody = $ct['sections'][0]['body'] ?? '';
+    $formulaBody = $ct['sections'][1]['body'] ?? '';
+    $tipsBody = $ct['sections'][2]['body'] ?? '';
+
+    $calorie_panel = '';
+    if ($tableBody !== '') {
+        $calorie_panel = <<<HTML
+    <div class="calorie-panel reveal">
+      <div class="calorie-panel-top">
+        <p class="calorie-formula">消費kcal <b>≒</b> 歩数 <b>×</b> 体重<small>kg</small> <b>×</b> 0.0005</p>
+      </div>
+      {$tableBody}
+    </div>
+HTML;
+    }
+
+    // 消費カロリー計算ツール（体重・時間プルダウン）
+    $wOpts = '';
+    for ($kg = 40; $kg <= 150; $kg += 5) {
+        $sel = $kg === 60 ? ' selected' : '';
+        $wOpts .= '<option value="' . $kg . '"' . $sel . '>' . $kg . 'kg</option>';
+    }
+    $tOpts = '';
+    foreach ([10, 20, 30, 40, 50, 60, 90, 120] as $m) {
+        $sel = $m === 30 ? ' selected' : '';
+        $tOpts .= '<option value="' . $m . '"' . $sel . '>' . $m . '分</option>';
+    }
+
+    // FAQ（CMS calorie-table の Q&A を流用）
+    // FAQ（計10問）：環境非依存で必ず10問。健康・あるく・ウォーキングのSEOキーワードを織り込み。
+    $faqs = [];
+    $faqs[] = ['1万歩で本当に300kcal消費しますか？', '体重60kg・普通歩行の場合の目安です。体重が軽い人は少なく、重い人は多くなります。早歩きならさらに増えます。'];
+    $faqs[] = ['1kg痩せるには何歩あるけば必要ですか？', '脂肪1kg＝約7,200kcal。体重60kgなら計算上は約24万歩ですが、実際は食事管理との組み合わせが現実的です。'];
+    $faqs[] = ['歩数計とスマホ、どちらの数値が正確ですか？', 'どちらも誤差はありますが、傾向を把握する分には十分です。同じ機器で毎日測り、変化を見るのがおすすめです。'];
+    $faqs[] = ['1日の消費カロリーは何kcalを目標にすればいいですか？', 'ウォーキングなど運動でプラスする消費は、まずは1日200〜300kcal（体重60kgでおよそ7,000〜10,000歩に相当）を目安にすると、無理なく続けやすいです。ダイエットが目的の場合は、消費を増やすこと以上に食事とのカロリー収支を整えるのが近道です。上の早見表・計算ツールで、自分の体重・歩数・運動時間での消費kcalを確認してみましょう。'];
+    $faqs[] = ['ウォーキングで消費カロリーを増やすコツはありますか？', '①速度を上げる（早歩きで2〜4割アップ）②坂道・階段を使う（上り坂は平地の約1.5〜2倍）③大股＋腕振りで全身を使う、の3つが効果的です。同じ歩数でも歩き方しだいで消費カロリーは大きく変わります。'];
+    $faqs[] = ['ダイエット目的なら、ウォーキングは何分くらい歩けばいいですか？', '1回20〜40分・週合計150分が目安です。10分×3回のこま切れでも、合計時間が確保できれば効果は期待できます。ただし体重を落とすには、消費を増やすより食事とのカロリー収支を整えるほうが結果につながりやすいです。'];
+    $faqs[] = ['早歩きとふつうの歩行では、消費カロリーはどのくらい違いますか？', '早歩きは運動強度（METs）が上がるため、ふつうの歩行に比べて消費カロリーが約1.2〜1.4倍になります。上の計算ツールで「早歩き」を選ぶと、ふつうの歩行との違いを数字で確認できます。'];
+    $faqs[] = ['「あるく」では消費カロリーをどうやって計算していますか？', '早見表は「消費kcal ≒ 歩数 × 体重kg × 0.0005」という簡易式、計算ツールは「METs × 体重 × 時間 × 1.05 ×（性別係数）」で算出しています。いずれも一般的な目安であり、体質・歩き方・環境により前後します。'];
+    $faqs[] = ['食後にウォーキングをすると健康やダイエットに効果的ですか？', '食後30〜60分のウォーキングは、血糖値の急な上昇をやわらげ、脂肪対策にも役立つとされています。無理のない範囲で、食後の軽い早歩きを習慣にするのがおすすめです。'];
+    $faqs[] = ['雨の日や室内でも、ウォーキングの健康効果や消費カロリーは得られますか？', 'はい。ウォーキングマシンや室内での足踏み・歩行でも、屋外と同様に脂肪燃焼や心肺機能の向上といった健康効果が期待できます。天候に左右されず続けられるのが室内ウォーキングの利点です。'];
+
+    $faqHtml = '';
+    $faqLd = [];
+    if ($faqs) {
+        $items = '';
+        foreach ($faqs as $qa) {
+            [$q, $a] = $qa;
+            $items .= '<details class="column-faq-item"><summary>' . h($q) . '</summary><div class="column-faq-a">' . h($a) . '</div></details>';
+            $faqLd[] = ['@type' => 'Question', 'name' => $q, 'acceptedAnswer' => ['@type' => 'Answer', 'text' => $a]];
+        }
+        $faqHtml = '<section class="column-section" id="faq"><h2>歩く・ウォーキングと消費カロリーのよくある質問</h2><div class="column-faq">' . $items . '</div></section>';
+    }
+
+    // 構造化データ：計算ツール(WebApplication)＋FAQ＋パンくず
+    $jsonld = [
+        [
+            '@context'             => 'https://schema.org',
+            '@type'                => 'WebApplication',
+            'name'                 => '消費カロリー計算ツール（ウォーキング）',
+            'description'          => '歩く速度・性別・体重・運動時間から、ウォーキング／早歩き／ジョギング／ランニングの推定消費カロリーを計算する無料ツールです。',
+            'url'                  => $url . '#calc',
+            'applicationCategory'  => 'HealthApplication',
+            'operatingSystem'      => 'All',
+            'browserRequirements'  => 'Requires JavaScript',
+            'inLanguage'           => 'ja',
+            'isAccessibleForFree'  => true,
+            'offers'               => ['@type' => 'Offer', 'price' => '0', 'priceCurrency' => 'JPY'],
+            'publisher'            => ['@type' => 'Organization', 'name' => 'あるく', 'url' => $s['url'] . '/'],
+        ],
+        [
+            '@context'        => 'https://schema.org',
+            '@type'           => 'BreadcrumbList',
+            'itemListElement' => [
+                ['@type' => 'ListItem', 'position' => 1, 'name' => 'あるく', 'item' => $s['url'] . '/'],
+                ['@type' => 'ListItem', 'position' => 2, 'name' => '歩く・ウォーキングの消費カロリー'],
+            ],
+        ],
+    ];
+    if ($faqLd) {
+        $jsonld[] = ['@context' => 'https://schema.org', '@type' => 'FAQPage', 'mainEntity' => $faqLd];
+    }
+
+    $ogImg = $s['url'] . '/assets/running-woman-calorie.jpg';
+    $head = head_html($prefix, $title, $desc, $url, '歩く カロリー,ウォーキング 消費カロリー,1万歩 カロリー,歩数 カロリー,消費カロリー 計算', $jsonld, 'website', 'index, follow', $ogImg);
+    $footer = footer_html($prefix);
+    $crumb = breadcrumb_nav($prefix, '消費カロリー', true);
+
+    // 計算式・コツのセクション（CMS本文があれば差し込む）
+    $formulaSection = $formulaBody !== '' ? '<section class="column-section" id="formula"><h2>消費カロリーの計算式</h2>' . $formulaBody . '</section>' : '';
+    $tipsSection = $tipsBody !== '' ? '<section class="column-section" id="tips"><h2>消費カロリーを効率よく増やすコツ</h2>' . $tipsBody . '</section>' : '';
+
+    $body = <<<HTML
+{$crumb}
+<article class="column-article calorie-page">
+  <header class="column-header">
+    <span class="column-cat-badge">🔥 消費カロリー</span>
+    <h1>歩く・ウォーキングの消費カロリー<br><small>歩数別カロリー早見表＆無料計算ツール</small></h1>
+    <p class="column-lead">「結局、何歩あるけば何kcal消費できるの？」——体重別の<strong>歩数別カロリー早見表</strong>と、早歩き・ジョギング・ランニングにも対応した<strong>消費カロリー計算ツール</strong>で、ウォーキングの消費カロリーがひと目で分かります。すべて無料・登録不要です。</p>
+  </header>
+
+  <figure class="post-cover calorie-cover">
+    <img src="assets/running-woman-calorie.jpg" width="1440" height="756" alt="野原を笑顔でランニングする女性。歩く・走ることで楽しく消費カロリーを増やせる" fetchpriority="high" decoding="async">
+  </figure>
+
+  <section class="section calorie-feature calorie-feature--page">
+    <div class="section-inner">
+      <div class="section-head section-head--left reveal">
+        <span class="section-eyebrow">STEP 1</span>
+        <h2>歩数別・消費カロリー早見表（ウォーキング）</h2>
+      </div>
+      {$calorie_panel}
+
+      <div class="section-head section-head--left reveal" id="calc" style="margin-top:56px; scroll-margin-top:90px;">
+        <span class="section-eyebrow">STEP 2</span>
+        <h2>消費カロリー計算ツール<br>（早歩き・ジョギング・ランニング）</h2>
+      </div>
+      <div class="calc-tool reveal">
+        <div class="calc-grid">
+          <label class="calc-field">
+            <span>運動の種類</span>
+            <select id="calc-activity">
+              <option value="3.5|4.0">ふつうの歩行（時速約4km）</option>
+              <option value="5.0|6.5" selected>早歩き（時速約6.5km）</option>
+              <option value="8.3|8">ジョギング（時速約8km）</option>
+              <option value="10.0|10">ランニング（時速約10km）</option>
+            </select>
+          </label>
+          <label class="calc-field">
+            <span>性別</span>
+            <select id="calc-sex">
+              <option value="1.0">男性</option>
+              <option value="0.95">女性</option>
+            </select>
+          </label>
+          <label class="calc-field">
+            <span>体重</span>
+            <select id="calc-weight">{$wOpts}</select>
+          </label>
+          <label class="calc-field">
+            <span>運動時間</span>
+            <select id="calc-time">{$tOpts}</select>
+          </label>
+        </div>
+        <div class="calc-result">
+          <span class="calc-result-label">推定消費カロリー</span>
+          <span class="calc-result-value"><b id="calc-kcal">—</b> kcal</span>
+          <span class="calc-result-sub" id="calc-distance"></span>
+        </div>
+        <p class="calc-note">※ 計算式：METs × 体重(kg) × 時間(h) × 1.05 ×（性別係数）。<br>※一般的な時速・METs（歩行3.5／早歩き5.0／ジョギング8.3／ランニング10.0）を用いた目安です。<br>性別係数：男性1.00／女性0.95。</p>
+      </div>
+      <script>
+      (function(){
+        var a=document.getElementById('calc-activity'),s=document.getElementById('calc-sex'),
+            w=document.getElementById('calc-weight'),t=document.getElementById('calc-time'),
+            out=document.getElementById('calc-kcal'),dist=document.getElementById('calc-distance');
+        if(!a){return;}
+        function calc(){
+          var p=a.value.split('|'),met=parseFloat(p[0]),speed=parseFloat(p[1]);
+          var sex=parseFloat(s.value),wt=parseFloat(w.value),min=parseFloat(t.value),h=min/60;
+          var kcal=met*wt*h*1.05*sex;
+          out.textContent=Math.round(kcal);
+          dist.textContent='（歩く・走る距離の目安：約'+(speed*h).toFixed(1)+'km）';
+        }
+        [a,s,w,t].forEach(function(el){el.addEventListener('change',calc);});
+        calc();
+      })();
+      </script>
+    </div>
+  </section>
+
+  {$formulaSection}
+
+  {$tipsSection}
+
+  {$faqHtml}
+
+  <p class="column-cta-note">※ 本ページの数値は一般的な簡易式・METsに基づく<strong>目安</strong>であり、医療行為・診断ではありません。体質・歩き方・環境により前後します。</p>
+</article>
+
+{$footer}
+<script src="assets/app.js?v=20260616e" defer></script>
 </body>
 </html>
 HTML;
@@ -1411,7 +1965,7 @@ function render_page(string $key): ?string
 </article>
 
 {$footer}
-<script src="assets/app.js?v=20260610" defer></script>
+<script src="assets/app.js?v=20260616e" defer></script>
 </body>
 </html>
 HTML;
@@ -1428,7 +1982,9 @@ function render_sitemap(): string
     $today = date('Y-m-d');
     $urls = [
         [$s['url'] . '/', $today, '1.0'],
+        [$s['url'] . '/calorie-table.html', $today, '0.9'],
         [$s['url'] . '/about-aruku.html', $today, '0.6'],
+        [$s['url'] . '/board.html', $today, '0.5'],
         [$s['url'] . '/faq.html', $today, '0.5'],
         [$s['url'] . '/editorial-policy.html', $today, '0.4'],
         [$s['url'] . '/about.html', $today, '0.4'],
@@ -1438,6 +1994,11 @@ function render_sitemap(): string
     // カテゴリ一覧ページ
     foreach (array_keys(aruku_post_categories()) as $ck) {
         $urls[] = [$s['url'] . '/category/' . $ck . '.html', $today, '0.7'];
+    }
+    // 編集部コラム（CMS記事＝5本柱の評価記事）
+    foreach ($d['articles'] as $a) {
+        $lm = substr((string) ($a['date'] ?? ''), 0, 10);
+        $urls[] = [$s['url'] . '/column/' . $a['slug'] . '.html', ($lm !== '' ? $lm : $today), '0.7'];
     }
     // 公開済みの会員投稿
     foreach (posts_published(1000) as $pp) {
