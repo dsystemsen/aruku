@@ -94,6 +94,9 @@ switch ($p) {
     case 'cta':
         echo view_cta();
         break;
+    case 'pv':
+        echo view_pv();
+        break;
     case 'dashboard':
     default:
         echo view_dashboard($content);
@@ -135,6 +138,7 @@ function view_cta(): string
 
     $inner = '<section class="card">'
         . '<h1 class="card-title">CTA計測</h1>'
+        . '<p style="margin:0 0 12px;"><a href="' . h($base ?? admin_base()) . '?p=pv">→ アクセス(PV)を見る</a></p>'
         . '<p style="color:#5d6362;line-height:1.8;margin:0 0 18px;">サイト各所のCTA（行動ボタン）のクリック数です。Cookieや外部送信を使わず、自前で集計しています。'
         . '<br>合計クリック: <b>' . number_format($sumTotal) . '</b>　／　直近30日: <b>' . number_format($sum30) . '</b></p>'
         . '<table class="data-table" style="width:100%;border-collapse:collapse;">'
@@ -147,6 +151,45 @@ function view_cta(): string
         . ($sumTotal === 0 ? '<p style="color:#8a8f8d;margin-top:16px;">まだクリックデータがありません。サイト公開後、CTAが押されると数値が記録されます。</p>' : '')
         . '</section>';
     return layout('CTA計測', 'cta', $inner);
+}
+
+/** アクセス（PV）計測の表示。 */
+function view_pv(): string
+{
+    require_once __DIR__ . '/../inc/pv.php';
+    try {
+        $s = pv_stats(25);
+    } catch (\Throwable $e) {
+        $s = ['total' => 0, 'today' => 0, 'month' => 0, 'topPaths' => []];
+    }
+    $goal = 10000;
+    $pct = $goal > 0 ? min(100, (int) round($s['month'] / $goal * 100)) : 0;
+
+    $rows = '';
+    foreach ($s['topPaths'] as $r) {
+        $path = (string) $r['path'];
+        $rows .= '<tr>'
+            . '<td><a href="' . h($path) . '" target="_blank" rel="noopener">' . h($path) . '</a></td>'
+            . '<td style="text-align:right;font-weight:700;">' . number_format((int) $r['c']) . '</td>'
+            . '</tr>';
+    }
+
+    $inner = '<section class="card">'
+        . '<h1 class="card-title">アクセス(PV)</h1>'
+        . '<p style="color:#5d6362;line-height:1.8;margin:0 0 16px;">各ページの閲覧数（PV）です。Cookieや外部送信を使わず自前で集計しています（実ブラウザの読み込みを計測）。</p>'
+        . '<div style="display:flex;flex-wrap:wrap;gap:14px;margin:0 0 18px;">'
+        . '<div style="flex:1 1 140px;background:#f3f8f5;border-radius:12px;padding:14px 16px;"><div style="font-size:.8rem;color:#5d6362;">今日</div><div style="font-size:1.6rem;font-weight:800;color:#1b5e3f;">' . number_format($s['today']) . '</div></div>'
+        . '<div style="flex:1 1 140px;background:#f3f8f5;border-radius:12px;padding:14px 16px;"><div style="font-size:.8rem;color:#5d6362;">今月</div><div style="font-size:1.6rem;font-weight:800;color:#1b5e3f;">' . number_format($s['month']) . '</div></div>'
+        . '<div style="flex:1 1 140px;background:#f3f8f5;border-radius:12px;padding:14px 16px;"><div style="font-size:.8rem;color:#5d6362;">累計</div><div style="font-size:1.6rem;font-weight:800;color:#1b5e3f;">' . number_format($s['total']) . '</div></div>'
+        . '</div>'
+        . '<p style="margin:0 0 6px;font-weight:700;">今月の目標 ' . number_format($goal) . ' PV まで <span style="color:#1b5e3f;">' . $pct . '%</span></p>'
+        . '<div style="height:12px;background:#e8f6f2;border-radius:999px;overflow:hidden;margin:0 0 22px;"><div style="height:100%;width:' . $pct . '%;background:linear-gradient(90deg,#3ec690,#29b183);"></div></div>'
+        . '<h2 style="font-size:1rem;margin:0 0 10px;">今月の人気ページ</h2>'
+        . '<table class="data-table" style="width:100%;border-collapse:collapse;">'
+        . '<thead><tr><th style="text-align:left;">ページ</th><th style="text-align:right;">PV</th></tr></thead>'
+        . '<tbody>' . ($rows !== '' ? $rows : '<tr><td colspan="2" style="color:#8a8f8d;padding:14px;">まだPVデータがありません。公開後、ページが閲覧されると記録されます。</td></tr>') . '</tbody></table>'
+        . '</section>';
+    return layout('アクセス(PV)', 'pv', $inner);
 }
 
 // ============================================================
@@ -428,7 +471,8 @@ function layout(string $title, string $active, string $inner): string
         . $nav('page_about', '運営者ページ', $base . '?p=page&key=about')
         . $nav('page_privacy', 'プライバシー', $base . '?p=page&key=privacy')
         . $nav('site', 'トップ／サイト文言', $base . '?p=site')
-        . $nav('cta', 'CTA計測', $base . '?p=cta');
+        . $nav('cta', 'CTA計測', $base . '?p=cta')
+        . $nav('pv', 'アクセス(PV)', $base . '?p=pv');
     $email = h($_SESSION['admin_email'] ?? '');
     return <<<HTML
 <!doctype html><html lang="ja"><head>

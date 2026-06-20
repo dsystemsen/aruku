@@ -1,28 +1,31 @@
 <?php
 /**
- * CTAクリック計測の受信エンドポイント。
+ * 計測の受信エンドポイント（CTAクリック／ページビュー）。
  * フロントの navigator.sendBeacon('/track.php', ...) から POST される。
- * 返却は 204（本文なし）。許可キー以外は inc/cta.php 側で無視される。
+ * 返却は 204（本文なし）。許可キー以外のCTAは inc/cta.php 側で無視される。
  */
 declare(strict_types=1);
-
-require __DIR__ . '/inc/cta.php';
 
 if (($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'POST') {
     http_response_code(405);
     exit;
 }
 
-$key  = (string)($_POST['cta'] ?? '');
-$page = (string)($_POST['page'] ?? '');
-
-// sendBeacon が text/plain 等で送ってきて $_POST が空の場合のフォールバック
-if ($key === '') {
-    parse_str((string)file_get_contents('php://input'), $in);
-    $key  = (string)($in['cta'] ?? '');
-    $page = (string)($in['page'] ?? $page);
+// $_POST が空（sendBeacon が text/plain 等で送った）場合のフォールバック
+$in = $_POST;
+if (!$in) {
+    parse_str((string) file_get_contents('php://input'), $in);
 }
 
-cta_log($key, $page);
+$pv  = (string) ($in['pv'] ?? '');
+$cta = (string) ($in['cta'] ?? '');
+
+if ($pv !== '') {
+    require __DIR__ . '/inc/pv.php';
+    pv_log($pv);
+} elseif ($cta !== '') {
+    require __DIR__ . '/inc/cta.php';
+    cta_log($cta, (string) ($in['page'] ?? ''));
+}
 
 http_response_code(204);

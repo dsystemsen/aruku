@@ -127,7 +127,7 @@ function nav_html(string $prefix): string
     return <<<HTML
 <nav class="lp-nav" data-auth="{$authAttr}">
   <div class="lp-nav-inner">
-    <a href="{$prefix}index.html" class="lp-brand"><img src="{$prefix}assets/logo.svg?v=20260616e" alt="あるくロゴ"><span class="lp-brand-text"><span class="lp-brand-tagline">-歩くことで健康に-</span><span class="lp-brand-name">あるく</span></span></a>
+    <a href="{$prefix}index.html" class="lp-brand"><img src="{$prefix}assets/logo.svg?v=20260620b" alt="あるくロゴ"><span class="lp-brand-text"><span class="lp-brand-tagline">-歩くことで健康に-</span><span class="lp-brand-name">あるく</span></span></a>
     <div class="lp-nav-links">
       {$adminLink}<a href="{$prefix}member/mypage.php" class="lp-nav-cta">マイページ</a>
       <a href="{$prefix}member/register.php" class="lp-nav-cta" data-cta="nav_register">無料ではじめる</a>
@@ -139,19 +139,22 @@ function nav_html(string $prefix): string
 HTML;
 }
 
-function footer_html(string $prefix): string
+function footer_html(string $prefix, string $ctaHtml = ''): string
 {
     $s = site();
     return <<<HTML
 <footer class="lp-footer">
+  {$ctaHtml}
   <div class="lp-footer-inner">
     <div>
-      <div class="lp-footer-brand"><img src="{$prefix}assets/logo.svg?v=20260616e" alt="あるく ロゴ">あるく</div>
+      <div class="lp-footer-brand"><img src="{$prefix}assets/logo.svg?v=20260620b" alt="あるく ロゴ">あるく</div>
       <p class="lp-footer-tagline">{$s['tagline']}</p>
     </div>
     <nav class="lp-footer-links">
       <a href="{$prefix}index.html">トップ</a>
       <a href="{$prefix}calorie-table.html">消費カロリー</a>
+      <a href="{$prefix}tools.html">歩くツール</a>
+      <a href="{$prefix}courses.html">コース・スポット</a>
       <a href="{$prefix}about.html">運営者情報</a>
       <a href="{$prefix}privacy.html">プライバシーポリシー</a>
       <a href="{$prefix}editorial-policy.html">編集・監修ポリシー</a>
@@ -190,8 +193,8 @@ function head_html(string $prefix, string $title, string $desc, string $canonica
     }
     $rb = '<meta name="robots" content="' . $robotsContent . '">' . "\n";
     // フォントはメイリオ（端末ローカル）を使用するため Web フォントの読込は不要。
-    $css = '<link rel="stylesheet" href="' . $prefix . 'assets/style.css?v=20260616e">' . "\n"
-        . '<link rel="stylesheet" href="' . $prefix . 'assets/column.css?v=20260616e">' . "\n"
+    $css = '<link rel="stylesheet" href="' . $prefix . 'assets/style.css?v=20260620b">' . "\n"
+        . '<link rel="stylesheet" href="' . $prefix . 'assets/column.css?v=20260620b">' . "\n"
         . '<noscript><style>.reveal,.reveal-stagger>*,.hero-anim,.hero-art-anim{opacity:1!important;transform:none!important;animation:none!important}</style></noscript>';
     // meta keywords は Google・各AIともに無視するため出力しない（引数は後方互換で受けるだけ）。
     $kw = '';
@@ -219,6 +222,7 @@ function head_html(string $prefix, string $title, string $desc, string $canonica
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="google-site-verification" content="4ize6xVkb7ck59G-Lh0dZLrhf5hmAa9D1zbiNnY4JIQ">
 <link rel="preconnect" href="https://pagead2.googlesyndication.com" crossorigin>
 <link rel="preconnect" href="https://googleads.g.doubleclick.net" crossorigin>
 <link rel="dns-prefetch" href="https://googlesyndication.com">
@@ -241,7 +245,7 @@ function head_html(string $prefix, string $title, string $desc, string $canonica
 <meta name="twitter:description" content="{$desc}">
 <meta name="twitter:image" content="{$ogp}">
 {$twSite}<meta name="theme-color" content="#29b183">
-{$headExtra}<link rel="icon" type="image/svg+xml" href="{$prefix}assets/logo.svg?v=20260616e">
+{$headExtra}<link rel="icon" type="image/svg+xml" href="{$prefix}assets/logo.svg?v=20260620b">
 {$css}
 {$ld}</head>
 <body>
@@ -498,19 +502,355 @@ function render_article(string $slug): ?string
     <h2>歩く習慣を、もっと深く知る</h2>
     <p>aruku では、ウォーキングの効果・正しい歩き方・カロリー・ポイ活・マシンまで、歩くことのすべてをコラムで発信しています。気になるテーマから読み進めてみてください。</p>
     <div class="column-cta">
-      <a href="./" class="lp-btn lp-btn-primary">コラム一覧を見る</a>
-      <a href="./calorie-table.html" class="lp-btn lp-btn-secondary">歩数別カロリー表を見る</a>
+      <a href="../calorie-table.html" class="lp-btn lp-btn-primary">歩数別カロリー表を見る</a>
+      <a href="../tools.html" class="lp-btn lp-btn-secondary">🧮 歩くツール（無料計算）</a>
+      <a href="../courses.html" class="lp-btn lp-btn-secondary">🗺️ コース・スポットを探す</a>
     </div>
     <p class="column-cta-note">※ 本サイトは一般的な健康情報を提供するものであり、医療行為・診断ではありません。</p>
   </section>
 </article>
 
 {$footer}
-<script src="../assets/app.js?v=20260616e" defer></script>
+<script src="../assets/app.js?v=20260620b" defer></script>
 </body>
 </html>
 HTML;
 
+    return $head . $body;
+}
+
+// ============================================================
+// 歩くツール集 — /tools.html（.htaccess で tools.php に内部転送）
+//   BMI・基礎代謝・歩数別消費カロリー・ダイエット目標の無料計算ハブ。
+// ============================================================
+function render_tools(): string
+{
+    require_once __DIR__ . '/inc/member.php'; // h()
+    $s = site();
+    $prefix = '';
+    $url = $s['url'] . '/tools.html';
+    $title = '歩くツール集｜BMI・基礎代謝・消費カロリー・ダイエット目標の無料計算｜あるく';
+    $desc = 'BMI・適正体重、基礎代謝、歩数別の消費カロリー、ダイエット目標までまとめて計算できる無料ツール集。歩く健康づくりに役立つ計算機を、登録不要ですぐに使えます。';
+
+    $faqs = [
+        ['BMIはどうやって計算しますか？', 'BMI＝体重(kg)÷(身長(m)×身長(m))で求めます。日本肥満学会の基準では、18.5未満が低体重、18.5〜25未満が普通体重、25以上が肥満とされています。'],
+        ['基礎代謝量（BMR）とは何ですか？', '何もしなくても生命維持のために消費されるエネルギーです。本ツールはハリス・ベネディクトの式（改訂版）で推定し、活動量を掛けて1日の消費カロリーの目安も計算します。'],
+        ['歩くだけでダイエットできますか？', '歩く習慣は消費カロリーを増やし健康づくりに役立ちますが、体重を落とすには食事とのカロリー収支を整えることが近道です。本ツールの数値は一般的な目安としてご活用ください。'],
+    ];
+    $faqItems = '';
+    $faqLd = [];
+    foreach ($faqs as $qa) {
+        [$q, $a] = $qa;
+        $faqItems .= '<details class="column-faq-item"><summary>' . h($q) . '</summary><div class="column-faq-a">' . h($a) . '</div></details>';
+        $faqLd[] = ['@type' => 'Question', 'name' => $q, 'acceptedAnswer' => ['@type' => 'Answer', 'text' => $a]];
+    }
+    $faqHtml = '<section class="column-section" id="faq"><h2>歩くツールのよくある質問</h2><div class="column-faq">' . $faqItems . '</div></section>';
+
+    $jsonld = [
+        [
+            '@context' => 'https://schema.org',
+            '@type' => 'WebApplication',
+            'name' => '歩くツール集（あるく）',
+            'url' => $url,
+            'applicationCategory' => 'HealthApplication',
+            'operatingSystem' => 'Web',
+            'offers' => ['@type' => 'Offer', 'price' => '0', 'priceCurrency' => 'JPY'],
+            'inLanguage' => 'ja',
+        ],
+        [
+            '@context' => 'https://schema.org',
+            '@type' => 'BreadcrumbList',
+            'itemListElement' => [
+                ['@type' => 'ListItem', 'position' => 1, 'name' => 'あるく', 'item' => $s['url'] . '/'],
+                ['@type' => 'ListItem', 'position' => 2, 'name' => '歩くツール集'],
+            ],
+        ],
+        ['@context' => 'https://schema.org', '@type' => 'FAQPage', 'mainEntity' => $faqLd],
+    ];
+    $head = head_html($prefix, $title, $desc, $url, 'BMI 計算,適正体重,基礎代謝 計算,消費カロリー 計算,ダイエット 目標 歩数,歩く ツール', $jsonld, 'website', 'index, follow');
+    $footer = footer_html($prefix);
+    $crumb = breadcrumb_nav($prefix, '歩くツール', true);
+
+    $body = <<<HTML
+{$crumb}
+<article class="column-article tools-page">
+  <header class="column-header">
+    <span class="column-cat-badge">🧮 歩くツール</span>
+    <h1>歩くツール集<br><small>BMI・基礎代謝・消費カロリー・ダイエット目標を無料計算</small></h1>
+    <p class="column-lead">健康づくりに役立つ計算ツールをまとめました。すべて<strong>無料・登録不要</strong>。結果はあるくの<a href="member/register.php" data-cta="tools_register">無料の会員登録</a>でマイページに記録すれば、毎日の変化を見える化できます。</p>
+  </header>
+
+  <section class="column-section" id="bmi"><h2>① BMI・適正体重をはかる</h2>
+    <div class="calc-tool">
+      <div class="calc-grid">
+        <label class="calc-field"><span>身長（cm）</span><input type="number" id="bmi-h" value="165" min="100" max="230" inputmode="decimal"></label>
+        <label class="calc-field"><span>体重（kg）</span><input type="number" id="bmi-w" value="60" min="20" max="250" inputmode="decimal"></label>
+      </div>
+      <div class="calc-result">
+        <span class="calc-result-label">BMI</span>
+        <span class="calc-result-value"><b id="bmi-val">—</b></span>
+        <span class="calc-result-sub" id="bmi-sub"></span>
+      </div>
+      <p class="calc-note">※ BMI＝体重(kg)÷(身長(m))²。判定は日本肥満学会の基準（18.5未満＝低体重／18.5〜25未満＝普通体重／25以上＝肥満）。適正体重＝(身長(m))²×22。</p>
+    </div>
+  </section>
+
+  <section class="column-section" id="bmr"><h2>② 基礎代謝量・1日の消費カロリーをはかる</h2>
+    <div class="calc-tool">
+      <div class="calc-grid calc-grid--2x2">
+        <label class="calc-field"><span>性別</span><select id="bmr-sex"><option value="m">男性</option><option value="f">女性</option></select></label>
+        <label class="calc-field"><span>年齢</span><input type="number" id="bmr-age" value="40" min="10" max="100" inputmode="numeric"></label>
+        <label class="calc-field"><span>身長（cm）</span><input type="number" id="bmr-h" value="165" min="100" max="230" inputmode="decimal"></label>
+        <label class="calc-field"><span>体重（kg）</span><input type="number" id="bmr-w" value="60" min="20" max="250" inputmode="decimal"></label>
+        <label class="calc-field"><span>1日の活動量</span><select id="bmr-act"><option value="1.5">低い（座り仕事が中心）</option><option value="1.75" selected>ふつう（通勤・家事・立ち仕事あり）</option><option value="2.0">高い（力仕事・活発な運動）</option></select></label>
+      </div>
+      <div class="calc-result">
+        <span class="calc-result-label">基礎代謝量</span>
+        <span class="calc-result-value"><b id="bmr-val">—</b> kcal</span>
+        <span class="calc-result-sub" id="bmr-sub"></span>
+      </div>
+      <p class="calc-note">※ 基礎代謝量はハリス・ベネディクトの式（改訂版）で推定。1日の消費カロリーは「基礎代謝量×活動レベル」での目安です。あくまで概算であり、個人差があります。</p>
+    </div>
+  </section>
+
+  <section class="column-section" id="steps"><h2>③ 歩数から消費カロリー・距離を出す</h2>
+    <div class="calc-tool">
+      <div class="calc-grid">
+        <label class="calc-field"><span>歩数</span><input type="number" id="st-n" value="8000" min="0" max="100000" step="100" inputmode="numeric"></label>
+        <label class="calc-field"><span>体重（kg）</span><input type="number" id="st-w" value="60" min="20" max="250" inputmode="decimal"></label>
+      </div>
+      <div class="calc-result">
+        <span class="calc-result-label">推定消費カロリー</span>
+        <span class="calc-result-value"><b id="st-kcal">—</b> kcal</span>
+        <span class="calc-result-sub" id="st-sub"></span>
+      </div>
+      <p class="calc-note">※ 消費kcal ≒ 歩数 × 体重(kg) × 0.0005、距離 ≒ 歩数 × 0.7m での目安です。歩き方・歩幅により前後します。くわしくは<a href="calorie-table.html">歩数別カロリー早見表</a>へ。</p>
+    </div>
+  </section>
+
+  <section class="column-section" id="diet"><h2>④ ダイエット目標シミュレーター</h2>
+    <div class="calc-tool">
+      <div class="calc-grid">
+        <label class="calc-field"><span>今の体重（kg）</span><input type="number" id="dt-now" value="65" min="20" max="250" inputmode="decimal"></label>
+        <label class="calc-field"><span>目標体重（kg）</span><input type="number" id="dt-goal" value="60" min="20" max="250" inputmode="decimal"></label>
+        <label class="calc-field"><span>1日の歩数</span><input type="number" id="dt-steps" value="8000" min="0" max="100000" step="100" inputmode="numeric"></label>
+      </div>
+      <div class="calc-result">
+        <span class="calc-result-label">歩くだけで達成する目安</span>
+        <span class="calc-result-value"><b id="dt-days">—</b></span>
+        <span class="calc-result-sub" id="dt-sub"></span>
+      </div>
+      <p class="calc-note">※ 脂肪1kg≒7,200kcalとして、歩行で増える消費だけで単純計算した目安です。実際は食事とのカロリー収支を整えるのが近道。無理のない範囲で続けましょう。</p>
+    </div>
+  </section>
+
+  <div class="calc-cta">
+    <p class="calc-cta-lead">📒 計算した数字を<b>マイページに記録</b>して、体重・歩数・消費カロリーの変化を見える化しませんか？</p>
+    <a href="member/register.php" class="lp-btn lp-btn-primary" data-cta="tools_register">無料で記録を始める →</a>
+    <span class="calc-cta-note">メール登録だけ・約30秒・ずっと無料</span>
+  </div>
+
+  <section class="column-section" id="related-pages"><h2>あわせて使いたい</h2>
+    <ul>
+      <li><a href="calorie-table.html">歩数別カロリー早見表＆消費カロリー計算ツール</a></li>
+      <li><a href="courses.html">ウォーキングコースの選び方・探し方ガイド</a></li>
+      <li><a href="column/diet-howto.html">歩くだけダイエットの始め方</a></li>
+      <li><a href="column/kenkou-nippon-21.html">1日何歩が目標？国の歩数目標と「＋10」</a></li>
+    </ul>
+  </section>
+
+  {$faqHtml}
+
+  <p class="column-cta-note">※ 本ページの計算結果は一般的な式に基づく<strong>目安</strong>であり、医療行為・診断ではありません。体質・環境により前後します。持病のある方や治療中の方は、運動・食事の前に医師にご相談ください。</p>
+</article>
+
+{$footer}
+<script>
+(function(){
+  function num(id){var el=document.getElementById(id);return el?parseFloat(el.value):NaN;}
+  function val(id){var el=document.getElementById(id);return el?el.value:'';}
+  function set(id,t){var el=document.getElementById(id);if(el){el.textContent=t;}}
+  function bind(ids,fn){ids.forEach(function(id){var el=document.getElementById(id);if(el){el.addEventListener('input',fn);el.addEventListener('change',fn);}});fn();}
+
+  // ① BMI
+  if(document.getElementById('bmi-val')){
+    bind(['bmi-h','bmi-w'],function(){
+      var h=num('bmi-h')/100, w=num('bmi-w');
+      if(!(h>0)||!(w>0)){set('bmi-val','—');set('bmi-sub','');return;}
+      var bmi=w/(h*h);
+      var j= bmi<18.5?'低体重（やせ）': bmi<25?'普通体重':'肥満';
+      var ideal=(h*h)*22;
+      set('bmi-val',bmi.toFixed(1));
+      set('bmi-sub','判定：'+j+'　／　適正体重の目安：約'+ideal.toFixed(1)+'kg');
+    });
+  }
+  // ② BMR + TDEE（ハリス・ベネディクト改訂版）
+  if(document.getElementById('bmr-val')){
+    bind(['bmr-sex','bmr-age','bmr-h','bmr-w','bmr-act'],function(){
+      var sex=val('bmr-sex'),age=num('bmr-age'),h=num('bmr-h'),w=num('bmr-w'),act=num('bmr-act');
+      if(!(age>0)||!(h>0)||!(w>0)){set('bmr-val','—');set('bmr-sub','');return;}
+      var bmr= sex==='f' ? (447.593+9.247*w+3.098*h-4.330*age) : (88.362+13.397*w+4.799*h-5.677*age);
+      if(bmr<0){bmr=0;}
+      var tdee=bmr*act;
+      set('bmr-val',Math.round(bmr).toLocaleString());
+      set('bmr-sub','1日の消費カロリーの目安：約'+Math.round(tdee).toLocaleString()+' kcal（活動量込み）');
+    });
+  }
+  // ③ 歩数 → kcal・距離
+  if(document.getElementById('st-kcal')){
+    bind(['st-n','st-w'],function(){
+      var n=num('st-n'),w=num('st-w');
+      if(!(n>=0)||!(w>0)){set('st-kcal','—');set('st-sub','');return;}
+      var kcal=n*w*0.0005, km=n*0.7/1000, bowls=kcal/240;
+      set('st-kcal',Math.round(kcal).toLocaleString());
+      set('st-sub','距離の目安：約'+km.toFixed(1)+'km　／　ごはん茶碗 約'+bowls.toFixed(1)+'杯分');
+    });
+  }
+  // ④ ダイエット目標
+  if(document.getElementById('dt-days')){
+    bind(['dt-now','dt-goal','dt-steps'],function(){
+      var now=num('dt-now'),goal=num('dt-goal'),steps=num('dt-steps');
+      if(!(now>0)||!(goal>0)||!(steps>0)){set('dt-days','—');set('dt-sub','');return;}
+      var lose=now-goal;
+      if(lose<=0){set('dt-days','目標達成済み');set('dt-sub','すでに目標体重以下です。今の体重維持を目指しましょう。');return;}
+      var totalKcal=lose*7200;
+      var dailyKcal=steps*now*0.0005;
+      if(!(dailyKcal>0)){set('dt-days','—');set('dt-sub','');return;}
+      var days=Math.ceil(totalKcal/dailyKcal);
+      set('dt-days','約'+days.toLocaleString()+'日');
+      set('dt-sub','−'+lose.toFixed(1)+'kg（約'+Math.round(totalKcal).toLocaleString()+'kcal）を、1日'+steps.toLocaleString()+'歩の消費だけで割った単純計算です。食事との組み合わせで、より現実的になります。');
+    });
+  }
+})();
+</script>
+<script src="assets/app.js?v=20260620b" defer></script>
+</body>
+</html>
+HTML;
+    return $head . $body;
+}
+
+// ============================================================
+// ウォーキングコース・スポット ガイド — /courses.html
+//   コースの「型」・選び方・近くの探し方・公式リソース・準備をまとめたハブ。
+// ============================================================
+function render_courses(): string
+{
+    require_once __DIR__ . '/inc/member.php'; // h()
+    $s = site();
+    $prefix = '';
+    $url = $s['url'] . '/courses.html';
+    $title = 'ウォーキングコースの選び方＆探し方ガイド｜近くの歩く場所の見つけ方｜あるく';
+    $desc = '歩く場所はどう選ぶ？ウォーキングコースの「型」と選び方、お住まいの近くのコースの探し方、環境省の長距離自然歩道・国立公園など公式リソースまでまとめました。';
+
+    $faqs = [
+        ['ウォーキングはどこを歩くのがいいですか？', 'まずは信号が少なく、路面が平らで安全な場所（公園の周回路・河川敷・遊歩道）がおすすめです。慣れてきたら、名所めぐりのまちあるきや自然歩道へ広げると飽きずに続けられます。'],
+        ['近所に良いコースが見つかりません。', '「（お住まいの市区町村名）　ウォーキングコース」「（市区町村名）　遊歩道」「（市区町村名）　健康の道」などで検索してみましょう。自治体や観光協会が「ウォーキングマップ」を公開していることも多いです。'],
+        ['自然の中を歩くロングトレイルは初心者でも大丈夫？', '環境省の長距離自然歩道には、初心者向けの短い区間も用意されています。いきなり長距離を歩かず、無理のない距離から、装備と天候に注意して楽しみましょう。'],
+    ];
+    $faqItems = '';
+    $faqLd = [];
+    foreach ($faqs as $qa) {
+        [$q, $a] = $qa;
+        $faqItems .= '<details class="column-faq-item"><summary>' . h($q) . '</summary><div class="column-faq-a">' . h($a) . '</div></details>';
+        $faqLd[] = ['@type' => 'Question', 'name' => $q, 'acceptedAnswer' => ['@type' => 'Answer', 'text' => $a]];
+    }
+    $faqHtml = '<section class="column-section" id="faq"><h2>歩く場所・コースのよくある質問</h2><div class="column-faq">' . $faqItems . '</div></section>';
+
+    $jsonld = [
+        [
+            '@context' => 'https://schema.org',
+            '@type' => 'BreadcrumbList',
+            'itemListElement' => [
+                ['@type' => 'ListItem', 'position' => 1, 'name' => 'あるく', 'item' => $s['url'] . '/'],
+                ['@type' => 'ListItem', 'position' => 2, 'name' => 'ウォーキングコース・スポット'],
+            ],
+        ],
+        ['@context' => 'https://schema.org', '@type' => 'FAQPage', 'mainEntity' => $faqLd],
+    ];
+    $head = head_html($prefix, $title, $desc, $url, 'ウォーキングコース,ウォーキングコース 選び方,遊歩道,長距離自然歩道,歩く 場所', $jsonld, 'website', 'index, follow');
+    $footer = footer_html($prefix);
+    $crumb = breadcrumb_nav($prefix, 'コース・スポット', true);
+
+    $body = <<<HTML
+{$crumb}
+<article class="column-article courses-page">
+  <header class="column-header">
+    <span class="column-cat-badge">🗺️ コース・スポット</span>
+    <h1>ウォーキングコースの選び方＆探し方<br><small>近くの「歩く場所」を見つけよう</small></h1>
+    <p class="column-lead">毎日のウォーキングは、<strong>歩く場所しだいで楽しさも続けやすさも大きく変わります</strong>。ここでは、コースの「型」と選び方、お住まいの近くのコースの探し方、自然の中を歩ける公式リソースまでまとめました。</p>
+  </header>
+
+  <section class="column-section" id="types"><h2>① まずは知りたい、コースの5つの「型」</h2>
+    <table class="column-table"><thead><tr><th>型</th><th>特徴</th><th>こんな人に</th></tr></thead><tbody>
+      <tr><td><strong>公園・周回コース</strong></td><td>信号がなく安全。トイレ・水道・ベンチがそろい、距離も測りやすい</td><td>初心者・運動を始めたい人</td></tr>
+      <tr><td><strong>河川敷・遊歩道</strong></td><td>道が平らで信号も少なく、長い距離をリズムよく歩ける。景色も◎</td><td>しっかり歩きたい人</td></tr>
+      <tr><td><strong>まちあるき・名所めぐり</strong></td><td>観光や寄り道を楽しみながら歩ける。飽きずに歩数が伸びる</td><td>歩くのが退屈な人</td></tr>
+      <tr><td><strong>自然・ロングトレイル</strong></td><td>森や山を歩く本格コース。環境省の長距離自然歩道・国立公園など</td><td>休日にしっかり楽しみたい人</td></tr>
+      <tr><td><strong>駅近・通勤コース</strong></td><td>一駅歩く・遠回りするなど、毎日の移動に組み込める</td><td>忙しい人・「＋10」実践</td></tr>
+    </tbody></table>
+  </section>
+
+  <section class="column-section" id="choose"><h2>② コース選び・5つのチェックポイント</h2>
+    <ul>
+      <li><strong>距離：</strong>まずは片道15〜30分で折り返せる範囲から。慣れて延ばす。</li>
+      <li><strong>安全：</strong>信号・交通量の少なさ、夜なら街灯の有無。歩道が整っているか。</li>
+      <li><strong>トイレ・休憩：</strong>公園や駅など、途中に立ち寄れる場所があると安心。</li>
+      <li><strong>アクセス：</strong>家から近い・通り道にあるほど続きます。「歩いて行ける」が理想。</li>
+      <li><strong>路面・高低差：</strong>平らな道は続けやすく、坂や階段は運動強度アップ。目的で選ぶ。</li>
+    </ul>
+    <p class="column-callout">💡 <strong>続けるコツ：</strong>「お気に入りの定番コース」を1つ決めると習慣になりやすく、距離や時間の変化も比べやすくなります。</p>
+  </section>
+
+  <section class="column-section" id="find"><h2>③ お住まいの近くのコースを探すには</h2>
+    <p>身近なコースは、次のように探すと見つけやすいです。</p>
+    <ul>
+      <li>検索：<strong>「（市区町村名）　ウォーキングコース」「（市区町村名）　遊歩道」「（市区町村名）　健康の道」</strong></li>
+      <li>自治体・観光協会の<strong>「ウォーキングマップ」</strong>（役所の健康増進課・観光ページで公開していることが多い）</li>
+      <li>地図アプリで近所の<strong>公園・河川敷・緑道</strong>を探す</li>
+    </ul>
+    <p>自然の中を歩きたいときは、公的な情報が役立ちます。</p>
+    <p class="gov-target-links">公式リソース:
+      <a href="https://www.env.go.jp/nature/nationalparks/pick-up/long-trail/" target="_blank" rel="noopener">長距離自然歩道を歩こう（環境省）</a>
+      <a href="https://www.env.go.jp/park/" target="_blank" rel="noopener">国立公園に行ってみよう（環境省）</a>
+    </p>
+  </section>
+
+  <section class="column-section" id="prepare"><h2>④ 安全に楽しむための準備</h2>
+    <p>はじめての場所や長めのコースでは、服装・持ち物・天候への備えが大切です。くわしくはこちらのコラムも参考にしてください。</p>
+    <ul>
+      <li><a href="column/shoes-erabikata.html">ウォーキングシューズの選び方</a></li>
+      <li><a href="column/fukuso.html">歩くときの服装の選び方</a></li>
+      <li><a href="column/mochimono.html">歩くときの持ち物リスト</a></li>
+      <li><a href="column/natsu.html">夏の暑い日の歩き方</a> ／ <a href="column/fuyu.html">冬の寒い日の歩き方</a></li>
+    </ul>
+    <div class="column-note">慣れない自然のコースや長距離を歩くときは、無理のない計画・装備・天候の確認を。持病のある方や体調に不安のある方は、事前に医師にご相談ください。</div>
+  </section>
+
+  <div class="calc-cta">
+    <p class="calc-cta-lead">📒 お気に入りコースで歩いた記録を<b>マイページに記録</b>して、続けた成果を見える化しませんか？</p>
+    <a href="member/register.php" class="lp-btn lp-btn-primary" data-cta="courses_register">無料で記録を始める →</a>
+    <span class="calc-cta-note">メール登録だけ・約30秒・ずっと無料</span>
+  </div>
+
+  <section class="column-section" id="related-pages"><h2>あわせて使いたい</h2>
+    <ul>
+      <li><a href="tools.html">歩くツール（BMI・基礎代謝・消費カロリー・ダイエット目標の無料計算）</a></li>
+      <li><a href="calorie-table.html">歩数別カロリー早見表</a></li>
+      <li><a href="column/jichitai-kenko-point.html">自治体の健康ポイント事業の探し方</a></li>
+    </ul>
+  </section>
+
+  {$faqHtml}
+
+  <p class="column-cta-note">※ 本ページは一般的な情報提供を目的としたもので、特定コースの安全性や最新状況を保証するものではありません。実際に歩く際は現地の案内・交通規則・天候にしたがってください。</p>
+</article>
+
+{$footer}
+<script src="assets/app.js?v=20260620b" defer></script>
+</body>
+</html>
+HTML;
     return $head . $body;
 }
 
@@ -818,7 +1158,7 @@ function render_column_index(): string
 </div>
 
 {$footer}
-<script src="../assets/app.js?v=20260616e" defer></script>
+<script src="../assets/app.js?v=20260620b" defer></script>
 </body>
 </html>
 HTML;
@@ -844,7 +1184,7 @@ function render_category_columns(string $cat): string
             . '<meta name="viewport" content="width=device-width, initial-scale=1">'
             . '<meta name="robots" content="noindex, nofollow">'
             . '<title>ページが見つかりません｜あるく</title>'
-            . '<link rel="stylesheet" href="' . $prefix . 'assets/style.css?v=20260616e"></head><body>'
+            . '<link rel="stylesheet" href="' . $prefix . 'assets/style.css?v=20260620b"></head><body>'
             . '<main style="max-width:640px;margin:14vh auto;padding:0 24px;text-align:center;">'
             . '<h1 style="font-size:1.6rem;margin-bottom:12px;">ページが見つかりません</h1>'
             . '<p style="color:#5d6362;margin-bottom:28px;">お探しのページは削除されました。</p>'
@@ -920,7 +1260,7 @@ function render_category_columns(string $cat): string
   </div>
 </div>
 {$footer}
-<script src="{$prefix}assets/app.js?v=20260616e" defer></script>
+<script src="{$prefix}assets/app.js?v=20260620b" defer></script>
 </body>
 </html>
 HTML;
@@ -976,7 +1316,7 @@ function render_editorial_policy(): string
   </div>
 </section>
 {$footer}
-<script src="{$prefix}assets/app.js?v=20260616e" defer></script>
+<script src="{$prefix}assets/app.js?v=20260620b" defer></script>
 </body>
 </html>
 HTML;
@@ -1028,7 +1368,7 @@ function render_search_page(string $q): string
   </div>
 </div>
 {$footer}
-<script src="{$prefix}assets/app.js?v=20260616e" defer></script>
+<script src="{$prefix}assets/app.js?v=20260620b" defer></script>
 </body>
 </html>
 HTML;
@@ -1074,7 +1414,7 @@ function render_aboutaruku(): string
   </div>
 </section>
 {$footer}
-<script src="assets/app.js?v=20260616e" defer></script>
+<script src="assets/app.js?v=20260620b" defer></script>
 </body>
 </html>
 HTML;
@@ -1156,7 +1496,7 @@ function render_faq_page(): string
   </div>
 </section>
 {$footer}
-<script src="assets/app.js?v=20260616e" defer></script>
+<script src="assets/app.js?v=20260620b" defer></script>
 </body>
 </html>
 HTML;
@@ -1248,7 +1588,7 @@ function render_board(): string
   </div>
 </section>
 {$footer}
-<script src="assets/app.js?v=20260616e" defer></script>
+<script src="assets/app.js?v=20260620b" defer></script>
 </body>
 </html>
 HTML;
@@ -1443,6 +1783,22 @@ HTML;
     </div>
 HTML;
 
+    // 最下部CTAはフッター内に統合（独立帯をやめ、1ブロックにまとめる）。文言は従来どおり。
+    $footerCta = <<<HTML
+<div class="lp-footer-cta">
+    <div class="lp-footer-cta-in">
+      <h2 class="lp-footer-cta-title">{$top['cta_title']}</h2>
+      <p class="lp-footer-cta-sub">{$top['cta_sub']}<br>無料の会員登録で、体重・運動・消費カロリーをマイページにずっと無料で記録できます。</p>
+      <div class="lp-footer-cta-actions">
+        <a href="member/register.php" class="lp-btn lp-btn-primary lp-btn-lg" data-cta="bottom_register">無料で記録を始める →</a>
+        <a href="calorie-table.html" class="lp-btn lp-btn-ghost" data-cta="bottom_calorie">歩数別カロリー表を見る</a>
+      </div>
+      <p class="lp-footer-cta-note">メール登録だけ・約30秒・ずっと無料　／　これまで{$boardCount}件のつぶやきがシェアされています</p>
+    </div>
+  </div>
+HTML;
+    $footer = footer_html($prefix, $footerCta);
+
     $body = <<<HTML
 <header class="hero">
   <div class="hero-inner">
@@ -1450,12 +1806,12 @@ HTML;
       {$badge}
       <h1 class="hero-anim hero-anim-2">{$top['hero_title_1']}<span class="hero-keep"><span class="accent">{$top['hero_accent']}</span>{$top['hero_title_2']}</span></h1>
       <p class="hero-lead hero-anim hero-anim-3">{$top['hero_lead']}</p>
-      <p class="hero-free hero-anim hero-anim-4"><span>全機能無料で利用できます。</span></p>
+      <p class="hero-free hero-anim hero-anim-4"><span>がんばらなくて、大丈夫。ぜんぶ無料です。</span></p>
       <div class="hero-cta hero-anim hero-anim-4">
-        <a href="member/register.php" class="lp-btn lp-btn-primary" data-cta="hero_register">無料で歩数・体重を記録する →</a>
-        <a href="#columns" class="lp-btn lp-btn-secondary" data-cta="hero_columns">コラムを読む</a>
+        <a href="member/register.php" class="lp-btn lp-btn-primary" data-cta="hero_register">今すぐ無料で始める →</a>
+        <a href="#columns" class="lp-btn lp-btn-secondary" data-cta="hero_columns">まずは読んでみる</a>
       </div>
-      <p class="hero-cta-note hero-anim hero-anim-4">メール登録だけ・約30秒で完了・ずっと無料</p>
+      <p class="hero-cta-note hero-anim hero-anim-4">メール登録だけ・約30秒で完了・いつでも退会OK</p>
     </div>
   </div>
 </header>
@@ -1463,6 +1819,8 @@ HTML;
 <section class="info-nav-section">
   <div class="info-nav">
     <a class="info-nav-card" href="about-aruku.html"><b>あるくとは？</b></a>
+    <a class="info-nav-card" href="tools.html"><b>🧮 歩くツール（無料計算）</b></a>
+    <a class="info-nav-card" href="courses.html"><b>🗺️ コース・スポット</b></a>
     <a class="info-nav-card" href="faq.html"><b>よくある質問（FAQ）</b></a>
     <a class="info-nav-card" href="board.html"><b>つぶやき掲示板</b></a>
   </div>
@@ -1475,6 +1833,21 @@ HTML;
       <h2>{$top['pillars_title']}</h2>
     </div>
     {$calorie_section}
+    <div class="gov-target reveal">
+      <h3 class="gov-target-title">🇯🇵 国が示す「1日の歩数目標」</h3>
+      <p class="gov-target-lead">厚生労働省「健康日本21（第三次）」では、生活習慣病などを防ぐための1日の歩数目標を次のように定めています。</p>
+      <div class="gov-target-grid">
+        <div class="gov-target-card"><span class="gov-target-num">8,000<small>歩/日</small></span><span class="gov-target-label">20〜64歳</span></div>
+        <div class="gov-target-card"><span class="gov-target-num">6,000<small>歩/日</small></span><span class="gov-target-label">65歳以上</span></div>
+      </div>
+      <p class="gov-target-note">いきなり目標歩数が難しくても、<strong>「＋10（プラス・テン）＝今より10分多く歩く」</strong>だけで近づけます（厚労省・スマート・ライフ・プロジェクト）。よく聞く<strong>“1日1万歩”は、さらに上を目指すときの定番の目安</strong>です。まずは上の早見表で、自分の歩数の消費カロリーを確認してみましょう。</p>
+      <p class="gov-target-more"><a href="column/kenkou-nippon-21.html">▸ 国の歩数目標と「＋10」をもっとくわしく（コラム）</a></p>
+      <p class="gov-target-links">参考（公的機関）:
+        <a href="https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/kenkou_iryou/kenkou/kenkounippon21_00006.html" target="_blank" rel="noopener">健康日本21（厚労省）</a>
+        <a href="https://www.smartlife.mhlw.go.jp/" target="_blank" rel="noopener">スマート・ライフ・プロジェクト</a>
+        <a href="https://kennet.mhlw.go.jp/information/information/exercise/s-00-001.html" target="_blank" rel="noopener">e-ヘルスネット（身体活動の目標）</a>
+      </p>
+    </div>
     <div class="section-head section-head--left reveal" style="margin-top:56px;">
       <h2>２．歩数別・消費カロリー測定<br>（早歩き・ジョギング・ランニング）</h2>
     </div>
@@ -1666,18 +2039,6 @@ HTML;
 })();
 </script>
 
-<section class="lp-cta-band reveal">
-  <div class="lp-cta-inner">
-    <h2 class="lp-cta-title">{$top['cta_title']}</h2>
-    <p class="lp-cta-sub">{$top['cta_sub']}<br>無料の会員登録で、体重・運動・消費カロリーをマイページにずっと無料で記録できます。</p>
-    <div class="lp-cta-actions">
-      <a href="member/register.php" class="lp-btn lp-btn-primary lp-btn-lg" data-cta="bottom_register">無料で記録を始める →</a>
-      <a href="calorie-table.html" class="lp-btn lp-btn-ghost" data-cta="bottom_calorie">歩数別カロリー表を見る</a>
-    </div>
-    <p class="lp-cta-note">メール登録だけ・約30秒・ずっと無料　／　これまで{$boardCount}件のつぶやきがシェアされています</p>
-  </div>
-</section>
-
 {$footer}
 
 <div class="mobile-cta-bar" id="mobileCtaBar" aria-hidden="true">
@@ -1703,7 +2064,7 @@ HTML;
   window.addEventListener('resize',onScroll);
 })();
 </script>
-<script src="assets/app.js?v=20260616e" defer></script>
+<script src="assets/app.js?v=20260620b" defer></script>
 </body>
 </html>
 HTML;
@@ -1905,11 +2266,19 @@ HTML;
 
   {$faqHtml}
 
+  <section class="column-section" id="related-pages"><h2>あわせて使いたい</h2>
+    <ul>
+      <li><a href="tools.html">歩くツール（BMI・基礎代謝・ダイエット目標の無料計算）</a></li>
+      <li><a href="courses.html">ウォーキングコースの選び方・探し方ガイド</a></li>
+      <li><a href="column/diet-howto.html">歩くだけダイエットの始め方</a></li>
+    </ul>
+  </section>
+
   <p class="column-cta-note">※ 本ページの数値は一般的な簡易式・METsに基づく<strong>目安</strong>であり、医療行為・診断ではありません。体質・歩き方・環境により前後します。</p>
 </article>
 
 {$footer}
-<script src="assets/app.js?v=20260616e" defer></script>
+<script src="assets/app.js?v=20260620b" defer></script>
 </body>
 </html>
 HTML;
@@ -1965,7 +2334,7 @@ function render_page(string $key): ?string
 </article>
 
 {$footer}
-<script src="assets/app.js?v=20260616e" defer></script>
+<script src="assets/app.js?v=20260620b" defer></script>
 </body>
 </html>
 HTML;
@@ -1983,6 +2352,8 @@ function render_sitemap(): string
     $urls = [
         [$s['url'] . '/', $today, '1.0'],
         [$s['url'] . '/calorie-table.html', $today, '0.9'],
+        [$s['url'] . '/tools.html', $today, '0.8'],
+        [$s['url'] . '/courses.html', $today, '0.8'],
         [$s['url'] . '/about-aruku.html', $today, '0.6'],
         [$s['url'] . '/board.html', $today, '0.5'],
         [$s['url'] . '/faq.html', $today, '0.5'],

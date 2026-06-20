@@ -85,6 +85,8 @@ function aruku_db_init(PDO $pdo): void
         created_at $ts
     )");
     try { $pdo->exec('ALTER TABLE members ADD COLUMN weekly_goal INT NOT NULL DEFAULT 0'); } catch (\Throwable $e) {}
+    // 月間あるくチャレンジ（ランキング）への参加フラグ。0=不参加（既定）/ 1=参加（オプトイン）
+    try { $pdo->exec('ALTER TABLE members ADD COLUMN ranking_optin INT NOT NULL DEFAULT 0'); } catch (\Throwable $e) {}
 
     $pdo->exec("CREATE TABLE IF NOT EXISTS activity_logs (
         id $pk,
@@ -228,6 +230,14 @@ function aruku_db_init(PDO $pdo): void
         created_at $ts
     )");
     aruku_ensure_index($pdo, $driver, false, 'idx_cta_key', 'cta_clicks', 'cta_key, id');
+
+    // ページビュー計測（1PV1行のイベントログ。集計はGROUP BY/COUNTで行う）
+    $pdo->exec("CREATE TABLE IF NOT EXISTS page_views (
+        id $pk,
+        path VARCHAR(190) NOT NULL DEFAULT '',
+        created_at $ts
+    )");
+    aruku_ensure_index($pdo, $driver, false, 'idx_pv_path', 'page_views', 'path');
 
     // 集計・取得を速く（存在しなければ作成）
     aruku_ensure_index($pdo, $driver, false, 'idx_logs_member_date', 'activity_logs', 'member_id, log_date');

@@ -462,3 +462,15 @@
     true
   );
 })();
+
+/* ページビュー（PV）の軽量計測。各ページ読み込み時に1回 /track.php へ送る（自前・Cookie不要）。 */
+(function () {
+  try {
+    var data = new URLSearchParams({ pv: location.pathname });
+    if (navigator.sendBeacon) {
+      navigator.sendBeacon("/track.php", data);
+    } else {
+      fetch("/track.php", { method: "POST", body: data, keepalive: true });
+    }
+  } catch (e) {}
+})();

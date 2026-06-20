@@ -307,6 +307,86 @@ function aruku_calc_kcal(string $activity, float $weight, int $minutes, string $
     return $met * $weight * ($minutes / 60) * 1.05 * $sexF;
 }
 
+/* ===== 月間あるくチャレンジ（消費カロリーのランキング・バッジ） ===== */
+
+/** 当月チャレンジの目標（合計消費kcal）。達成でバッジ付与。 */
+function ranking_monthly_target(): int { return 3000; }
+
+/** 当月の集計範囲を返す：[開始日, 翌月初日, 'Y-m', '◯月']。 */
+function ranking_month_bounds(): array
+{
+    $start = date('Y-m-01');
+    $next  = date('Y-m-01', strtotime('first day of next month'));
+    return [$start, $next, date('Y-m'), ((int) date('n')) . '月'];
+}
+
+/** ランキング参加フラグの ON/OFF を保存。 */
+function ranking_optin_set(int $memberId, bool $on): void
+{
+    aruku_db()->prepare('UPDATE members SET ranking_optin = ? WHERE id = ?')->execute([$on ? 1 : 0, $memberId]);
+}
+
+/** 当月の上位（オプトイン会員のみ・合計kcal降順）。 */
+function ranking_top(string $start, string $next, int $limit = 100): array
+{
+    $limit = max(1, min(500, $limit));
+    $st = aruku_db()->prepare(
+        'SELECT m.id AS id, m.nickname AS nickname, COALESCE(SUM(a.kcal),0) AS kcal
+         FROM members m JOIN activity_logs a ON a.member_id = m.id
+         WHERE m.ranking_optin = 1 AND a.log_date >= ? AND a.log_date < ?
+         GROUP BY m.id, m.nickname
+         HAVING COALESCE(SUM(a.kcal),0) > 0
+         ORDER BY kcal DESC, m.id ASC
+         LIMIT ' . $limit
+    );
+    $st->execute([$start, $next]);
+    return $st->fetchAll();
+}
+
+/** 自分の当月kcal・順位・参加者数を返す（順位はオプトイン母集団での順位）。 */
+function ranking_my_stats(int $memberId, string $start, string $next): array
+{
+    $st = aruku_db()->prepare('SELECT COALESCE(SUM(kcal),0) FROM activity_logs WHERE member_id = ? AND log_date >= ? AND log_date < ?');
+    $st->execute([$memberId, $start, $next]);
+    $mine = (float) $st->fetchColumn();
+
+    $st2 = aruku_db()->prepare(
+        'SELECT COUNT(*) FROM (SELECT m.id FROM members m JOIN activity_logs a ON a.member_id = m.id
+         WHERE m.ranking_optin = 1 AND a.log_date >= ? AND a.log_date < ? GROUP BY m.id HAVING SUM(a.kcal) > 0) t'
+    );
+    $st2->execute([$start, $next]);
+    $participants = (int) $st2->fetchColumn();
+
+    $rank = null;
+    if ($mine > 0) {
+        // しきい値は数値リテラルとして埋め込む（自前の計算値）。
+        // execute() で渡すと文字列バインドされ、SQLiteで「数値 > 文字列」が常に偽になるため。
+        $st3 = aruku_db()->prepare(
+            'SELECT COUNT(*) FROM (SELECT m.id FROM members m JOIN activity_logs a ON a.member_id = m.id
+             WHERE m.ranking_optin = 1 AND a.log_date >= ? AND a.log_date < ? GROUP BY m.id HAVING SUM(a.kcal) > ' . (float) $mine . ') t'
+        );
+        $st3->execute([$start, $next]);
+        $rank = (int) $st3->fetchColumn() + 1;
+    }
+    return ['kcal' => $mine, 'rank' => $rank, 'participants' => $participants];
+}
+
+/** 当月kcalが目標達成なら今月のチャレンジバッジを付与。達成済み/付与で true。 */
+function ranking_award_badge_if_earned(int $memberId, string $ym, float $kcal): bool
+{
+    if ($kcal < ranking_monthly_target()) {
+        return false;
+    }
+    $key = 'challenge-' . $ym;
+    $db = aruku_db();
+    $chk = $db->prepare('SELECT 1 FROM member_badges WHERE member_id = ? AND badge_key = ?');
+    $chk->execute([$memberId, $key]);
+    if (!$chk->fetchColumn()) {
+        try { $db->prepare('INSERT INTO member_badges (member_id, badge_key) VALUES (?, ?)')->execute([$memberId, $key]); } catch (\Throwable $e) {}
+    }
+    return true;
+}
+
 /* ===== 会員ページの共通レイアウト（render.php の head/footer を流用） ===== */
 
 function member_render_page(string $prefix, string $title, string $bodyHtml, array $opts = []): void
@@ -326,7 +406,7 @@ function member_render_page(string $prefix, string $title, string $bodyHtml, arr
         : '<nav class="column-breadcrumb" aria-label="パンくず"><a href="' . $prefix . 'index.html">トップ</a> ／ <span>' . h($title) . '</span></nav>';
     echo '<main class="member-wrap">' . $crumb . $bodyHtml . '</main>';
     echo footer_html($prefix);
-    echo '<script src="' . $prefix . 'assets/app.js?v=20260610" defer></script></body></html>';
+    echo '<script src="' . $prefix . 'assets/app.js?v=20260620b" defer></script></body></html>';
 }
 
 if (!function_exists('h')) {

@@ -251,6 +251,14 @@ img, svg { max-width: 100%; }
 .lp-cta-actions { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; }
 .lp-cta-note { color: rgba(255,255,255,.8); font-size: .85rem; margin: 18px 0 0; }
 
+/* フッター内に統合した最下部CTA（独立帯をやめ、緑フッターの上部に一体化） */
+.lp-footer-cta { text-align: center; padding: 6px 0 30px; margin: 0 auto 26px; border-bottom: 1px solid rgba(255,255,255,.18); }
+.lp-footer-cta-in { max-width: 680px; margin: 0 auto; }
+.lp-footer-cta-title { color: #fff; font-size: clamp(1.3rem, 3.4vw, 1.85rem); font-weight: 800; margin: 0 0 12px; letter-spacing: -.01em; }
+.lp-footer-cta-sub { color: rgba(255,255,255,.92); line-height: 1.8; margin: 0 0 18px; font-size: .94rem; }
+.lp-footer-cta-actions { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
+.lp-footer-cta-note { color: rgba(255,255,255,.8); font-size: .82rem; margin: 14px 0 0; }
+
 /* モバイル追従CTAバー */
 .mobile-cta-bar { display: none; }
 @media (max-width: 880px) {
@@ -644,6 +652,66 @@ table.kcal-ideal .kcal-unit { font-weight: 500; color: var(--ink-2); font-size: 
 .calorie-panel .column-table th,
 .calorie-panel .column-table td { border-color: var(--forest-300); }
 .calorie-panel .calorie-panel-top { border-bottom-color: var(--forest-300); }
+/* トップ早見表：1日の目標「10,000歩」行を強調（この行だけ inline style 付き） */
+.calorie-feature .calorie-panel .column-table tbody tr[style] {
+  background: var(--forest-100) !important;
+  box-shadow: inset 4px 0 0 0 var(--forest-500);
+}
+.calorie-feature .calorie-panel .column-table tbody tr[style] td {
+  color: var(--forest-800);
+  font-weight: 800;
+  font-size: 1.06em;
+}
+.calorie-feature .calorie-panel .column-table tbody tr[style] td:first-child::after {
+  content: "🎯 定番の目標";
+  display: inline-block;
+  margin-left: 6px;
+  padding: 1px 8px;
+  background: var(--forest-700);
+  color: #fff;
+  font-size: .64rem;
+  font-weight: 800;
+  border-radius: 999px;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+/* 国の歩数目標＋公的施策ブロック（トップ） */
+.gov-target { margin: 22px 0 0; padding: 20px 22px; background: var(--forest-100); border: 1px solid var(--forest-300); border-radius: 16px; }
+.gov-target-title { margin: 0 0 6px; font-size: 1.12rem; font-weight: 800; color: var(--forest-800); }
+.gov-target-lead { margin: 0 0 14px; color: var(--ink-2); line-height: 1.8; font-size: .94rem; }
+.gov-target-grid { display: flex; flex-wrap: wrap; gap: 12px; }
+.gov-target-card { flex: 1 1 160px; background: #fff; border: 1px solid var(--forest-300); border-radius: 12px; padding: 14px 16px; text-align: center; }
+.gov-target-num { display: block; font-size: 1.7rem; font-weight: 800; color: var(--forest-700); line-height: 1.2; }
+.gov-target-num small { font-size: .55em; font-weight: 700; color: var(--ink-2); margin-left: 2px; }
+.gov-target-label { display: block; margin-top: 4px; font-size: .9rem; font-weight: 700; color: var(--ink); }
+.gov-target-note { margin: 14px 0 0; color: var(--ink-2); line-height: 1.85; font-size: .9rem; }
+.gov-target-links { margin: 12px 0 0; font-size: .84rem; color: var(--ink-2); display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; }
+.gov-target-links a { color: var(--forest-700); font-weight: 700; }
+.gov-target-more { margin: 14px 0 0; }
+.gov-target-more a { font-weight: 800; color: var(--forest-700); }
+
+/* 月間あるくチャレンジ（ランキング） */
+.rank-optin { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; justify-content: space-between; background: var(--forest-100); border: 1px solid var(--forest-300); border-radius: 14px; padding: 16px 18px; margin: 18px 0 0; }
+.rank-optin-left { flex: 1 1 280px; }
+.rank-optin-title { font-weight: 800; color: var(--forest-800); }
+.rank-optin-note { margin: 6px 0 0; font-size: .85rem; color: var(--ink-2); line-height: 1.7; }
+.rank-status { display: inline-block; margin-left: 8px; font-size: .76rem; font-weight: 800; padding: 1px 8px; border-radius: 999px; vertical-align: middle; }
+.rank-status--on { background: var(--forest-700); color: #fff; }
+.rank-status--off { background: #e6e6e6; color: #777; }
+.rank-mycard { margin: 16px 0 0; padding: 16px 18px; background: #fff; border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow-sm); }
+.rank-mycard--off { color: var(--ink-2); line-height: 1.85; }
+.rank-mycard-row { display: flex; justify-content: space-between; align-items: baseline; padding: 6px 0; }
+.rank-mycard-row b { font-size: 1.25rem; color: var(--forest-700); }
+.rank-progress { height: 10px; background: var(--forest-100); border-radius: 999px; overflow: hidden; margin: 10px 0 8px; }
+.rank-progress-bar { height: 100%; background: linear-gradient(90deg, var(--forest-500), var(--forest-700)); border-radius: 999px; transition: width .4s; }
+.rank-mycard-foot { display: flex; justify-content: space-between; gap: 12px; font-size: .85rem; color: var(--ink-2); }
+.rank-badge-won { color: var(--forest-700); font-weight: 800; }
+.rank-table td, .rank-table th { vertical-align: middle; }
+.rank-table .rank-no { width: 3em; text-align: center; font-weight: 800; font-size: 1.05rem; }
+.rank-table .rank-kcal { text-align: right; font-weight: 700; color: var(--forest-700); white-space: nowrap; }
+.rank-table tr.rank-me { background: var(--forest-100); }
+.rank-you { display: inline-block; font-size: .7rem; font-weight: 800; background: var(--forest-700); color: #fff; border-radius: 999px; padding: 1px 7px; margin-left: 6px; }
+.rank-empty { text-align: center; color: var(--ink-2); padding: 20px 8px; }
 @media (max-width: 600px) {
   .calorie-panel { padding: 20px 16px 22px; }
   .calorie-panel-top { gap: 14px; }
@@ -986,7 +1054,7 @@ table.kcal-ideal .kcal-unit { font-weight: 500; color: var(--ink-2); font-size: 
 
 /* トップ上部：あるくとは／FAQ への誘導ボックス（calomeal風） */
 .info-nav-section { max-width: var(--maxw); margin: 0 auto; padding: 28px 24px 0; }
-.info-nav { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.info-nav { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
 .info-nav-card {
   display: flex; align-items: center; justify-content: center; gap: 12px;
   background: var(--forest-700); border: 1.5px solid var(--forest-700);

@@ -20,6 +20,8 @@ function cta_labels(): array
         'mobile_register' => 'モバイル追従バー：無料で始める',
         'nav_register'    => 'ヘッダー：無料ではじめる',
         'nav_login'       => 'ヘッダー：ログイン',
+        'tools_register'  => '歩くツール集：無料で記録を始める',
+        'courses_register' => 'コースガイド：無料で記録を始める',
     ];
 }
 

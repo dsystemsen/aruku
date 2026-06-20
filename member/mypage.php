@@ -218,6 +218,11 @@ $body = <<<HTML
   <span class="total-sub">記録 {$days} 日 ／ {$cnt} 件</span>
 </div>
 
+<div class="calc-cta" style="margin-top:20px;">
+  <p class="calc-cta-lead">🏆 <b>月間あるくチャレンジ</b>：今月の消費カロリーで、みんなとランキング！目標達成でバッジも獲得できます。</p>
+  <a href="ranking.php" class="lp-btn lp-btn-primary">ランキングを見る →</a>
+</div>
+
 $msgHtml
 $errHtml
 
