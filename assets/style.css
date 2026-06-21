@@ -104,6 +104,7 @@ img, svg { max-width: 100%; }
   align-items: center;
   justify-content: space-between;
   gap: 16px;
+  transition: padding .28s ease;
 }
 .lp-nav-links { margin-left: auto; }
 .lp-brand {
@@ -113,28 +114,43 @@ img, svg { max-width: 100%; }
   text-decoration: none;
   color: var(--ink);
 }
-.lp-brand img { width: 66px; height: 66px; }
+.lp-brand img { width: 64px; height: 64px; transition: width .28s ease, height .28s ease; }
 .lp-brand-text {
   display: inline-flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  line-height: 1.05;
+  line-height: 1.02;
 }
+/* タグライン＝編集誌のキッカー（字間を効かせた小見出し） */
 .lp-brand-tagline {
-  font-size: .74rem;
+  font-size: .58rem;
   font-weight: 700;
-  color: var(--forest-700);
-  letter-spacing: .01em;
-  margin-bottom: 2px;
+  color: var(--forest-500);
+  letter-spacing: .34em;
+  text-indent: .34em;            /* 字間ぶんを中央に補正 */
+  margin-bottom: 3px;
+  text-transform: none;
 }
 .lp-brand-name {
   font-family: var(--font-label);
   font-weight: 600;
-  font-size: 1.6rem;
-  letter-spacing: -.01em;
+  font-size: 1.62rem;
+  letter-spacing: .02em;
   color: var(--forest-700);
+  transition: color .2s;
 }
+.lp-brand:hover .lp-brand-name { color: var(--forest-800); }
+.lp-brand:hover .lp-brand-tagline { color: var(--forest-700); }
+
+/* ログイン状態でヘッダーのアクションを出し分け */
+.lp-nav[data-auth="out"] .nav-when-in { display: none !important; }
+.lp-nav[data-auth="in"]  .nav-when-out { display: none !important; }
+
+/* スクロールでヘッダーを引き締め（影＋わずかに縮む＝上質なマイクロ挙動） */
+.lp-nav.is-scrolled { box-shadow: 0 8px 28px -16px rgba(15,94,63,.4); border-bottom-color: transparent; }
+.lp-nav.is-scrolled .lp-nav-inner { padding-top: 12px; padding-bottom: 12px; }
+.lp-nav.is-scrolled .lp-brand img { width: 50px; height: 50px; }
 .lp-nav-links {
   display: flex;
   align-items: center;

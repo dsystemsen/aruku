@@ -474,3 +474,15 @@
     }
   } catch (e) {}
 })();
+
+/* ヘッダー：スクロールで引き締め（影＋わずかに縮小）。.lp-nav に .is-scrolled を付与。 */
+(function () {
+  var nav = document.querySelector(".lp-nav");
+  if (!nav) { return; }
+  function onScroll() {
+    if (window.scrollY > 8) { nav.classList.add("is-scrolled"); }
+    else { nav.classList.remove("is-scrolled"); }
+  }
+  onScroll();
+  window.addEventListener("scroll", onScroll, { passive: true });
+})();
