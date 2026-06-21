@@ -143,10 +143,10 @@ function nav_html(string $prefix): string
     return <<<HTML
 <nav class="lp-nav" data-auth="{$authAttr}">
   <div class="lp-nav-inner">
-    <a href="{$prefix}index.html" class="lp-brand"><img src="{$prefix}assets/logo.svg?v=20260621e" alt="あるくロゴ"><span class="lp-brand-text"><span class="lp-brand-tagline">歩くことで健康に</span><span class="lp-brand-name">あるく</span></span></a>
+    <a href="{$prefix}index.html" class="lp-brand"><img src="{$prefix}assets/logo.svg?v=20260621f" alt="あるくロゴ"><span class="lp-brand-text"><span class="lp-brand-tagline">歩くことで健康に</span><span class="lp-brand-name">あるく</span></span></a>
     <div class="lp-nav-links">
       {$adminLink}<a href="{$prefix}member/mypage.php" class="lp-nav-ghost nav-when-in">マイページ</a>
-      <a href="{$prefix}member/register.php" class="lp-nav-join nav-when-out" data-cta="nav_register">無料ではじめる</a>
+      <a href="{$prefix}member/register.php" class="lp-nav-join nav-when-out" data-cta="nav_register"><svg class="lp-join-ico" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13.5 5.5c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zM9.8 8.9 7 23h2.1l1.8-8 2.1 2v6h2v-7.5l-2.1-2 .6-3C14.8 12 16.8 13 19 13v-2c-1.9 0-3.5-1-4.3-2.4l-1-1.6c-.4-.6-1-1-1.7-1-.3 0-.5.1-.8.1L6 8.3V13h2V9.6l1.8-.7z"/></svg><span>無料ではじめる</span></a>
       <a href="{$prefix}member/login.php" class="lp-nav-icon nav-when-out" data-cta="nav_login" aria-label="ログイン" title="ログイン"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.6"/><path d="M5 20c0-3.7 3.1-6.2 7-6.2s7 2.5 7 6.2"/></svg></a>
       <a href="{$prefix}member/logout.php" class="lp-nav-logout nav-when-in">ログアウト</a>
     </div>
@@ -163,7 +163,7 @@ function footer_html(string $prefix, string $ctaHtml = ''): string
   {$ctaHtml}
   <div class="lp-footer-inner">
     <div>
-      <div class="lp-footer-brand"><img src="{$prefix}assets/logo.svg?v=20260621e" alt="あるく ロゴ">あるく</div>
+      <div class="lp-footer-brand"><img src="{$prefix}assets/logo.svg?v=20260621f" alt="あるく ロゴ">あるく</div>
       <p class="lp-footer-tagline">{$s['tagline']}</p>
     </div>
     <nav class="lp-footer-links">
@@ -210,8 +210,8 @@ function head_html(string $prefix, string $title, string $desc, string $canonica
     }
     $rb = '<meta name="robots" content="' . $robotsContent . '">' . "\n";
     // フォントはメイリオ（端末ローカル）を使用するため Web フォントの読込は不要。
-    $css = '<link rel="stylesheet" href="' . $prefix . 'assets/style.css?v=20260621e">' . "\n"
-        . '<link rel="stylesheet" href="' . $prefix . 'assets/column.css?v=20260621e">' . "\n"
+    $css = '<link rel="stylesheet" href="' . $prefix . 'assets/style.css?v=20260621f">' . "\n"
+        . '<link rel="stylesheet" href="' . $prefix . 'assets/column.css?v=20260621f">' . "\n"
         . '<noscript><style>.reveal,.reveal-stagger>*,.hero-anim,.hero-art-anim{opacity:1!important;transform:none!important;animation:none!important}</style></noscript>';
     // meta keywords は Google・各AIともに無視するため出力しない（引数は後方互換で受けるだけ）。
     $kw = '';
@@ -262,7 +262,7 @@ function head_html(string $prefix, string $title, string $desc, string $canonica
 <meta name="twitter:description" content="{$desc}">
 <meta name="twitter:image" content="{$ogp}">
 {$twSite}<meta name="theme-color" content="#29b183">
-{$headExtra}<link rel="icon" type="image/svg+xml" href="{$prefix}assets/logo.svg?v=20260621e">
+{$headExtra}<link rel="icon" type="image/svg+xml" href="{$prefix}assets/logo.svg?v=20260621f">
 {$css}
 {$ld}</head>
 <body>
@@ -562,7 +562,7 @@ function render_article(string $slug): ?string
 </article>
 
 {$footer}
-<script src="../assets/app.js?v=20260621e" defer></script>
+<script src="../assets/app.js?v=20260621f" defer></script>
 </body>
 </html>
 HTML;
@@ -774,7 +774,7 @@ function render_tools(): string
   }
 })();
 </script>
-<script src="assets/app.js?v=20260621e" defer></script>
+<script src="assets/app.js?v=20260621f" defer></script>
 </body>
 </html>
 HTML;
@@ -898,7 +898,7 @@ function render_courses(): string
 </article>
 
 {$footer}
-<script src="assets/app.js?v=20260621e" defer></script>
+<script src="assets/app.js?v=20260621f" defer></script>
 </body>
 </html>
 HTML;
@@ -1209,7 +1209,7 @@ function render_column_index(): string
 </div>
 
 {$footer}
-<script src="../assets/app.js?v=20260621e" defer></script>
+<script src="../assets/app.js?v=20260621f" defer></script>
 </body>
 </html>
 HTML;
@@ -1235,7 +1235,7 @@ function render_category_columns(string $cat): string
             . '<meta name="viewport" content="width=device-width, initial-scale=1">'
             . '<meta name="robots" content="noindex, nofollow">'
             . '<title>ページが見つかりません｜あるく</title>'
-            . '<link rel="stylesheet" href="' . $prefix . 'assets/style.css?v=20260621e"></head><body>'
+            . '<link rel="stylesheet" href="' . $prefix . 'assets/style.css?v=20260621f"></head><body>'
             . '<main style="max-width:640px;margin:14vh auto;padding:0 24px;text-align:center;">'
             . '<h1 style="font-size:1.6rem;margin-bottom:12px;">ページが見つかりません</h1>'
             . '<p style="color:#5d6362;margin-bottom:28px;">お探しのページは削除されました。</p>'
@@ -1311,7 +1311,7 @@ function render_category_columns(string $cat): string
   </div>
 </div>
 {$footer}
-<script src="{$prefix}assets/app.js?v=20260621e" defer></script>
+<script src="{$prefix}assets/app.js?v=20260621f" defer></script>
 </body>
 </html>
 HTML;
@@ -1385,7 +1385,7 @@ function render_editorial_policy(): string
   </div>
 </section>
 {$footer}
-<script src="{$prefix}assets/app.js?v=20260621e" defer></script>
+<script src="{$prefix}assets/app.js?v=20260621f" defer></script>
 </body>
 </html>
 HTML;
@@ -1437,7 +1437,7 @@ function render_search_page(string $q): string
   </div>
 </div>
 {$footer}
-<script src="{$prefix}assets/app.js?v=20260621e" defer></script>
+<script src="{$prefix}assets/app.js?v=20260621f" defer></script>
 </body>
 </html>
 HTML;
@@ -1483,7 +1483,7 @@ function render_aboutaruku(): string
   </div>
 </section>
 {$footer}
-<script src="assets/app.js?v=20260621e" defer></script>
+<script src="assets/app.js?v=20260621f" defer></script>
 </body>
 </html>
 HTML;
@@ -1565,7 +1565,7 @@ function render_faq_page(): string
   </div>
 </section>
 {$footer}
-<script src="assets/app.js?v=20260621e" defer></script>
+<script src="assets/app.js?v=20260621f" defer></script>
 </body>
 </html>
 HTML;
@@ -1657,7 +1657,7 @@ function render_board(): string
   </div>
 </section>
 {$footer}
-<script src="assets/app.js?v=20260621e" defer></script>
+<script src="assets/app.js?v=20260621f" defer></script>
 </body>
 </html>
 HTML;
@@ -2134,7 +2134,7 @@ HTML;
   window.addEventListener('resize',onScroll);
 })();
 </script>
-<script src="assets/app.js?v=20260621e" defer></script>
+<script src="assets/app.js?v=20260621f" defer></script>
 </body>
 </html>
 HTML;
@@ -2348,7 +2348,7 @@ HTML;
 </article>
 
 {$footer}
-<script src="assets/app.js?v=20260621e" defer></script>
+<script src="assets/app.js?v=20260621f" defer></script>
 </body>
 </html>
 HTML;
@@ -2404,7 +2404,7 @@ function render_page(string $key): ?string
 </article>
 
 {$footer}
-<script src="assets/app.js?v=20260621e" defer></script>
+<script src="assets/app.js?v=20260621f" defer></script>
 </body>
 </html>
 HTML;

@@ -196,25 +196,39 @@ img, svg { max-width: 100%; }
 /* 主導線：無料ではじめる（深緑グラデ＋内側ハイライト＋動く矢印） */
 .lp-nav-join {
   position: relative;
-  padding: 10px 22px;
+  overflow: hidden;
+  gap: 7px;
+  padding: 10px 20px;
   border-radius: 12px;
   color: #fff !important;
-  font-weight: 700;
+  font-weight: 800;
   letter-spacing: .04em;
-  background: linear-gradient(135deg, var(--forest-600), var(--forest-800));
-  box-shadow: 0 8px 20px -8px rgba(19,123,88,.55), inset 0 1px 0 rgba(255,255,255,.18);
+  background: linear-gradient(135deg, var(--forest-500) 0%, var(--forest-700) 52%, var(--forest-800) 100%);
+  box-shadow: 0 8px 22px -8px rgba(19,123,88,.6), inset 0 1px 0 rgba(255,255,255,.24), inset 0 0 0 1px rgba(255,255,255,.10);
   transition: transform .2s, box-shadow .2s, filter .2s;
 }
+.lp-join-ico { width: 19px; height: 19px; flex: none; margin-left: -2px; }
+/* 光のスイープ（プレミアムな存在感・ホバーで横切る） */
+.lp-nav-join::before {
+  content: "";
+  position: absolute; top: 0; left: -75%;
+  width: 50%; height: 100%;
+  background: linear-gradient(100deg, transparent, rgba(255,255,255,.5), transparent);
+  transform: skewX(-18deg);
+  transition: left .6s cubic-bezier(.4, 0, .2, 1);
+  pointer-events: none;
+}
+.lp-nav-join:hover::before { left: 140%; }
 .lp-nav-join::after {
   content: "→";
-  margin-left: 8px;
+  margin-left: 2px;
   display: inline-block;
   transition: transform .2s;
 }
 .lp-nav-join:hover {
   transform: translateY(-2px);
-  box-shadow: 0 14px 28px -10px rgba(19,123,88,.6), inset 0 1px 0 rgba(255,255,255,.28);
-  filter: saturate(1.05) brightness(1.03);
+  box-shadow: 0 16px 30px -10px rgba(19,123,88,.66), inset 0 1px 0 rgba(255,255,255,.32), inset 0 0 0 1px rgba(255,255,255,.16);
+  filter: saturate(1.06) brightness(1.04);
 }
 .lp-nav-join:hover::after { transform: translateX(4px); }
 .lp-nav-join:active { transform: translateY(0); }
