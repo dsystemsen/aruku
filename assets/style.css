@@ -110,38 +110,50 @@ img, svg { max-width: 100%; }
 .lp-brand {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 13px;
   text-decoration: none;
   color: var(--ink);
 }
-.lp-brand img { width: 64px; height: 64px; transition: width .28s ease, height .28s ease; }
+.lp-brand img { width: 62px; height: 62px; transition: width .28s ease, height .28s ease; }
 .lp-brand-text {
   display: inline-flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
-  line-height: 1.02;
+  align-items: flex-start;        /* 左揃え＝意図的なマストヘッド組み */
+  line-height: 1;
 }
-/* タグライン＝編集誌のキッカー（字間を効かせた小見出し） */
+/* タグライン＝編集誌のキッカー（先頭にアクセント罫を引いた部門名風の小見出し） */
 .lp-brand-tagline {
-  font-size: .58rem;
-  font-weight: 700;
-  color: var(--forest-500);
-  letter-spacing: .34em;
-  text-indent: .34em;            /* 字間ぶんを中央に補正 */
-  margin-bottom: 3px;
-  text-transform: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: .56rem;
+  font-weight: 800;
+  color: var(--forest-600);
+  letter-spacing: .24em;
+  margin-bottom: 5px;
 }
+.lp-brand-tagline::before {
+  content: "";
+  width: 16px; height: 1.5px;
+  border-radius: 2px;
+  background: var(--clay-500);     /* 温かみのあるアクセント罫 */
+  transition: width .25s ease, background .2s;
+}
+/* 誌名「あるく」＝マストヘッド */
 .lp-brand-name {
   font-family: var(--font-label);
   font-weight: 600;
-  font-size: 1.62rem;
-  letter-spacing: .02em;
-  color: var(--forest-700);
+  font-size: 1.82rem;
+  letter-spacing: .07em;
+  color: var(--forest-800);
+  line-height: 1;
   transition: color .2s;
 }
-.lp-brand:hover .lp-brand-name { color: var(--forest-800); }
+.lp-brand:hover .lp-brand-name { color: var(--forest-700); }
 .lp-brand:hover .lp-brand-tagline { color: var(--forest-700); }
+.lp-brand:hover .lp-brand-tagline::before { width: 24px; background: var(--clay-600); }
+.lp-nav.is-scrolled .lp-brand-name { font-size: 1.66rem; }
 
 /* ログイン状態でヘッダーのアクションを出し分け */
 .lp-nav[data-auth="out"] .nav-when-in { display: none !important; }
@@ -272,6 +284,15 @@ img, svg { max-width: 100%; }
   .lp-nav-inner { padding: 12px 18px; }
   .lp-nav-links { gap: 16px; font-size: .85rem; }
   .lp-nav-links a.lp-nav-hide-sp { display: none; }
+  .lp-brand { gap: 11px; }
+  .lp-brand img { width: 50px; height: 50px; }
+  .lp-brand-name { font-size: 1.5rem; letter-spacing: .05em; }
+  .lp-brand-tagline { font-size: .52rem; letter-spacing: .2em; gap: 6px; margin-bottom: 4px; }
+  .lp-brand-tagline::before { width: 12px; }
+}
+@media (max-width: 400px) {
+  .lp-brand-tagline { display: none; }   /* 極小幅では誌名のみで詰まりを回避 */
+  .lp-brand img { width: 44px; height: 44px; }
 }
 
 /* ===== ボタン ===== */
