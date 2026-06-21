@@ -174,6 +174,7 @@ function footer_html(string $prefix, string $ctaHtml = ''): string
       <a href="{$prefix}about.html">運営者情報</a>
       <a href="{$prefix}privacy.html">プライバシーポリシー</a>
       <a href="{$prefix}editorial-policy.html">編集・監修ポリシー</a>
+      <a href="https://www.dsystemsen.com/contact/" target="_blank" rel="noopener">お問い合わせ</a>
       <a href="{$s['org_url']}" target="_blank" rel="noopener">🏢 運営会社</a>
     </nav>
   </div>
@@ -488,6 +489,20 @@ function render_article(string $slug): ?string
         . '<a href="' . $sup['url'] . '" target="_blank" rel="noopener" class="column-author-link">監修者の所属を見る →</a>'
         . '</div>';
 
+    // 参考・出典（健康・運動・栄養カテゴリのみ。公的機関の一次情報を明示してE-E-A-T強化）
+    $sources = '';
+    if (in_array($article['cat'], ['koka', 'calorie', 'howto'], true)) {
+        $sources = '<section class="column-section column-sources">'
+            . '<h2>参考・出典</h2>'
+            . '<p>本記事は、主に次の公的機関の情報を参考に、' . $sup['cred'] . '監修のもと編集部が作成しています。数値や目安は一般的な知見に基づくもので、個人差があります。</p>'
+            . '<ul>'
+            . '<li><a href="https://www.e-healthnet.mhlw.go.jp/" target="_blank" rel="noopener nofollow">厚生労働省 e-ヘルスネット</a></li>'
+            . '<li><a href="https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/kenkou_iryou/kenkou/kenkounippon21_00006.html" target="_blank" rel="noopener nofollow">厚生労働省 健康日本21（第三次）</a></li>'
+            . '<li><a href="https://www.smartlife.mhlw.go.jp/" target="_blank" rel="noopener nofollow">スマート・ライフ・プロジェクト（厚生労働省）</a></li>'
+            . '</ul>'
+            . '</section>';
+    }
+
     $body = <<<HTML
 <article class="column-article">
   <header class="column-header">
@@ -531,6 +546,8 @@ function render_article(string $slug): ?string
   {$faq}
 
   {$related}
+
+  {$sources}
 
   <section class="column-section column-conclusion">
     <h2>歩く習慣を、もっと深く知る</h2>
