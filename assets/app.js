@@ -475,14 +475,24 @@
   } catch (e) {}
 })();
 
-/* ヘッダー：スクロールで引き締め（影＋わずかに縮小）。.lp-nav に .is-scrolled を付与。 */
+/* ヘッダー：スクロールで引き締め（影＋わずかに縮小）。.lp-nav に .is-scrolled を付与。
+   ヘッダーが縮むと sticky のレイアウトが詰まり、しきい値付近で scrollY が往復して
+   震える（ブレる）ため、ヒステリシス（付与=80px超／解除=20px未満のデッドゾーン）＋
+   requestAnimationFrame の間引きで安定化する。 */
 (function () {
   var nav = document.querySelector(".lp-nav");
   if (!nav) { return; }
-  function onScroll() {
-    if (window.scrollY > 8) { nav.classList.add("is-scrolled"); }
-    else { nav.classList.remove("is-scrolled"); }
+  var ADD = 80, REMOVE = 20, ticking = false;
+  function update() {
+    ticking = false;
+    var y = window.pageYOffset || document.documentElement.scrollTop || 0;
+    var on = nav.classList.contains("is-scrolled");
+    if (!on && y > ADD) { nav.classList.add("is-scrolled"); }
+    else if (on && y < REMOVE) { nav.classList.remove("is-scrolled"); }
   }
-  onScroll();
+  function onScroll() {
+    if (!ticking) { ticking = true; requestAnimationFrame(update); }
+  }
+  update();
   window.addEventListener("scroll", onScroll, { passive: true });
 })();
