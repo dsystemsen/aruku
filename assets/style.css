@@ -712,6 +712,19 @@ table.kcal-ideal .kcal-unit { font-weight: 500; color: var(--ink-2); font-size: 
 .rank-table tr.rank-me { background: var(--forest-100); }
 .rank-you { display: inline-block; font-size: .7rem; font-weight: 800; background: var(--forest-700); color: #fff; border-radius: 999px; padding: 1px 7px; margin-left: 6px; }
 .rank-empty { text-align: center; color: var(--ink-2); padding: 20px 8px; }
+
+/* 監修（管理栄養士）表示 — YMYL E-E-A-T */
+.column-supervised { display: inline-flex; align-items: center; background: var(--forest-100); color: var(--forest-800); font-weight: 800; font-size: .78rem; padding: 2px 10px; border-radius: 999px; }
+.column-supervisor { margin: 16px 0 4px; padding: 14px 16px; background: var(--forest-100); border: 1px solid var(--forest-300); border-radius: 12px; }
+.column-supervisor-head { font-weight: 800; color: var(--forest-800); margin-bottom: 6px; }
+.column-supervisor-bio { margin: 0 0 8px; font-size: .9rem; color: var(--ink-2); line-height: 1.8; }
+.hero-trust { margin: 10px 0 0; color: rgba(255,255,255,.95); font-size: .9rem; font-weight: 700; }
+.hero-trust strong { color: #ffe08a; }
+.supervisor-card { display: flex; gap: 14px; align-items: flex-start; margin: 18px 0 24px; padding: 16px 18px; background: var(--forest-100); border: 1px solid var(--forest-300); border-radius: 14px; }
+.supervisor-card-badge { flex: none; font-weight: 800; color: #fff; background: var(--forest-700); border-radius: 10px; padding: 8px 12px; font-size: .9rem; }
+.supervisor-card-name { font-size: 1.05rem; color: var(--ink); margin-bottom: 4px; }
+.supervisor-card-name small { color: var(--ink-2); font-weight: 600; }
+.supervisor-card-bio { margin: 0 0 8px; color: var(--ink-2); line-height: 1.85; font-size: .94rem; }
 @media (max-width: 600px) {
   .calorie-panel { padding: 20px 16px 22px; }
   .calorie-panel-top { gap: 14px; }

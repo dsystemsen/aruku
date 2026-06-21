@@ -41,6 +41,22 @@ function site(): array
 }
 
 // ============================================================
+// 監修者（YMYL健康情報のE-E-A-T）— 全記事・ポリシー・構造化データで共有
+// ============================================================
+function aruku_supervisor(): array
+{
+    return [
+        'name'  => '安達 奈緒子',
+        'kana'  => 'あだち なおこ',
+        'cred'  => '管理栄養士',
+        'title' => 'ヘルスケア事業部 栄養管理責任者',
+        'years' => 20,
+        'bio'   => '病院に20年間勤務した管理栄養士。臨床現場で培った栄養管理の知見をもとに、本サイトの健康・栄養・カロリーに関する情報を監修しています。',
+        'url'   => 'https://www.dsystemsen.com/company/message/',
+    ];
+}
+
+// ============================================================
 // データ読み込み & カテゴリ内インデックス（連番・前後記事）
 // build.py の index_articles() 相当。1度だけ計算してキャッシュ。
 // ============================================================
@@ -127,7 +143,7 @@ function nav_html(string $prefix): string
     return <<<HTML
 <nav class="lp-nav" data-auth="{$authAttr}">
   <div class="lp-nav-inner">
-    <a href="{$prefix}index.html" class="lp-brand"><img src="{$prefix}assets/logo.svg?v=20260621a" alt="あるくロゴ"><span class="lp-brand-text"><span class="lp-brand-tagline">-歩くことで健康に-</span><span class="lp-brand-name">あるく</span></span></a>
+    <a href="{$prefix}index.html" class="lp-brand"><img src="{$prefix}assets/logo.svg?v=20260621b" alt="あるくロゴ"><span class="lp-brand-text"><span class="lp-brand-tagline">-歩くことで健康に-</span><span class="lp-brand-name">あるく</span></span></a>
     <div class="lp-nav-links">
       {$adminLink}<a href="{$prefix}member/mypage.php" class="lp-nav-cta">マイページ</a>
       <a href="{$prefix}member/register.php" class="lp-nav-cta" data-cta="nav_register">無料ではじめる</a>
@@ -147,7 +163,7 @@ function footer_html(string $prefix, string $ctaHtml = ''): string
   {$ctaHtml}
   <div class="lp-footer-inner">
     <div>
-      <div class="lp-footer-brand"><img src="{$prefix}assets/logo.svg?v=20260621a" alt="あるく ロゴ">あるく</div>
+      <div class="lp-footer-brand"><img src="{$prefix}assets/logo.svg?v=20260621b" alt="あるく ロゴ">あるく</div>
       <p class="lp-footer-tagline">{$s['tagline']}</p>
     </div>
     <nav class="lp-footer-links">
@@ -193,8 +209,8 @@ function head_html(string $prefix, string $title, string $desc, string $canonica
     }
     $rb = '<meta name="robots" content="' . $robotsContent . '">' . "\n";
     // フォントはメイリオ（端末ローカル）を使用するため Web フォントの読込は不要。
-    $css = '<link rel="stylesheet" href="' . $prefix . 'assets/style.css?v=20260621a">' . "\n"
-        . '<link rel="stylesheet" href="' . $prefix . 'assets/column.css?v=20260621a">' . "\n"
+    $css = '<link rel="stylesheet" href="' . $prefix . 'assets/style.css?v=20260621b">' . "\n"
+        . '<link rel="stylesheet" href="' . $prefix . 'assets/column.css?v=20260621b">' . "\n"
         . '<noscript><style>.reveal,.reveal-stagger>*,.hero-anim,.hero-art-anim{opacity:1!important;transform:none!important;animation:none!important}</style></noscript>';
     // meta keywords は Google・各AIともに無視するため出力しない（引数は後方互換で受けるだけ）。
     $kw = '';
@@ -245,7 +261,7 @@ function head_html(string $prefix, string $title, string $desc, string $canonica
 <meta name="twitter:description" content="{$desc}">
 <meta name="twitter:image" content="{$ogp}">
 {$twSite}<meta name="theme-color" content="#29b183">
-{$headExtra}<link rel="icon" type="image/svg+xml" href="{$prefix}assets/logo.svg?v=20260621a">
+{$headExtra}<link rel="icon" type="image/svg+xml" href="{$prefix}assets/logo.svg?v=20260621b">
 {$css}
 {$ld}</head>
 <body>
@@ -405,6 +421,13 @@ function render_article(string $slug): ?string
                 'worksFor' => ['@type' => 'Organization', 'name' => $s['org'], 'url' => $s['org_url']],
                 'url'      => $s['url'] . '/about.html',
             ],
+            'reviewedBy'  => [
+                '@type'    => 'Person',
+                'name'     => aruku_supervisor()['name'],
+                'jobTitle' => aruku_supervisor()['cred'],
+                'worksFor' => ['@type' => 'Organization', 'name' => $s['org'], 'url' => $s['org_url']],
+                'url'      => aruku_supervisor()['url'],
+            ],
             'publisher' => [
                 '@type' => 'Organization',
                 'name'  => 'あるく',
@@ -456,6 +479,15 @@ function render_article(string $slug): ?string
     $author_role = $s['author_role'];
     $cat_back    = $article['cat']; // 「コラム一覧」戻り先＝同カテゴリのページ
 
+    // 監修（管理栄養士）— ヘッダーのバイライン＋著者欄の監修ブロック
+    $sup = aruku_supervisor();
+    $sup_byline = '<span class="column-supervised">🩺 ' . $sup['cred'] . '監修</span>';
+    $sup_box = '<div class="column-supervisor">'
+        . '<div class="column-supervisor-head">🩺 監修： <strong>' . $sup['name'] . '</strong>（' . $sup['cred'] . '）</div>'
+        . '<p class="column-supervisor-bio">' . $sup['bio'] . '</p>'
+        . '<a href="' . $sup['url'] . '" target="_blank" rel="noopener" class="column-author-link">監修者の所属を見る →</a>'
+        . '</div>';
+
     $body = <<<HTML
 <article class="column-article">
   <header class="column-header">
@@ -468,6 +500,7 @@ function render_article(string $slug): ?string
       <span class="column-cat-tag">{$catemoji} {$catname}</span>
       <span>公開日: {$date_ja}</span>
       <span>所要時間: 約{$read}分</span>
+      {$sup_byline}
     </div>
     <p class="column-lead">{$lead}</p>
   </header>
@@ -491,6 +524,7 @@ function render_article(string $slug): ?string
     <div class="column-author-name">執筆: <strong>{$author}</strong></div>
     <div class="column-author-role">{$author_role}</div>
     <p class="column-author-bio">健康・ITに関する情報を分かりやすく届けることを目指し、aruku を企画・運営しています。</p>
+    {$sup_box}
     <a href="../about.html" class="column-author-link">運営者情報を見る →</a>
   </aside>
 
@@ -511,7 +545,7 @@ function render_article(string $slug): ?string
 </article>
 
 {$footer}
-<script src="../assets/app.js?v=20260621a" defer></script>
+<script src="../assets/app.js?v=20260621b" defer></script>
 </body>
 </html>
 HTML;
@@ -723,7 +757,7 @@ function render_tools(): string
   }
 })();
 </script>
-<script src="assets/app.js?v=20260621a" defer></script>
+<script src="assets/app.js?v=20260621b" defer></script>
 </body>
 </html>
 HTML;
@@ -847,7 +881,7 @@ function render_courses(): string
 </article>
 
 {$footer}
-<script src="assets/app.js?v=20260621a" defer></script>
+<script src="assets/app.js?v=20260621b" defer></script>
 </body>
 </html>
 HTML;
@@ -1158,7 +1192,7 @@ function render_column_index(): string
 </div>
 
 {$footer}
-<script src="../assets/app.js?v=20260621a" defer></script>
+<script src="../assets/app.js?v=20260621b" defer></script>
 </body>
 </html>
 HTML;
@@ -1184,7 +1218,7 @@ function render_category_columns(string $cat): string
             . '<meta name="viewport" content="width=device-width, initial-scale=1">'
             . '<meta name="robots" content="noindex, nofollow">'
             . '<title>ページが見つかりません｜あるく</title>'
-            . '<link rel="stylesheet" href="' . $prefix . 'assets/style.css?v=20260621a"></head><body>'
+            . '<link rel="stylesheet" href="' . $prefix . 'assets/style.css?v=20260621b"></head><body>'
             . '<main style="max-width:640px;margin:14vh auto;padding:0 24px;text-align:center;">'
             . '<h1 style="font-size:1.6rem;margin-bottom:12px;">ページが見つかりません</h1>'
             . '<p style="color:#5d6362;margin-bottom:28px;">お探しのページは削除されました。</p>'
@@ -1260,7 +1294,7 @@ function render_category_columns(string $cat): string
   </div>
 </div>
 {$footer}
-<script src="{$prefix}assets/app.js?v=20260621a" defer></script>
+<script src="{$prefix}assets/app.js?v=20260621b" defer></script>
 </body>
 </html>
 HTML;
@@ -1290,12 +1324,30 @@ function render_editorial_policy(): string
     $crumb = breadcrumb_nav($prefix, '編集・監修ポリシー', true);
     $org = h($s['org']);
     $orgUrl = h($s['org_url']);
+    $sup = aruku_supervisor();
+    $supName = h($sup['name']);
+    $supCred = h($sup['cred']);
+    $supTitle = h($sup['title']);
+    $supBio = h($sup['bio']);
+    $supUrl = h($sup['url']);
     $body = <<<HTML
 {$crumb}
 <section class="about-section reveal">
   <div class="about-inner column-article">
     <h1 class="about-title">編集・監修ポリシー</h1>
-    <p class="about-lead">「あるく」は、歩くことに関する情報を、できるだけ分かりやすく・誠実にお届けするための編集方針を定めています。</p>
+    <p class="about-lead">「あるく」は、歩くことに関する情報を、できるだけ分かりやすく・誠実にお届けするための編集方針を定めています。健康・栄養に関する内容は、<strong>病院勤務20年の管理栄養士が監修</strong>しています。</p>
+
+    <div class="supervisor-card">
+      <div class="supervisor-card-badge">🩺 監修</div>
+      <div class="supervisor-card-body">
+        <div class="supervisor-card-name"><strong>{$supName}</strong>（{$supCred}）<small>／ {$supTitle}</small></div>
+        <p class="supervisor-card-bio">{$supBio}</p>
+        <a href="{$supUrl}" target="_blank" rel="noopener">監修者の所属（運営会社）を見る →</a>
+      </div>
+    </div>
+
+    <h2>監修体制</h2>
+    <p>本サイトの<strong>健康・運動・栄養・カロリーに関する記事</strong>は、{$supCred}（病院勤務20年）である{$supName}が内容を監修し、医学的・栄養学的に大きな誤りがないかを確認しています。最新の知見や公的機関の情報をふまえ、一般の方にも分かりやすい表現でお届けすることを重視しています。</p>
 
     <h2>運営と編集体制</h2>
     <p>本メディアは <a href="{$orgUrl}" target="_blank" rel="noopener">{$org}</a> が運営しています。記事は編集部および会員のみなさんが執筆し、公開前に内容を確認しています。表現が不適切な投稿は、キーワード判定および自動モデレーションにより公開前に保留する体制をとっています。</p>
@@ -1316,7 +1368,7 @@ function render_editorial_policy(): string
   </div>
 </section>
 {$footer}
-<script src="{$prefix}assets/app.js?v=20260621a" defer></script>
+<script src="{$prefix}assets/app.js?v=20260621b" defer></script>
 </body>
 </html>
 HTML;
@@ -1368,7 +1420,7 @@ function render_search_page(string $q): string
   </div>
 </div>
 {$footer}
-<script src="{$prefix}assets/app.js?v=20260621a" defer></script>
+<script src="{$prefix}assets/app.js?v=20260621b" defer></script>
 </body>
 </html>
 HTML;
@@ -1414,7 +1466,7 @@ function render_aboutaruku(): string
   </div>
 </section>
 {$footer}
-<script src="assets/app.js?v=20260621a" defer></script>
+<script src="assets/app.js?v=20260621b" defer></script>
 </body>
 </html>
 HTML;
@@ -1496,7 +1548,7 @@ function render_faq_page(): string
   </div>
 </section>
 {$footer}
-<script src="assets/app.js?v=20260621a" defer></script>
+<script src="assets/app.js?v=20260621b" defer></script>
 </body>
 </html>
 HTML;
@@ -1588,7 +1640,7 @@ function render_board(): string
   </div>
 </section>
 {$footer}
-<script src="assets/app.js?v=20260621a" defer></script>
+<script src="assets/app.js?v=20260621b" defer></script>
 </body>
 </html>
 HTML;
@@ -1812,6 +1864,7 @@ HTML;
         <a href="#columns" class="lp-btn lp-btn-secondary" data-cta="hero_columns">まずは読んでみる</a>
       </div>
       <p class="hero-cta-note hero-anim hero-anim-4">メール登録だけ・約30秒で完了・いつでも退会OK</p>
+      <p class="hero-trust hero-anim hero-anim-4">🩺 健康・栄養の情報は<strong>管理栄養士（病院勤務20年）</strong>が監修</p>
     </div>
   </div>
 </header>
@@ -2064,7 +2117,7 @@ HTML;
   window.addEventListener('resize',onScroll);
 })();
 </script>
-<script src="assets/app.js?v=20260621a" defer></script>
+<script src="assets/app.js?v=20260621b" defer></script>
 </body>
 </html>
 HTML;
@@ -2278,7 +2331,7 @@ HTML;
 </article>
 
 {$footer}
-<script src="assets/app.js?v=20260621a" defer></script>
+<script src="assets/app.js?v=20260621b" defer></script>
 </body>
 </html>
 HTML;
@@ -2334,7 +2387,7 @@ function render_page(string $key): ?string
 </article>
 
 {$footer}
-<script src="assets/app.js?v=20260621a" defer></script>
+<script src="assets/app.js?v=20260621b" defer></script>
 </body>
 </html>
 HTML;
