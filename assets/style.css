@@ -150,41 +150,72 @@ img, svg { max-width: 100%; }
   position: relative;
   transition: color .18s;
 }
-.lp-nav-links a:not(.lp-nav-cta)::after {
-  content: "";
-  position: absolute;
-  left: 0; right: 100%;
-  bottom: -6px;
-  height: 1.5px;
-  background: var(--clay-500);
-  transition: right .25s ease;
+/* ===== ヘッダーのアクション（編集誌風・階層をつけて“AI感”を払拭） ===== */
+.lp-nav-links a.lp-nav-ghost,
+.lp-nav-links a.lp-nav-join,
+.lp-nav-links a.lp-nav-logout {
+  display: inline-flex; align-items: center; justify-content: center;
+  box-sizing: border-box; text-decoration: none;
+  font-family: var(--font-sans);
 }
-.lp-nav-links a:not(.lp-nav-cta):hover { color: var(--ink); }
-.lp-nav-links a:not(.lp-nav-cta):hover::after { right: 0; }
-.lp-nav-cta {
-  background: var(--forest-700);
-  color: var(--paper) !important;
-  padding: 9px 20px;
-  border-radius: 999px;
+
+/* 二次導線：ログイン / マイページ（上品なアウトライン・角丸長方形） */
+.lp-nav-ghost {
+  padding: 9px 18px;
+  border-radius: 12px;
+  border: 1.5px solid var(--forest-300);
+  color: var(--forest-800) !important;
+  font-weight: 600;
+  letter-spacing: .03em;
+  background: rgba(255,255,255,.55);
+  transition: border-color .2s, color .2s, background .2s, transform .2s, box-shadow .2s;
+}
+.lp-nav-ghost:hover {
+  border-color: var(--forest-700);
+  background: var(--forest-100);
+  transform: translateY(-1px);
+  box-shadow: 0 5px 14px -7px rgba(19,123,88,.45);
+}
+
+/* 主導線：無料ではじめる（深緑グラデ＋内側ハイライト＋動く矢印） */
+.lp-nav-join {
+  position: relative;
+  padding: 10px 22px;
+  border-radius: 12px;
+  color: #fff !important;
   font-weight: 700;
-  transition: background .18s, transform .18s;
+  letter-spacing: .04em;
+  background: linear-gradient(135deg, var(--forest-600), var(--forest-800));
+  box-shadow: 0 8px 20px -8px rgba(19,123,88,.55), inset 0 1px 0 rgba(255,255,255,.18);
+  transition: transform .2s, box-shadow .2s, filter .2s;
 }
-.lp-nav-cta:hover { background: var(--clay-600); transform: translateY(-1px); }
+.lp-nav-join::after {
+  content: "→";
+  margin-left: 8px;
+  display: inline-block;
+  transition: transform .2s;
+}
+.lp-nav-join:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 28px -10px rgba(19,123,88,.6), inset 0 1px 0 rgba(255,255,255,.28);
+  filter: saturate(1.05) brightness(1.03);
+}
+.lp-nav-join:hover::after { transform: translateX(4px); }
+.lp-nav-join:active { transform: translateY(0); }
+
+/* ログアウト：いちばん控えめ（淡いアウトライン） */
 .lp-nav-logout {
-  padding: 9px 20px;
-  border-radius: 999px;
-  background: var(--forest-700);
-  color: var(--paper) !important;
-  font-weight: 700;
-  transition: background .18s, transform .18s;
+  padding: 9px 16px;
+  border-radius: 12px;
+  border: 1.5px solid var(--line-2);
+  background: transparent;
+  color: var(--ink-2) !important;
+  font-weight: 600;
+  letter-spacing: .02em;
+  transition: border-color .2s, color .2s, background .2s;
 }
 .lp-nav-logout::after { content: none !important; }
-.lp-nav-logout:hover { background: var(--forest-800); transform: translateY(-1px); }
-/* ヘッダのボタンは全て同じ大きさ（最小幅・中央寄せ） */
-.lp-nav-cta, .lp-nav-logout {
-  display: inline-flex; align-items: center; justify-content: center;
-  min-width: 8.8em; box-sizing: border-box; text-align: center;
-}
+.lp-nav-logout:hover { border-color: var(--ink-2); color: var(--ink) !important; background: var(--paper-2); }
 
 @media (max-width: 720px) {
   .lp-nav-inner { padding: 12px 18px; }
@@ -1056,8 +1087,8 @@ table.kcal-ideal .kcal-unit { font-weight: 500; color: var(--ink-2); font-size: 
 .user-table td { word-break: break-all; white-space: normal; }
 .user-table tr:hover td { background: #fafcfb; }
 .user-table a { color: var(--forest-800); font-weight: 700; text-decoration: none; }
-.lp-nav-admin { background: var(--clay-500); border-color: var(--clay-500); }
-.lp-nav-admin:hover { background: var(--clay-600); }
+.lp-nav-admin { border-color: var(--clay-500) !important; color: var(--clay-600) !important; }
+.lp-nav-admin:hover { border-color: var(--clay-600) !important; background: #fbeede; color: var(--clay-600) !important; }
 /* 運営用：保留投稿の操作 */
 .hold-title { font-weight: 700; color: var(--ink); }
 .hold-excerpt { color: var(--ink-2); font-size: .82rem; margin-top: 3px; }
