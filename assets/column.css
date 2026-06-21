@@ -185,6 +185,12 @@
 
 /* ===== 表 ===== */
 .column-table-wrap { overflow-x: auto; margin: 0 0 24px; border-radius: var(--radius); }
+/* モバイル：本文の表は min-width:460px のため、表を含むコンテナを横スクロール化して画面外へのはみ出しを防ぐ
+   （ラッパー無しの素の <table class="column-table"> でも安全。テキストは通常どおり折り返す） */
+@media (max-width: 600px) {
+  .column-section,
+  .calorie-panel { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+}
 .column-table {
   width: 100%;
   border-collapse: collapse;
