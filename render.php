@@ -1252,8 +1252,39 @@ function render_category_columns(string $cat): string
         ? '<div class="note-feed">' . $cards . '</div>'
         : '<p class="rail-empty">このカテゴリのコラムはまだありません。<a href="' . $prefix . 'member/post.php">最初のコラムを書いてみませんか？ →</a></p>';
 
-    // 編集部の特集記事（/column/）はカテゴリページには表示しない（要望により撤去）。
+    // 編集部の特集記事（/column/）への内部リンク（軽量テキストリンク版）。
+    // 会員投稿フィードの下に、同カテゴリのCMSコラムをテキストリンクで列挙し、
+    // クロール経路と内部リンクを確保する（撤去したカード版とは別デザイン・雑誌的に控えめ）。
     $editSection = '';
+    $cms = aruku_data();
+    $ccols = $cms['cat_lists'][$cat] ?? [];
+    if ($ccols) {
+        $ccat = $cms['cats'][$cat] ?? null;
+        $fg = $ccat['fg'] ?? '#1b5e3f';
+        $eli = '';
+        foreach ($ccols as $a) {
+            $sub = trim((string) ($a['subtitle'] ?? ''));
+            $eli .= '<li><a href="' . $prefix . 'column/' . h($a['slug']) . '.html">' . h($a['title']) . '</a>'
+                . ($sub !== '' ? '<span class="col-ed-sub"> — ' . h($sub) . '</span>' : '')
+                . '</li>';
+        }
+        $editSection = '<section class="column-section column-editorial-rail" aria-label="編集部コラム">'
+            . '<style>'
+            . '.column-editorial-rail{margin-top:2.75rem;padding-top:1.9rem;border-top:1px solid rgba(20,40,30,.1)}'
+            . '.column-editorial-rail>h2{font-size:1.15rem;margin:0 0 .35rem;display:flex;align-items:center;gap:.4rem}'
+            . '.column-editorial-rail .col-ed-lead{color:#5d6362;font-size:.9rem;margin:0 0 1.15rem}'
+            . '.col-ed-list{list-style:none;margin:0;padding:0;display:grid;gap:.6rem}'
+            . '.col-ed-list li{padding-left:1.15rem;position:relative;line-height:1.55}'
+            . '.col-ed-list li::before{content:"▸";position:absolute;left:0;color:' . h($fg) . '}'
+            . '.col-ed-list a{font-weight:600;color:' . h($fg) . ';text-decoration:none}'
+            . '.col-ed-list a:hover{text-decoration:underline}'
+            . '.col-ed-sub{color:#6b7270;font-weight:400;font-size:.84rem}'
+            . '</style>'
+            . '<h2><span class="cat-emoji">📚</span>' . h($name) . 'の編集部コラム</h2>'
+            . '<p class="col-ed-lead">「あるく」編集部がまとめた、' . h($name) . 'の特集記事です。</p>'
+            . '<ul class="col-ed-list">' . $eli . '</ul>'
+            . '</section>';
+    }
     $feedHeader = $cards
         ? '<h2 class="column-cat-title column-cat-title--plain"><span class="cat-emoji">📝</span>みんなのコラム</h2>'
         : '';
@@ -1305,9 +1336,9 @@ function render_category_columns(string $cat): string
 <div class="column-layout">
   <aside class="column-side">{$catNav}</aside>
   <div class="column-main column-article">
-    {$editSection}
     {$feedHeader}
     {$feed}
+    {$editSection}
   </div>
 </div>
 {$footer}
@@ -1875,10 +1906,9 @@ HTML;
       {$badge}
       <h1 class="hero-anim hero-anim-2">{$top['hero_title_1']}<span class="hero-keep"><span class="accent">{$top['hero_accent']}</span>{$top['hero_title_2']}</span></h1>
       <p class="hero-lead hero-anim hero-anim-3">{$top['hero_lead']}</p>
-      <p class="hero-free hero-anim hero-anim-4"><span>がんばらなくて、大丈夫。ぜんぶ無料です。</span></p>
+      <p class="hero-free hero-anim hero-anim-4"><span>がんばらなくて、大丈夫。かんたん操作だから、続けられる。</span></p>
       <div class="hero-cta hero-anim hero-anim-4">
         <a href="member/register.php" class="lp-btn lp-btn-primary" data-cta="hero_register">今すぐ無料で始める →</a>
-        <a href="#columns" class="lp-btn lp-btn-secondary" data-cta="hero_columns">まずは読んでみる</a>
       </div>
       <p class="hero-cta-note hero-anim hero-anim-4">メール登録だけ・約30秒で完了・いつでも退会OK</p>
       <p class="hero-trust hero-anim hero-anim-4">🩺 健康・栄養の情報は<strong>管理栄養士（病院勤務20年）</strong>が監修</p>
