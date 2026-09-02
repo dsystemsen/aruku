@@ -160,12 +160,12 @@ function footer_html(string $prefix, string $ctaHtml = ''): string
     $s = site();
     return <<<HTML
 <footer class="lp-footer">
-  {$ctaHtml}
   <div class="lp-footer-inner">
     <div>
       <div class="lp-footer-brand"><img src="{$prefix}assets/logo.svg?v=20260621h" alt="あるく ロゴ">あるく</div>
       <p class="lp-footer-tagline">{$s['tagline']}</p>
     </div>
+    {$ctaHtml}
     <nav class="lp-footer-links">
       <a href="{$prefix}index.html">トップ</a>
       <a href="{$prefix}calorie-table.html">消費カロリー</a>
@@ -175,6 +175,7 @@ function footer_html(string $prefix, string $ctaHtml = ''): string
       <a href="{$prefix}privacy.html">プライバシーポリシー</a>
       <a href="{$prefix}editorial-policy.html">編集・監修ポリシー</a>
       <a href="https://www.dsystemsen.com/contact/" target="_blank" rel="noopener">お問い合わせ</a>
+      <a href="https://meguru1.com/" target="_blank" rel="noopener" title="AIと管理栄養士の健康管理アプリ MEGURU">🍽 姉妹サービス MEGURU</a>
       <a href="{$s['org_url']}" target="_blank" rel="noopener">🏢 運営会社</a>
     </nav>
   </div>
@@ -210,7 +211,7 @@ function head_html(string $prefix, string $title, string $desc, string $canonica
     }
     $rb = '<meta name="robots" content="' . $robotsContent . '">' . "\n";
     // フォントはメイリオ（端末ローカル）を使用するため Web フォントの読込は不要。
-    $css = '<link rel="stylesheet" href="' . $prefix . 'assets/style.css?v=20260621h">' . "\n"
+    $css = '<link rel="stylesheet" href="' . $prefix . 'assets/style.css?v=20260805">' . "\n"
         . '<link rel="stylesheet" href="' . $prefix . 'assets/column.css?v=20260621h">' . "\n"
         . '<noscript><style>.reveal,.reveal-stagger>*,.hero-anim,.hero-art-anim{opacity:1!important;transform:none!important;animation:none!important}</style></noscript>';
     // meta keywords は Google・各AIともに無視するため出力しない（引数は後方互換で受けるだけ）。
@@ -1235,7 +1236,7 @@ function render_category_columns(string $cat): string
             . '<meta name="viewport" content="width=device-width, initial-scale=1">'
             . '<meta name="robots" content="noindex, nofollow">'
             . '<title>ページが見つかりません｜あるく</title>'
-            . '<link rel="stylesheet" href="' . $prefix . 'assets/style.css?v=20260621h"></head><body>'
+            . '<link rel="stylesheet" href="' . $prefix . 'assets/style.css?v=20260805"></head><body>'
             . '<main style="max-width:640px;margin:14vh auto;padding:0 24px;text-align:center;">'
             . '<h1 style="font-size:1.6rem;margin-bottom:12px;">ページが見つかりません</h1>'
             . '<p style="color:#5d6362;margin-bottom:28px;">お探しのページは削除されました。</p>'
@@ -1883,19 +1884,16 @@ HTML;
     </div>
 HTML;
 
-    // 最下部CTAはフッター内に統合（独立帯をやめ、1ブロックにまとめる）。文言は従来どおり。
+    // 最下部CTAはフッターのブランド〜リンクと同じ1ボックス内の中央カラムに統合（縦長解消のため説明文は省略）
     $footerCta = <<<HTML
 <div class="lp-footer-cta">
-    <div class="lp-footer-cta-in">
       <h2 class="lp-footer-cta-title">{$top['cta_title']}</h2>
-      <p class="lp-footer-cta-sub">{$top['cta_sub']}<br>無料の会員登録で、体重・運動・消費カロリーをマイページにずっと無料で記録できます。</p>
       <div class="lp-footer-cta-actions">
-        <a href="member/register.php" class="lp-btn lp-btn-primary lp-btn-lg" data-cta="bottom_register">無料で記録を始める →</a>
+        <a href="member/register.php" class="lp-btn lp-btn-primary" data-cta="bottom_register">無料で記録を始める →</a>
         <a href="calorie-table.html" class="lp-btn lp-btn-ghost" data-cta="bottom_calorie">歩数別カロリー表を見る</a>
       </div>
       <p class="lp-footer-cta-note">メール登録だけ・約30秒・ずっと無料　／　これまで{$boardCount}件のつぶやきがシェアされています</p>
     </div>
-  </div>
 HTML;
     $footer = footer_html($prefix, $footerCta);
 
@@ -2026,14 +2024,14 @@ HTML;
           </tbody>
         </table>
       </div>
-      <p class="kcal-ideal-callout">💡 <b>ダイエットしたい人は</b>、上の目安より「摂取カロリー ＜ 消費カロリー」になるよう、少しだけ差をつくるのがコツ。食事を減らしすぎるより、<b>歩いて消費を増やす</b>ほうが続けやすく、健康的です。まずは「食べた分、いつもより少し多く歩く」から始めてみましょう。</p>
+      <p class="kcal-ideal-callout">💡 <b>ダイエットしたい人は</b>、上の目安より「摂取カロリー ＜ 消費カロリー」になるよう、少しだけ差をつくるのがコツ。食事を減らしすぎるより、<b>歩いて消費を増やす</b>ほうが続けやすく、健康的です。まずは「食べた分、いつもより少し多く歩く」から始めてみましょう。<br>「食べた分」の把握には、姉妹サービスの <a href="https://meguru1.com/" target="_blank" rel="noopener"><b>MEGURU（めぐる）</b></a> が便利です。食事の写真を撮るだけでカロリーと栄養を自動記録でき、管理栄養士の監修つき。あるくの「消費」と MEGURU の「摂取」をあわせて見ると、収支がひと目でわかります。</p>
       <p class="app-rank-note">※ 数値は厚生労働省「日本人の食事摂取基準（2020年版）」の推定エネルギー必要量（身体活動レベルII＝「ふつう」）に基づく1日あたりの目安です。活動量が多い人はこれより多く、少ない人は少なくなります。妊娠・授乳中の方、成長期のお子さま、持病のある方などは必要量が異なります。一般的な健康情報であり、医療上の指導に代わるものではありません。</p>
     </div>
     <div class="section-head section-head--left reveal" id="apps" style="margin-top:56px; scroll-margin-top:90px;">
       <h2>４．健康管理アプリ比較ランキング<br>（カロリー計算・体重管理）</h2>
     </div>
     <div class="reveal">
-      <p class="app-rank-intro">「歩いて消費」とあわせて使いたい、<b>カロリー計算・体重管理アプリ</b>を、料金とサービス内容で比べてランキングにしました。あるくで歩数と消費カロリーを管理し、食事はアプリで記録——と組み合わせれば、ダイエットも健康づくりもぐっと続けやすくなります。</p>
+      <p class="app-rank-intro">「歩いて消費」とあわせて使いたい、<b>カロリー計算・体重管理アプリ</b>を、料金とサービス内容で比べてランキングにしました。あるくで歩数と消費カロリーを管理し、食事はアプリで記録——と組み合わせれば、ダイエットも健康づくりもぐっと続けやすくなります。なお、同じ運営会社の <a href="https://meguru1.com/" target="_blank" rel="noopener">MEGURU（めぐる）</a> は編集部の姉妹サービスのため、公平を期してランキングの対象外としています。</p>
       <div class="app-rank-wrap">
         <table class="app-rank">
           <thead>

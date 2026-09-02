@@ -355,12 +355,11 @@ img, svg { max-width: 100%; }
 .lp-cta-note { color: rgba(255,255,255,.8); font-size: .85rem; margin: 18px 0 0; }
 
 /* フッター内に統合した最下部CTA（独立帯をやめ、緑フッターの上部に一体化） */
-.lp-footer-cta { text-align: center; padding: 6px 0 30px; margin: 0 auto 26px; border-bottom: 1px solid rgba(255,255,255,.18); }
-.lp-footer-cta-in { max-width: 680px; margin: 0 auto; }
-.lp-footer-cta-title { color: #fff; font-size: clamp(1.3rem, 3.4vw, 1.85rem); font-weight: 800; margin: 0 0 12px; letter-spacing: -.01em; }
-.lp-footer-cta-sub { color: rgba(255,255,255,.92); line-height: 1.8; margin: 0 0 18px; font-size: .94rem; }
-.lp-footer-cta-actions { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
-.lp-footer-cta-note { color: rgba(255,255,255,.8); font-size: .82rem; margin: 14px 0 0; }
+/* フッターCTA：ブランド〜リンクと同じ .lp-footer-inner 内の中央カラムとして表示 */
+.lp-footer-cta { flex: 1 1 340px; align-self: center; text-align: center; }
+.lp-footer-cta-title { color: #fff; font-size: 1.2rem; font-weight: 800; margin: 0 0 12px; letter-spacing: -.01em; }
+.lp-footer-cta-actions { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+.lp-footer-cta-note { color: rgba(255,255,255,.78); font-size: .78rem; margin: 12px 0 0; }
 
 /* モバイル追従CTAバー */
 .mobile-cta-bar { display: none; }
